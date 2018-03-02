@@ -1,0 +1,30 @@
+{
+    "name": "tdd-ready-node",
+    "version": "1.0.0",
+    "private": false,
+    "dependencies": {
+        "firebase": "^4.10.1",
+        "querystring": "^0.2.0"
+    },
+    "devDependencies": {
+        "chai": "latest",
+        "istanbul": "latest",
+        "jsdom": "latest",
+        "lodash": "latest",
+        "log4js": "latest",
+        "mkdirp": "latest",
+        "mocha": "latest",
+        "request": "latest",
+        "sinon": "latest",
+        "sinon-chai": "latest",
+        "socket.io": "latest",
+        "zombie": "latest"
+    },
+    "scripts": {
+        "test": "npm run internal-tests",
+        "start": "node start.js",
+        "external-tests": "mocha tests/external --recursive --exit --timeout 0",
+        "internal-tests": "mocha tests/internal --recursive --exit",
+        "test:coverage": "istanbul cover node_modules/mocha/bin/_mocha -- app/server/spec/* app/client/spec/*"
+    }
+}

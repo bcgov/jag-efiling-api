@@ -1,0 +1,14 @@
+#parties {
+	width: 100%
+}
+#parties th {
+	background-color: lightblue;
+}
+#parties th, #parties td {
+	text-align: left;
+	width: 40%;
+}
+#parties td.role {
+	font-weight: bold;
+	text-align: left;
+}
