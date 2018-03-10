@@ -4,6 +4,7 @@
     "private": false,
     "dependencies": {
         "firebase": "^4.10.1",
+        "pg": "^7.4.1",
         "querystring": "^0.2.0"
     },
     "devDependencies": {

@@ -13,8 +13,17 @@ server.start(port, ip, function() {
     console.log(ip + ' listening on port ' + port);
 });
 
-console.log('POSTGRESQL config:');
-console.log('database=' + process.env.POSTGRESQL_DATABASE);
+var Client = require('pg');
+var client = new Client();
+
+client.connect(function(err) {
+    console.log('connection status: ' + JSON.stringify(err));
+    var sql = 'select content from messages';
+    client.query(sql, function(err, result) {
+        client.end();
+        console.log('RESULT: ' + JSON.stringify(result));
+    });
+});
 
 module.exports = server;
 module.exports.port = port;
