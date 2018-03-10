@@ -13,8 +13,8 @@ server.start(port, ip, function() {
     console.log(ip + ' listening on port ' + port);
 });
 
-var Client = require('pg');
-var client = new Client();
+var pg = require('pg');
+var client = new pg.Client();
 
 client.connect(function(err) {
     console.log('connection status: ' + JSON.stringify(err));
