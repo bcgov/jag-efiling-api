@@ -1,6 +1,7 @@
 var expect = require('chai').expect;
 var request = require('request');
 var Server = require('../../app/server/server');
+var alwaysValid = require('../support/token.always.valid.js');
 
 describe('Form 7 search', function() {
 
@@ -12,14 +13,10 @@ describe('Form 7 search', function() {
     beforeEach(function(done) {
         server = new Server();
         server.start(port, ip, done);
+        server.useTokenValidator(alwaysValid);
         server.useService({
             searchForm7: function(fileNumber, callback) {
                 callback([fileNumber]);
-            }
-        });
-        server.useTokenValidator({
-            validate: function(token, callback) {
-                callback(true);
             }
         });
     });
