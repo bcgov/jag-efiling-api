@@ -42,5 +42,12 @@ describe('Ping', function() {
             });            
             done();
         });
-    });
+    });  
+
+    it('is default answer', function(done) {
+        request(home + '/anything-unknown', function(err, response, body) {
+            expect(response.statusCode).to.equal(200);            
+            done();
+        });
+    }); 
 });
