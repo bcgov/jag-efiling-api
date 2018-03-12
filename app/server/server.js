@@ -1,7 +1,7 @@
 var url = require('url');
 
 function Server() {    
-    this.message = 'unset';
+    this.message = 'pong';
 };
 
 Server.prototype.setMessage = function(value) {
