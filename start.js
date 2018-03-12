@@ -4,13 +4,15 @@ var home = 'http://' + ip + ':' + port;
 var Server = require('./app/server/server');
 var server = new Server();
 
+server.useTokenValidator(require('./tests/support/token.always.valid.js'));
+server.useService(require('./tests/support/in.memory.service.js'));
+
 server.start(port, ip, function() {
     console.log(ip + ' listening on port ' + port);
 });
 
 var pg = require('pg');
 var client = new pg.Client();
-
 client.connect(function(err) {
     console.log('postgresql connection status: ' + JSON.stringify(err));
     if (!err) {
