@@ -11,11 +11,28 @@ Server.prototype.setMessage = function(value) {
 Server.prototype.start = function (port, ip, done) {
     var self = this;
     this.http = require('http').createServer(function(request, response) {
-
-        var body = { message: self.message };
+        response.setHeader('Access-Control-Allow-Origin', '*');
         response.setHeader('Content-Type', 'application/json');
-        response.write( JSON.stringify(body) );
-        response.end();               
+        var parsed = url.parse(request.url, true);
+        if ('/form-7' == parsed.pathname) {
+            self.tokenValidator.validate(parsed.query.token, function(isValid) {
+                if (!isValid) {
+                    response.statusCode = 403;
+                    response.end();
+                } else {
+                    self.service.searchForm7(parsed.query.file, function(data) {
+                        var body = { parties: data };
+                        response.write( JSON.stringify(body) );
+                        response.end();                   
+                    });
+                }
+            });
+        }
+        else {
+            var body = { message: self.message };
+            response.write( JSON.stringify(body) );
+            response.end();               
+        }
     });
     this.http.listen(port, ip, done);
 };
@@ -26,5 +43,13 @@ Server.prototype.stop = function (done) {
     }
     done();
 };
+
+Server.prototype.useService = function(service) {
+    this.service = service;
+}
+
+Server.prototype.useTokenValidator = function(tokenValidator) {
+    this.tokenValidator = tokenValidator;
+}
 
 module.exports = Server;

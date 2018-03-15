@@ -5,7 +5,8 @@
     "dependencies": {
         "firebase": "^4.10.1",
         "pg": "^7.4.1",
-        "querystring": "^0.2.0"
+        "querystring": "^0.2.0",
+        "url": "^0.11.0"
     },
     "devDependencies": {
         "chai": "latest",
@@ -22,10 +23,10 @@
         "zombie": "latest"
     },
     "scripts": {
-        "test": "npm run internal-tests",
+        "test": "npm run external-tests",
         "start": "node start.js",
         "external-tests": "mocha tests/external --recursive --exit --timeout 0",
-        "internal-tests": "mocha tests/internal --recursive --exit",
+        "internal-tests": "mocha tests/internal tests/support --recursive --exit",
         "test:coverage": "istanbul cover node_modules/mocha/bin/_mocha -- app/server/spec/* app/client/spec/*"
     }
 }
