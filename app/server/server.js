@@ -11,6 +11,7 @@ Server.prototype.setMessage = function(value) {
 Server.prototype.start = function (port, ip, done) {
     var self = this;
     this.http = require('http').createServer(function(request, response) {
+        response.setHeader('Access-Control-Allow-Origin', '*');
         response.setHeader('Content-Type', 'application/json');
         var parsed = url.parse(request.url, true);
         if ('/form-7' == parsed.pathname) {
