@@ -6,6 +6,7 @@
         "firebase": "^4.10.1",
         "pg": "^7.4.1",
         "querystring": "^0.2.0",
+        "socket.io": "^2.0.4",
         "url": "^0.11.0"
     },
     "devDependencies": {
@@ -19,7 +20,6 @@
         "request": "^2.85.0",
         "sinon": "latest",
         "sinon-chai": "latest",
-        "socket.io": "latest",
         "zombie": "latest"
     },
     "scripts": {

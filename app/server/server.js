@@ -13,26 +13,22 @@ Server.prototype.start = function (port, ip, done) {
     this.http = require('http').createServer(function(request, response) {
         response.setHeader('Access-Control-Allow-Origin', '*');
         response.setHeader('Content-Type', 'application/json');
-        var parsed = url.parse(request.url, true);
-        if ('/form-7' == parsed.pathname) {
-            self.tokenValidator.validate(parsed.query.token, function(isValid) {
+        response.write( JSON.stringify({ message: self.message }) );
+        response.end();               
+    });    
+    self.io = require('socket.io')(this.http);
+    self.io.on('connection', function(socket) {
+        socket.on('form-7-search', function(data, callback) {
+            self.tokenValidator.validate(data.token, function(isValid) {
                 if (!isValid) {
-                    response.statusCode = 403;
-                    response.end();
+                    callback(undefined);
                 } else {
-                    self.service.searchForm7(parsed.query.file, function(data) {
-                        var body = { parties: data };
-                        response.write( JSON.stringify(body) );
-                        response.end();                   
+                    self.service.searchForm7(data.file, function(data) {
+                        callback({ parties: data });
                     });
                 }
             });
-        }
-        else {
-            var body = { message: self.message };
-            response.write( JSON.stringify(body) );
-            response.end();               
-        }
+        });
     });
     this.http.listen(port, ip, done);
 };
@@ -40,6 +36,9 @@ Server.prototype.start = function (port, ip, done) {
 Server.prototype.stop = function (done) {
     if (this.http) {
         this.http.close();
+    }
+    if (this.io) { 
+        this.io.close();
     }
     done();
 };
