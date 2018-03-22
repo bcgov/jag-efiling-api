@@ -3207,6 +3207,10 @@ yeast@0.1.2:
   version "0.1.2"
   resolved "https://registry.yarnpkg.com/yeast/-/yeast-0.1.2.tgz#008e06d8094320c372dbc2f8ed76a0ca6c8ac419"
 
+yop-promises@^1.0.1:
+  version "1.0.1"
+  resolved "https://registry.yarnpkg.com/yop-promises/-/yop-promises-1.0.1.tgz#5c2f1d7a647fc07f0de6de6e170f30a7068be805"
+
 zombie@latest:
   version "5.0.8"
   resolved "https://registry.yarnpkg.com/zombie/-/zombie-5.0.8.tgz#9bfef6f2eae481cb1c0d3eee14369ebccb1e05ca"
