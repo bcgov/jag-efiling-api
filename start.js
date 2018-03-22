@@ -26,7 +26,7 @@ var Database = require('./app/database');
 var database = new Database(function() { return new pg.Client(); });
 server.useDatabase(database);
 var Migrator = require('./app/migrations/migrator');
-var migrator = new Migrator(connectedToLocalhost);
+var migrator = new Migrator(function() { return new pg.Client(); });
 migrator.migrateNow(function() {
 
     server.start(port, ip, function() {
