@@ -1,0 +1,41 @@
+var expect = require('chai').expect;
+var Database = require('../../app/database');
+var pg = require('pg');
+var Migrator = require('../../app/migrations/migrator');
+var Truncator = require('../support/truncator');
+
+describe('Save form', function() {
+
+    var database;
+    var connectedToLocalhost = function() {
+        return new pg.Client('postgres://postgres@localhost/e-filing');
+    };
+
+    beforeEach(function(done) {
+        database = new Database(connectedToLocalhost);
+        var migrator = new Migrator(connectedToLocalhost);
+        migrator.migrateNow(function() {
+            var truncator = new Truncator(connectedToLocalhost);
+            truncator.truncateTablesNow(function() {
+                done();
+            });
+        });
+    });
+
+    it('updates database version record', function(done) {
+        var client = connectedToLocalhost();
+        client.connect(function(err) {                
+            expect(err).to.equal(null);
+            var sql = 'SELECT id FROM versions';
+            client.query(sql, function(err, result) {
+                expect(err).to.equal(null);
+                expect(result.rows.length).to.equal(1);
+                var { id } = result.rows[0];
+                
+                expect(id).to.equal(2);
+                client.end();
+                done();
+            });
+        });
+    });
+});
