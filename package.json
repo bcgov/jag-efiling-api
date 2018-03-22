@@ -1,5 +1,5 @@
 {
-    "name": "tdd-ready-node",
+    "name": "e-filing-api",
     "version": "1.0.0",
     "private": false,
     "dependencies": {
