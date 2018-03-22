@@ -25,5 +25,16 @@ client.connect(function(err) {
     }
 });
 
+var request = require('request');
+var ssg = 'https://wsgw.dev.jag.gov.bc.ca/dev/TestService';
+console.log('trying to connect to ' + ssg);
+request(ssg, function(err, response, body) {
+    console.log('received:');
+    console.log(err);
+    if (response) {console.log(response.statusCode);}
+    console.log(body);
+    console.log('***');
+});
+
 module.exports = server;
 module.exports.port = port;
