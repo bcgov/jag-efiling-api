@@ -7,13 +7,15 @@ var Truncator = require('../support/truncator');
 describe('Save form', function() {
 
     var database;
-    var url = 'postgres://postgres@localhost/e-filing';
+    var connectedToLocalhost = function() {
+        return new pg.Client('postgres://postgres@localhost/e-filing');
+    };
 
     beforeEach(function(done) {
-        database = new Database(url);
-        var migrator = new Migrator(url);
+        database = new Database(connectedToLocalhost);
+        var migrator = new Migrator(connectedToLocalhost);
         migrator.migrateNow(function() {
-            var truncator = new Truncator(url);
+            var truncator = new Truncator(connectedToLocalhost);
             truncator.truncateTablesNow(function() {
                 done();
             });
@@ -27,7 +29,7 @@ describe('Save form', function() {
         };
         database.saveForm(form, function(id) {            
             expect(id).not.to.equal(undefined);
-            var client = new pg.Client(url);
+            var client = connectedToLocalhost();
             client.connect(function(err) {                
                 expect(err).to.equal(null);
                 var sql = 'SELECT id, type, status, data FROM forms';

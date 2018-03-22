@@ -13,7 +13,9 @@ describe('Form 2 save', function() {
     var ip = 'localhost';
     var home = 'http://' + ip + ':' + port;
     var database;
-    var url = 'postgres://postgres@localhost/e-filing';
+    var connectedToLocalhost = function() {
+        return new pg.Client('postgres://postgres@localhost/e-filing');
+    };
 
     beforeEach(function(done) {
         server = new Server();
@@ -23,11 +25,11 @@ describe('Form 2 save', function() {
                 callback([fileNumber]);
             }
         });
-        database = new Database(url);
+        database = new Database(connectedToLocalhost);
         server.useDatabase(database);
-        var migrator = new Migrator(url);
+        var migrator = new Migrator(connectedToLocalhost);
         migrator.migrateNow(function() {
-            var truncator = new Truncator(url);
+            var truncator = new Truncator(connectedToLocalhost);
             truncator.truncateTablesNow(function() {
                 server.start(port, ip, done);
             });
@@ -50,7 +52,7 @@ describe('Form 2 save', function() {
                 } }, function(data) {
                 expect(data.status).to.equal(201);  
                 expect(data.id).not.to.equal(undefined);     
-                var client = new pg.Client(url);
+                var client = connectedToLocalhost();
                 client.connect(function(err) {                
                     expect(err).to.equal(null);
                     var sql = 'SELECT id, type, status, data FROM forms where id=$1';

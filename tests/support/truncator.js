@@ -1,9 +1,8 @@
-var pg = require('pg');
 var Promise = require('yop-promises').promise;
 var Promises = require('yop-promises').promises;
 
-var Truncator = function(url) {
-    this.url = url;
+var Truncator = function(newConnection) {
+    this.newConnection = newConnection;
 };
 
 Truncator.prototype.truncateTablesNow = function(done) {
@@ -16,7 +15,7 @@ Truncator.prototype.truncateTablesNow = function(done) {
 
 Truncator.prototype.run = function(sql) {
     var p = new Promise();
-    var client = new pg.Client(this.url);    
+    var client = this.newConnection();    
     client.connect(function(err) {
         if (err) { throw err; }
         client.query(sql, function(err, result) {

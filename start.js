@@ -7,9 +7,6 @@ var server = new Server();
 server.useTokenValidator(require('./tests/support/token.always.valid.js'));
 server.useService(require('./tests/support/in.memory.service.js'));
 
-server.start(port, ip, function() {
-    console.log(ip + ' listening on port ' + port);
-});
 
 var pg = require('pg');
 var client = new pg.Client();
@@ -23,6 +20,18 @@ client.connect(function(err) {
             server.setMessage(result.rows[0].content);
         });
     }
+});
+
+var Database = require('./app/database');
+var database = new Database(function() { return new pg.Client(); });
+server.useDatabase(database);
+var Migrator = require('./app/migrations/migrator');
+var migrator = new Migrator(connectedToLocalhost);
+migrator.migrateNow(function() {
+
+    server.start(port, ip, function() {
+        console.log(ip + ' listening on port ' + port);
+    });
 });
 
 var request = require('request');

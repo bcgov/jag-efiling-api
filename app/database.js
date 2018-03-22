@@ -1,10 +1,8 @@
-var pg = require('pg');
-
-var Database = function(url) {  
-    this.url = url;
+var Database = function(newConnection) {  
+    this.newConnection = newConnection;
 };
 Database.prototype.saveForm = function(form, callback) {
-    var client = new pg.Client(this.url);    
+    var client = this.newConnection();    
     client.connect(function(err) {
         if (err) { throw err; }
         var sql = 'insert into forms(type, status, data) values($1, $2, $3);';

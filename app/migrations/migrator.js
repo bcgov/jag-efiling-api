@@ -1,10 +1,9 @@
 var fs = require('fs');
-var pg = require('pg');
 var Promise = require('yop-promises').promise;
 var Promises = require('yop-promises').promises;
 
-var Migrator = function(url) {
-    this.url = url;
+var Migrator = function(newConnection) {
+    this.newConnection = newConnection;
 };
 
 Migrator.prototype.migrateNow = function(done) {
@@ -18,7 +17,7 @@ Migrator.prototype.migrateNow = function(done) {
 
 Migrator.prototype.run = function(filename) {
     var p = new Promise();
-    var client = new pg.Client(this.url);    
+    var client = this.newConnection();
     client.connect(function(err) {
         if (err) { throw err; }
         var sql = fs.readFileSync(__dirname + filename).toString();
