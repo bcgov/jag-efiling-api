@@ -1,11 +1,9 @@
 var SearchFormSeven = function(service) {
-    this.service = service;
+    this.hub = service;
 };
 
 SearchFormSeven.prototype.now = function(params, callback) {
-    this.service.searchForm7(params.file, function(data) {
-        callback({ parties: data });
-    });
+    this.hub.searchForm7(params.file, callback);
 };
 
 module.exports = SearchFormSeven;
