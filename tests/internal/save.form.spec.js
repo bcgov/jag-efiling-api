@@ -1,21 +1,18 @@
 var expect = require('chai').expect;
 var Database = require('../../app/database');
-var pg = require('pg');
 var Migrator = require('../../app/migrations/migrator');
 var Truncator = require('../support/truncator');
+var { localhost } = require('../support/postgres.client.factory');
 
 describe('Save form', function() {
 
     var database;
-    var connectedToLocalhost = function() {
-        return new pg.Client('postgres://postgres@localhost/e-filing');
-    };
 
     beforeEach(function(done) {
-        database = new Database(connectedToLocalhost);
-        var migrator = new Migrator(connectedToLocalhost);
+        database = new Database(localhost);
+        var migrator = new Migrator(localhost);
         migrator.migrateNow(function() {
-            var truncator = new Truncator(connectedToLocalhost);
+            var truncator = new Truncator(localhost);
             truncator.truncateTablesNow(function() {
                 done();
             });
@@ -29,7 +26,7 @@ describe('Save form', function() {
         };
         database.saveForm(form, function(id) {            
             expect(id).not.to.equal(undefined);
-            var client = connectedToLocalhost();
+            var client = localhost();
             client.connect(function(err) {                
                 expect(err).to.equal(null);
                 var sql = 'SELECT id, type, status, data FROM forms';

@@ -1,23 +1,17 @@
 var expect = require('chai').expect;
-var Database = require('../../app/database');
-var pg = require('pg');
 var Migrator = require('../../app/migrations/migrator');
+var { localhost } = require('../support/postgres.client.factory');
 
 describe('Migrator', function() {
 
-    var database;
-    var connectedToLocalhost = function() {
-        return new pg.Client('postgres://postgres@localhost/e-filing');
-    };
     var migrator;
 
     beforeEach(function() {
-        database = new Database(connectedToLocalhost);
-        migrator = new Migrator(connectedToLocalhost);        
+        migrator = new Migrator(localhost);        
     });
 
     it('creates the record when missing', function(done) {
-        var client = connectedToLocalhost();    
+        var client = localhost();    
         client.connect(function(err) {
             if (err) { throw err; }
             client.query('truncate table versions', function(err, result) {
@@ -38,7 +32,7 @@ describe('Migrator', function() {
     });
 
     it('updates the record when it exists', function(done) {
-        var client = connectedToLocalhost();    
+        var client = localhost();    
         client.connect(function(err) {
             if (err) { throw err; }
             client.query('truncate table versions', function(err, result) {

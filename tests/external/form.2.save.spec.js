@@ -2,9 +2,9 @@ var expect = require('chai').expect;
 var Server = require('../../app/server/server');
 var alwaysValid = require('../support/token.always.valid.js');
 var Database = require('../../app/database');
-var pg = require('pg');
 var Migrator = require('../../app/migrations/migrator');
 var Truncator = require('../support/truncator');
+var { localhost } = require('../support/postgres.client.factory');
 
 describe('Form 2 save', function() {
 
@@ -13,9 +13,6 @@ describe('Form 2 save', function() {
     var ip = 'localhost';
     var home = 'http://' + ip + ':' + port;
     var database;
-    var connectedToLocalhost = function() {
-        return new pg.Client('postgres://postgres@localhost/e-filing');
-    };
 
     beforeEach(function(done) {
         server = new Server();
@@ -25,11 +22,11 @@ describe('Form 2 save', function() {
                 callback([fileNumber]);
             }
         });
-        database = new Database(connectedToLocalhost);
+        database = new Database(localhost);
         server.useDatabase(database);
-        var migrator = new Migrator(connectedToLocalhost);
+        var migrator = new Migrator(localhost);
         migrator.migrateNow(function() {
-            var truncator = new Truncator(connectedToLocalhost);
+            var truncator = new Truncator(localhost);
             truncator.truncateTablesNow(function() {
                 server.start(port, ip, done);
             });
@@ -52,7 +49,7 @@ describe('Form 2 save', function() {
                 } }, function(data) {
                 expect(data.status).to.equal(201);  
                 expect(data.id).not.to.equal(undefined);     
-                var client = connectedToLocalhost();
+                var client = localhost();
                 client.connect(function(err) {                
                     expect(err).to.equal(null);
                     var sql = 'SELECT id, type, status, data FROM forms where id=$1';
