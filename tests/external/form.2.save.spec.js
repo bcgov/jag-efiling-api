@@ -17,11 +17,6 @@ describe('Form 2 save', function() {
     beforeEach(function(done) {
         server = new Server();
         server.useTokenValidator(alwaysValid);
-        server.useService({
-            searchForm7: function(fileNumber, callback) {
-                callback([fileNumber]);
-            }
-        });
         database = new Database(localhost);
         server.useDatabase(database);
         var migrator = new Migrator(localhost);
@@ -91,7 +86,18 @@ describe('Form 2 save', function() {
                     }
                 } }, function(data) {
                 expect(data).to.equal(null);  
-                done();
+                var client = localhost();
+                client.connect(function(err) {                
+                    expect(err).to.equal(null);
+                    var sql = 'SELECT id, type, status, data FROM forms';
+                    client.query(sql, function(err, result) {
+                        expect(err).to.equal(null);
+                        
+                        expect(result.rows.length).to.equal(0);
+                        client.end();
+                        done();
+                    });
+                });
             });
         });
     });
