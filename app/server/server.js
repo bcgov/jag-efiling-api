@@ -18,12 +18,12 @@ Server.prototype.start = function (port, ip, done) {
     });    
     self.io = require('socket.io')(this.http);
     self.io.on('connection', function(socket) {
-        socket.on('form-7-search', function(data, callback) {
-            self.tokenValidator.validate(data.token, function(isValid) {
+        socket.on('form-7-search', function(params, callback) {
+            self.tokenValidator.validate(params.token, function(isValid) {
                 if (!isValid) {
                     callback(undefined);
                 } else {
-                    self.service.searchForm7(data.file, function(data) {
+                    self.service.searchForm7(params.file, function(data) {
                         callback({ parties: data });
                     });
                 }

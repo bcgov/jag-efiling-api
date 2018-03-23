@@ -74,4 +74,25 @@ describe('Form 2 save', function() {
             });
         });
     });
+
+    it('requires a valid token', function(done) {
+        server.useTokenValidator({
+            validate: function(token, callback) {
+                callback(false);
+            }
+        });
+        var socket = require('socket.io-client')(home, { forceNew: true });
+        socket.on('connect', function() {
+            socket.emit('form-2-save', { token:'any', data:{
+                    formSevenNumber:'ABC', 
+                    respondent:{
+                        name:'Bruce', 
+                        address:'near'
+                    }
+                } }, function(data) {
+                expect(data).to.equal(null);  
+                done();
+            });
+        });
+    });
 });
