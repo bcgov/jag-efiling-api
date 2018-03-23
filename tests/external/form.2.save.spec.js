@@ -17,11 +17,6 @@ describe('Form 2 save', function() {
     beforeEach(function(done) {
         server = new Server();
         server.useTokenValidator(alwaysValid);
-        server.useService({
-            searchForm7: function(fileNumber, callback) {
-                callback([fileNumber]);
-            }
-        });
         database = new Database(localhost);
         server.useDatabase(database);
         var migrator = new Migrator(localhost);
