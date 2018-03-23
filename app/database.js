@@ -18,5 +18,22 @@ Database.prototype.saveForm = function(form, callback) {
         });
     });
 };
+Database.prototype.myCases = function(token, callback) {
+    var client = this.newConnection();    
+    client.connect(function(err) {
+        if (err) { throw err; }
+        var sql = 'select id, type, status, data from forms';
+        client.query(sql, function(err, result) {
+            if (err) { throw err; }
+            callback(result.rows.map(function(row) { return {
+                id: row.id,
+                type: row.type,
+                status: row.status,
+                data: JSON.parse(row.data)
+            }}));
+            client.end();
+        });
+    });
+};
 
 module.exports = Database;
