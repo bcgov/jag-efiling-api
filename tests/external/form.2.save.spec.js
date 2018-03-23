@@ -91,7 +91,18 @@ describe('Form 2 save', function() {
                     }
                 } }, function(data) {
                 expect(data).to.equal(null);  
-                done();
+                var client = localhost();
+                client.connect(function(err) {                
+                    expect(err).to.equal(null);
+                    var sql = 'SELECT id, type, status, data FROM forms';
+                    client.query(sql, function(err, result) {
+                        expect(err).to.equal(null);
+                        
+                        expect(result.rows.length).to.equal(0);
+                        client.end();
+                        done();
+                    });
+                });
             });
         });
     });
