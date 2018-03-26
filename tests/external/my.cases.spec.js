@@ -5,6 +5,7 @@ var Database = require('../../app/database');
 var Migrator = require('../../app/migrations/migrator');
 var Truncator = require('../support/truncator');
 var { localhost } = require('../support/postgres.client.factory');
+var { execute } = require('../../app/store/postgresql');
 
 describe('My cases endpoint', function() {
 
@@ -18,6 +19,7 @@ describe('My cases endpoint', function() {
         server = new Server();
         server.useTokenValidator(alwaysValid);
         database = new Database(localhost);
+        execute.connection = localhost;
         server.useDatabase(database);
         var migrator = new Migrator(localhost);
         migrator.migrateNow(function() {
@@ -33,28 +35,22 @@ describe('My cases endpoint', function() {
     });    
 
     it('is a socket service', function(done) {
-        var client = localhost();
-        client.connect(function(err) {                
-            expect(err).to.equal(null);
-            var sql = 'insert into forms(type, status, data) values($1, $2, $3);';
-            client.query(sql, ['crazy', 'new', JSON.stringify({value:42})], function(err, result) {
-                expect(err).to.equal(null);
-                client.query('select last_value from forms_id_seq', function(err, result) {
-                    expect(err).to.equal(null);
-                    expect(result.rows.length).to.equal(1);
-                    var newId = parseInt(result.rows[0].last_value);
-                    var socket = require('socket.io-client')(home, { forceNew: true });
-                    socket.on('connect', function() {
-                        socket.emit('my-cases', { token:'any', data:{} }, function(data) {
-                            expect(data).to.deep.equal({
-                                cases: [
-                                    { id:newId, type:'crazy', status:'new', data:{value:42} }
-                                ]
-                            });   
-                            done();                          
-                        });
+        execute('insert into forms(type, status, data) values($1, $2, $3);',
+                ['crazy', 'new', JSON.stringify({value:42})], function() {
+            execute('select last_value from forms_id_seq', [], function(rows) {
+                var newId = parseInt(rows[0].last_value);
+                
+                var socket = require('socket.io-client')(home, { forceNew: true });
+                socket.on('connect', function() {
+                    socket.emit('my-cases', { token:'any', data:{} }, function(data) {
+                        expect(data).to.deep.equal({
+                            cases: [
+                                { id:newId, type:'crazy', status:'new', data:{value:42} }
+                            ]
+                        });   
+                        done();                          
                     });
-                });                
+                });
             });
         });
     });
@@ -65,24 +61,18 @@ describe('My cases endpoint', function() {
                 callback(false);
             }
         });
-        var client = localhost();
-        client.connect(function(err) {                
-            expect(err).to.equal(null);
-            var sql = 'insert into forms(type, status, data) values($1, $2, $3);';
-            client.query(sql, ['crazy', 'new', JSON.stringify({value:42})], function(err, result) {
-                expect(err).to.equal(null);
-                client.query('select last_value from forms_id_seq', function(err, result) {
-                    expect(err).to.equal(null);
-                    expect(result.rows.length).to.equal(1);
-                    var newId = parseInt(result.rows[0].last_value);
-                    var socket = require('socket.io-client')(home, { forceNew: true });
-                    socket.on('connect', function() {
-                        socket.emit('my-cases', { token:'any', data:{} }, function(data) {
-                            expect(data).to.deep.equal(null);   
-                            done();                          
-                        });
+        execute('insert into forms(type, status, data) values($1, $2, $3);',
+                ['crazy', 'new', JSON.stringify({value:42})], function() {
+            execute('select last_value from forms_id_seq', [], function(rows) {
+                var newId = parseInt(rows[0].last_value);
+                
+                var socket = require('socket.io-client')(home, { forceNew: true });
+                socket.on('connect', function() {
+                    socket.emit('my-cases', { token:'any', data:{} }, function(data) {
+                        expect(data).to.deep.equal(null);   
+                        done();                          
                     });
-                });                
+                });
             });
         });
     });
