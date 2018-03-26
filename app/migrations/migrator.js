@@ -1,9 +1,11 @@
 var fs = require('fs');
 var Promise = require('yop-promises').promise;
 var Promises = require('yop-promises').promises;
+var { execute } = require('../store/postgresql');
 
-var Migrator = function(newConnection) {
-    this.newConnection = newConnection;
+var Migrator = function(connection) {
+    this.connection = connection;
+    execute.connection = connection;
 };
 
 Migrator.prototype.migrateNow = function(done) {
@@ -21,37 +23,27 @@ Migrator.prototype.migrateNow = function(done) {
 
 Migrator.prototype.version = function(number) {
     var p = new Promise();
-    var client = this.newConnection();
-    client.connect(function(err) {
-        if (err) { throw err; }
-        var sql = 'select id from versions';
-        client.query(sql, function(err, result) {
-            if (err) { throw err; }
-            if (result.rows.length == 0) {
-                sql = 'insert into versions(id) values($1);';
-            } else {
-                sql = 'update versions set id=$1;';
-            }
-            client.query(sql, [number], function(err, result) {
-                client.end();
+    var { Versions } = require('../store/versions');
+    var versions = new Versions(this.connection);
+    versions.selectAll(function(rows) {
+        if (rows.length == 0) {
+            versions.create({id:number}, function() {
                 p.resolve();
             });
-        });
+        } else {
+            versions.update({id:number}, function() {
+                p.resolve();
+            });
+        }
     });
     return p;
 };
 
 Migrator.prototype.run = function(filename) {
+    var sql = fs.readFileSync(__dirname + filename).toString();
     var p = new Promise();
-    var client = this.newConnection();
-    client.connect(function(err) {
-        if (err) { throw err; }
-        var sql = fs.readFileSync(__dirname + filename).toString();
-        client.query(sql, function(err, result) {
-            if (err) { throw err; }
-            client.end();
-            p.resolve();
-        });
+    execute(sql, [], function() {
+        p.resolve();
     });
     return p;
 };
