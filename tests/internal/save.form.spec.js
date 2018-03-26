@@ -3,6 +3,7 @@ var Database = require('../../app/database');
 var Migrator = require('../../app/migrations/migrator');
 var Truncator = require('../support/truncator');
 var { localhost } = require('../support/postgres.client.factory');
+var { Forms } = require('../../app/store/forms');
 
 describe('Save form', function() {
 
@@ -10,6 +11,7 @@ describe('Save form', function() {
 
     beforeEach(function(done) {
         database = new Database(localhost);
+        forms = new Forms(localhost);
         var migrator = new Migrator(localhost);
         migrator.migrateNow(function() {
             var truncator = new Truncator(localhost);
@@ -24,22 +26,16 @@ describe('Save form', function() {
             type: 'form-2',
             data: { value:42 }
         };
-        database.saveForm(form, function(id) {            
-            expect(id).not.to.equal(undefined);
-            var client = localhost();
-            client.connect(function(err) {                
-                expect(err).to.equal(null);
-                var sql = 'SELECT id, type, status, data FROM forms';
-                client.query(sql, function(err, result) {
-                    expect(err).to.equal(null);
-                    expect(result.rows.length).to.equal(1);
-                    var { type, status } = result.rows[0];
-                    
-                    expect(type).to.equal('form-2');
-                    expect(status).to.equal('draft');
-                    client.end();
-                    done();
-                });
+        database.saveForm(form, function(newId) {            
+            expect(newId).not.to.equal(undefined);
+            forms.selectAll(function(rows) {
+                expect(rows.length).to.equal(1);
+                var { id, type, status, data } = rows[0];
+                expect(id).to.equal(newId);
+                expect(type).to.equal('form-2');
+                expect(status).to.equal('draft');
+                expect(data).to.equal(JSON.stringify({ value:42 }));
+                done();
             });
         });
     });

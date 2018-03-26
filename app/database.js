@@ -13,7 +13,7 @@ Database.prototype.saveForm = function(form, callback) {
                 if (err) { throw err; }
                 var id = result.rows[0].last_value;
                 client.end();
-                callback(id);
+                callback(parseInt(id));
             });
         });
     });
