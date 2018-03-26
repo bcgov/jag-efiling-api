@@ -5,6 +5,7 @@ var Database = require('../../app/database');
 var Migrator = require('../../app/migrations/migrator');
 var Truncator = require('../support/truncator');
 var { localhost } = require('../support/postgres.client.factory');
+var { execute } = require('../../app/store/postgresql');
 
 describe('Form 2 save', function() {
 
@@ -18,6 +19,7 @@ describe('Form 2 save', function() {
         server = new Server();
         server.useTokenValidator(alwaysValid);
         database = new Database(localhost);
+        execute.connection = localhost;
         server.useDatabase(database);
         var migrator = new Migrator(localhost);
         migrator.migrateNow(function() {
@@ -43,28 +45,22 @@ describe('Form 2 save', function() {
                     }
                 } }, function(data) {
                 expect(data.status).to.equal(201);  
-                expect(data.id).not.to.equal(undefined);     
-                var client = localhost();
-                client.connect(function(err) {                
-                    expect(err).to.equal(null);
-                    var sql = 'SELECT id, type, status, data FROM forms where id=$1';
-                    client.query(sql, [data.id], function(err, result) {
-                        expect(err).to.equal(null);
-                        expect(result.rows.length).to.equal(1);
-                        var { type, status, data } = result.rows[0];
+                expect(data.id).not.to.equal(undefined);  
 
-                        expect(type).to.equal('form-2');
-                        expect(status).to.equal('draft');
-                        expect(data).to.equal(JSON.stringify({
-                            formSevenNumber:'ABC', 
-                            respondent:{
-                                name:'Bruce', 
-                                address:'near'
-                            }
-                        }));
-                        client.end();
-                        done();
-                    });
+                execute('SELECT id, type, status, data FROM forms where id=$1', [data.id], function(rows) {
+                    expect(rows.length).to.equal(1);
+                    
+                    var { type, status, data } = rows[0];
+                    expect(type).to.equal('form-2');
+                    expect(status).to.equal('draft');
+                    expect(data).to.equal(JSON.stringify({
+                        formSevenNumber:'ABC', 
+                        respondent:{
+                            name:'Bruce', 
+                            address:'near'
+                        }
+                    }));
+                    done();
                 });
             });
         });
@@ -86,17 +82,9 @@ describe('Form 2 save', function() {
                     }
                 } }, function(data) {
                 expect(data).to.equal(null);  
-                var client = localhost();
-                client.connect(function(err) {                
-                    expect(err).to.equal(null);
-                    var sql = 'SELECT id, type, status, data FROM forms';
-                    client.query(sql, function(err, result) {
-                        expect(err).to.equal(null);
-                        
-                        expect(result.rows.length).to.equal(0);
-                        client.end();
-                        done();
-                    });
+                execute('SELECT id, type, status, data FROM forms', [], function(rows) {
+                    expect(rows.length).to.equal(0);
+                    done();
                 });
             });
         });
