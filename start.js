@@ -4,7 +4,7 @@ var home = 'http://' + ip + ':' + port;
 
 var pg = require('pg');
 var connection = function() { return new pg.Client(); };
-var Database = require('./app/database');
+var Database = require('./app/store/database');
 var database = new Database(connection);
 var Migrator = require('./app/migrations/migrator');
 var migrator = new Migrator(connection);

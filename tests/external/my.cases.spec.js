@@ -1,7 +1,7 @@
 var expect = require('chai').expect;
 var Server = require('../../app/server/server');
 var alwaysValid = require('../support/token.always.valid.js');
-var Database = require('../../app/database');
+var Database = require('../../app/store/database');
 var Migrator = require('../../app/migrations/migrator');
 var Truncator = require('../support/truncator');
 var { localhost } = require('../support/postgres.client.factory');
@@ -32,7 +32,7 @@ describe('My cases endpoint', function() {
 
     afterEach(function(done) {
         server.stop(done);
-    });    
+    });
 
     it('is a socket service', function(done) {
         execute('select current_timestamp', [], function(rows) {
@@ -44,7 +44,7 @@ describe('My cases endpoint', function() {
                 ['crazy', 'new', JSON.stringify({value:42})], function() {
                 execute('select last_value from forms_id_seq', [], function(rows) {
                     var newId = parseInt(rows[0].last_value);
-                    
+
                     var socket = require('socket.io-client')(home, { forceNew: true });
                     socket.on('connect', function() {
                         socket.emit('my-cases', { token:'any', data:{} }, function(data) {
@@ -52,13 +52,13 @@ describe('My cases endpoint', function() {
                                 cases: [
                                     { id:newId, type:'crazy', modified:now, status:'new', data:{value:42} }
                                 ]
-                            });   
-                            done();                          
+                            });
+                            done();
                         });
                     });
                 });
             });
-        });        
+        });
     });
 
     it('requires a valid token', function(done) {
@@ -71,12 +71,12 @@ describe('My cases endpoint', function() {
                 ['crazy', 'new', JSON.stringify({value:42})], function() {
             execute('select last_value from forms_id_seq', [], function(rows) {
                 var newId = parseInt(rows[0].last_value);
-                
+
                 var socket = require('socket.io-client')(home, { forceNew: true });
                 socket.on('connect', function() {
                     socket.emit('my-cases', { token:'any', data:{} }, function(data) {
-                        expect(data).to.deep.equal(null);   
-                        done();                          
+                        expect(data).to.deep.equal(null);
+                        done();
                     });
                 });
             });

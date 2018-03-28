@@ -1,5 +1,5 @@
 var expect = require('chai').expect;
-var Database = require('../../app/database');
+var Database = require('../../app/store/database');
 var Migrator = require('../../app/migrations/migrator');
 var Truncator = require('../support/truncator');
 var { localhost } = require('../support/postgres.client.factory');
@@ -26,7 +26,7 @@ describe('Save form', function() {
             type: 'form-2',
             data: { value:42 }
         };
-        database.saveForm(form, function(newId) {            
+        database.saveForm(form, function(newId) {
             expect(newId).not.to.equal(undefined);
             forms.selectAll(function(rows) {
                 expect(rows.length).to.equal(1);

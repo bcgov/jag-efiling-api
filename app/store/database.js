@@ -1,18 +1,18 @@
-var { Forms } = require('./store/forms');
+var { Forms } = require('./forms');
 
-var Database = function(newConnection) {  
+var Database = function(newConnection) {
     this.newConnection = newConnection;
     this.forms = new Forms(newConnection);
 };
 Database.prototype.saveForm = function(form, callback) {
-    this.forms.create({ 
-        type:form.type, 
-        status:'draft', 
+    this.forms.create({
+        type:form.type,
+        status:'draft',
         data:JSON.stringify(form.data)}, callback);
 };
 Database.prototype.myCases = function(token, callback) {
     this.forms.selectAll(function(rows) {
-        callback(rows.map(function(row) { 
+        callback(rows.map(function(row) {
             var modified = row.modified;
             modified = JSON.stringify(modified).toString();
             modified = modified.substring(1, modified.lastIndexOf('.'))+'Z';
