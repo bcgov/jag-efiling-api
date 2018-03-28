@@ -35,24 +35,30 @@ describe('My cases endpoint', function() {
     });    
 
     it('is a socket service', function(done) {
-        execute('insert into forms(type, status, data) values($1, $2, $3);',
+        execute('select current_timestamp', [], function(rows) {
+            var now = rows[0].current_timestamp;
+            now = JSON.stringify(now).toString();
+            now = now.substring(1, now.lastIndexOf('.'))+'Z';
+
+            execute('insert into forms(type, status, data) values($1, $2, $3);',
                 ['crazy', 'new', JSON.stringify({value:42})], function() {
-            execute('select last_value from forms_id_seq', [], function(rows) {
-                var newId = parseInt(rows[0].last_value);
-                
-                var socket = require('socket.io-client')(home, { forceNew: true });
-                socket.on('connect', function() {
-                    socket.emit('my-cases', { token:'any', data:{} }, function(data) {
-                        expect(data).to.deep.equal({
-                            cases: [
-                                { id:newId, type:'crazy', status:'new', data:{value:42} }
-                            ]
-                        });   
-                        done();                          
+                execute('select last_value from forms_id_seq', [], function(rows) {
+                    var newId = parseInt(rows[0].last_value);
+                    
+                    var socket = require('socket.io-client')(home, { forceNew: true });
+                    socket.on('connect', function() {
+                        socket.emit('my-cases', { token:'any', data:{} }, function(data) {
+                            expect(data).to.deep.equal({
+                                cases: [
+                                    { id:newId, type:'crazy', modified:now, status:'new', data:{value:42} }
+                                ]
+                            });   
+                            done();                          
+                        });
                     });
                 });
             });
-        });
+        });        
     });
 
     it('requires a valid token', function(done) {

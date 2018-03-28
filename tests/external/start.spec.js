@@ -21,7 +21,7 @@ describe('start script', function() {
         execute.connection = server.connection;
         execute('select id from versions', [], function(rows) {
             expect(rows.length).to.equal(1);
-            expect(rows[0].id).to.equal(2);
+            expect(rows[0].id).to.equal(3);
             done();
         });      
     });

@@ -1,0 +1,1 @@
+alter table forms add column if not exists modified timestamp default current_timestamp;
