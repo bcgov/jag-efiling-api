@@ -13,8 +13,9 @@ Migrator.prototype.migrateNow = function(done) {
     var self = this;
     ps.waitFor(this.run('/1.create.table.versions.sql'));
     ps.waitFor(this.run('/2.create.table.forms.sql'));    
+    ps.waitFor(this.run('/3.alter.table.forms.add.column.modified.sql'));    
     ps.done(function() {
-        ps.waitFor(self.version(2));
+        ps.waitFor(self.version(3));
         ps.done(function() {
             done();
         });

@@ -12,12 +12,18 @@ Database.prototype.saveForm = function(form, callback) {
 };
 Database.prototype.myCases = function(token, callback) {
     this.forms.selectAll(function(rows) {
-        callback(rows.map(function(row) { return {
-            id: row.id,
-            type: row.type,
-            status: row.status,
-            data: JSON.parse(row.data)
-        }}));
+        callback(rows.map(function(row) { 
+            var modified = row.modified;
+            modified = JSON.stringify(modified).toString();
+            modified = modified.substring(1, modified.lastIndexOf('.'))+'Z';
+            return {
+                id: row.id,
+                type: row.type,
+                status: row.status,
+                modified: modified,
+                data: JSON.parse(row.data)
+            };
+        }));
     });
 };
 

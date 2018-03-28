@@ -5,7 +5,7 @@ var Forms = function(connection) {
 };
 
 Forms.prototype.selectAll = function(callback) {
-    execute('select id, type, status, data from forms', [], callback);
+    execute('select id, type, status, modified, data from forms', [], callback);
 };
 Forms.prototype.create = function(options, callback) {
     execute('insert into forms(type, status, data) values($1, $2, $3);', 
