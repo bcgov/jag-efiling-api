@@ -8,18 +8,18 @@ var Migrator = function(connection) {
     execute.connection = connection;
 };
 
-Migrator.prototype.migrateNow = function(done) {
+Migrator.prototype.migrateNow = function(success) {
     var ps = new Promises();
     var self = this;
-    ps.waitFor(this.run('/1.create.table.versions.sql'));
-    ps.waitFor(this.run('/2.create.table.forms.sql'));    
-    ps.waitFor(this.run('/3.alter.table.forms.add.column.modified.sql'));    
     ps.done(function() {
-        ps.waitFor(self.version(3));
         ps.done(function() {
-            done();
+            success();
         });
+        ps.waitFor(self.version(3));        
+        ps.waitFor(self.run('/3.alter.table.forms.add.column.modified.sql'));    
     })
+    ps.waitFor(this.run('/1.create.table.versions.sql'));
+    ps.waitFor(this.run('/2.create.table.forms.sql'));        
 };
 
 Migrator.prototype.version = function(number) {
