@@ -1,4 +1,6 @@
 var expect = require('chai').expect;
+var get = require('request');
+var { execute } = require('yop-postgresql');
 
 describe('start script', function() {
 
@@ -10,15 +12,13 @@ describe('start script', function() {
         server = require('../../start');
         setTimeout(function() {
             done();
-        }, 200);
+        }, 300);
     });
     after(function(done) {
         server.stop(done);
     });
 
     it('migrates database', function(done) {
-        var { execute } = require('../../app/store/postgresql');
-        execute.connection = server.connection;
         execute('select id from versions', [], function(rows) {
             expect(rows.length).to.equal(1);
             expect(rows[0].id).to.equal(3);
@@ -27,7 +27,6 @@ describe('start script', function() {
     });
 
     it('starts http ping server', function(done) {
-        var get = require('request');
         var ping = 'http://' + server.ip + ':' + server.port + '/ping';
         get(ping, function(err, response, body) {
             expect(err).to.equal(null);

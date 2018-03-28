@@ -2142,7 +2142,7 @@ pg-types@~1.12.1:
     postgres-date "~1.0.0"
     postgres-interval "^1.1.0"
 
-pg@^7.4.1:
+pg@^7.4.1, pg@latest:
   version "7.4.1"
   resolved "https://registry.yarnpkg.com/pg/-/pg-7.4.1.tgz#f3411c8ddf9f692322fe05e7017a1888e47f78f1"
   dependencies:
@@ -3206,6 +3206,13 @@ yargs@~3.10.0:
 yeast@0.1.2:
   version "0.1.2"
   resolved "https://registry.yarnpkg.com/yeast/-/yeast-0.1.2.tgz#008e06d8094320c372dbc2f8ed76a0ca6c8ac419"
+
+yop-postgresql@^1.0.0:
+  version "1.0.0"
+  resolved "https://registry.yarnpkg.com/yop-postgresql/-/yop-postgresql-1.0.0.tgz#5129dd255879c521764e4590e4c53e9d5366571c"
+  dependencies:
+    pg latest
+    yop-promises "^1.0.1"
 
 yop-promises@^1.0.1:
   version "1.0.1"

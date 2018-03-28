@@ -1,8 +1,7 @@
 var { Forms } = require('./forms');
 
-var Database = function(newConnection) {
-    this.newConnection = newConnection;
-    this.forms = new Forms(newConnection);
+var Database = function() {
+    this.forms = new Forms();
 };
 Database.prototype.saveForm = function(form, callback) {
     this.forms.create({

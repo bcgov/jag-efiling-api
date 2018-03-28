@@ -2,12 +2,10 @@ var port = process.env.OPENSHIFT_NODEJS_PORT || 8080;
 var ip = process.env.OPENSHIFT_NODEJS_IP || '0.0.0.0';
 var home = 'http://' + ip + ':' + port;
 
-var pg = require('pg');
-var connection = function() { return new pg.Client(); };
 var Database = require('./app/store/database');
-var database = new Database(connection);
+var database = new Database();
 var Migrator = require('./app/migrations/migrator');
-var migrator = new Migrator(connection);
+var migrator = new Migrator();
 
 var Server = require('./app/server/server');
 var server = new Server();
@@ -26,4 +24,3 @@ migrator.migrateNow(function() {
 module.exports = server;
 module.exports.port = port;
 module.exports.ip = ip;
-module.exports.connection = connection;

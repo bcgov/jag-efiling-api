@@ -4,8 +4,7 @@ var alwaysValid = require('../support/token.always.valid.js');
 var Database = require('../../app/store/database');
 var Migrator = require('../../app/migrations/migrator');
 var Truncator = require('../support/truncator');
-var { localhost } = require('../support/postgres.client.factory');
-var { execute } = require('../../app/store/postgresql');
+var { execute } = require('yop-postgresql');
 
 describe('Form 2 save', function() {
 
@@ -18,12 +17,11 @@ describe('Form 2 save', function() {
     beforeEach(function(done) {
         server = new Server();
         server.useTokenValidator(alwaysValid);
-        database = new Database(localhost);
-        execute.connection = localhost;
+        database = new Database();
         server.useDatabase(database);
-        var migrator = new Migrator(localhost);
+        var migrator = new Migrator();
         migrator.migrateNow(function() {
-            var truncator = new Truncator(localhost);
+            var truncator = new Truncator();
             truncator.truncateTablesNow(function() {
                 server.start(port, ip, done);
             });

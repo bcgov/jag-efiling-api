@@ -8,6 +8,7 @@
         "querystring": "^0.2.0",
         "socket.io": "^2.0.4",
         "url": "^0.11.0",
+        "yop-postgresql": "^1.0.0",
         "yop-promises": "^1.0.1"
     },
     "devDependencies": {

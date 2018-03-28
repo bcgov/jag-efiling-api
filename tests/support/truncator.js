@@ -1,17 +1,15 @@
 var Promise = require('yop-promises').promise;
 var Promises = require('yop-promises').promises;
-var { execute } = require('../../app/store/postgresql');
+var { execute } = require('yop-postgresql');
 
-var Truncator = function(newConnection) {
-    this.newConnection = newConnection;
-    execute.connection = newConnection;
+var Truncator = function() {
 };
 
-Truncator.prototype.truncateTablesNow = function(done) {
+Truncator.prototype.truncateTablesNow = function(success) {
     var ps = new Promises();
     ps.waitFor(this.run('TRUNCATE TABLE forms;'));
     ps.done(function() {
-        done();
+        success();
     });
 };
 

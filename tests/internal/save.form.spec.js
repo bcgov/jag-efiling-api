@@ -2,21 +2,21 @@ var expect = require('chai').expect;
 var Database = require('../../app/store/database');
 var Migrator = require('../../app/migrations/migrator');
 var Truncator = require('../support/truncator');
-var { localhost } = require('../support/postgres.client.factory');
 var { Forms } = require('../../app/store/forms');
 
 describe('Save form', function() {
 
     var database;
+    var forms;
 
-    beforeEach(function(done) {
-        database = new Database(localhost);
-        forms = new Forms(localhost);
-        var migrator = new Migrator(localhost);
+    beforeEach(function(success) {
+        database = new Database();
+        forms = new Forms();
+        var migrator = new Migrator();
         migrator.migrateNow(function() {
-            var truncator = new Truncator(localhost);
+            var truncator = new Truncator();
             truncator.truncateTablesNow(function() {
-                done();
+                success();
             });
         });
     });

@@ -1,7 +1,6 @@
-var { execute } = require('./postgresql');
+var { execute } = require('yop-postgresql');
 
-var Forms = function(connection) {
-    execute.connection = connection;
+var Forms = function() {
 };
 
 Forms.prototype.selectAll = function(callback) {
