@@ -24,7 +24,7 @@
         "zombie": "latest"
     },
     "scripts": {
-        "pretest": "dropdb --if-exists efiling -U postgres; createdb efiling -U postgres",
+        "pretest": "dropdb --if-exists $PGDATABASE -U postgres; createdb $PGDATABASE -U postgres",
         "test": "npm run external-tests",
         "start": "node start.js",
         "external-tests": "mocha tests/external --recursive --exit --timeout 0",

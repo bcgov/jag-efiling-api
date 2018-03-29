@@ -7,8 +7,6 @@ describe('start script', function() {
     var server;
 
     before(function(done) {
-        process.env.PGHOST = 'localhost';
-        process.env.PGDATABASE = 'e-filing';
         server = require('../../start');
         setTimeout(function() {
             done();
