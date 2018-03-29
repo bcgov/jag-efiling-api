@@ -1,5 +1,4 @@
-var Promise = require('yop-promises').promise;
-var Promises = require('yop-promises').promises;
+var { Promise, Promises } = require('yop-promises');
 var { execute } = require('yop-postgresql');
 
 var Truncator = function() {

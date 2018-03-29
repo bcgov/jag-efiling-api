@@ -3,13 +3,12 @@
     "version": "1.0.0",
     "private": false,
     "dependencies": {
-        "firebase": "^4.10.1",
         "pg": "^7.4.1",
         "querystring": "^0.2.0",
         "socket.io": "^2.0.4",
         "url": "^0.11.0",
-        "yop-postgresql": "^1.0.0",
-        "yop-promises": "^1.0.1"
+        "yop-postgresql": "^1.1.0",
+        "yop-promises": "^1.1.0"
     },
     "devDependencies": {
         "chai": "latest",
