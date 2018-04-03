@@ -4,7 +4,7 @@ var { execute } = require('yop-postgresql');
 var Migrator = function() {
 };
 
-Migrator.prototype.migrateNow = function(success) {
+Migrator.prototype.migrateNow = function(done) {
     var calls = [
         this.file('/1.create.table.versions.sql'),
         this.file('/2.create.table.forms.sql'),
@@ -13,8 +13,8 @@ Migrator.prototype.migrateNow = function(success) {
         'truncate table versions',
         { sql:'insert into versions(id) values($1)', params:[3] }
     ];
-    execute(calls, function() {
-        success();
+    execute(calls, function(rows, error) {
+        done(error);
     });
 };
 

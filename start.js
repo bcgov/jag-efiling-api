@@ -14,7 +14,8 @@ server.useService(require('./tests/support/in.memory.service.js'));
 server.useDatabase(database);
 
 console.log('migrating...');
-migrator.migrateNow(function() {
+migrator.migrateNow(function(error) {
+    console.log(error);
     console.log('migrations done');
     server.start(port, ip, function() {
         console.log(ip + ' listening on port ' + port);
