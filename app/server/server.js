@@ -35,6 +35,7 @@ Server.prototype.useService = function(hub) {
 
 Server.prototype.useTokenValidator = function(tokenValidator) {
     this.adaptor.useTokenValidator(tokenValidator);
+    this.restAdaptor.useTokenValidator(tokenValidator);
 };
 
 Server.prototype.useDatabase = function(database) {

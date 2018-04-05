@@ -57,4 +57,17 @@ describe('Form 7 search', function() {
             done();
         });
     });
+
+    it('is a rest service that requires a valid token', function(done) {
+        server.useTokenValidator({
+            validate: function(token, callback) {
+                callback(false);
+            }
+        });
+        get(home + '/forms?file=42&token=any', function(err, response, body) {
+            expect(response.statusCode).to.equal(403);
+            expect(body).to.deep.equal('');
+            done();
+        });
+    });
 });
