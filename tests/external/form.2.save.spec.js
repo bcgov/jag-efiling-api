@@ -110,4 +110,20 @@ describe('Form 2 save', function() {
             });
         });
     });
+
+    it('is a rest service that requires a valid token', function(done) {
+        server.useTokenValidator({
+            validate: function(token, callback) {
+                callback(false);
+            }
+        });
+        request.post(home + '/forms', {form:{
+            token: 'any',
+            data: JSON.stringify({ any:'field' })
+        }}, function(err, response, body) {
+            expect(response.statusCode).to.equal(403);
+            expect(body).to.equal('');
+            done();
+        });
+    });
 });
