@@ -1,5 +1,5 @@
 var parties = {
-    'appelant': {
+    'appellant': {
         'name': 'Jason Dent',
         'address': 'The house of Jason, Victoria, BC'
     },
