@@ -5,6 +5,7 @@ var Database = require('../../app/store/database');
 var Migrator = require('../../app/migrations/migrator');
 var Truncator = require('../support/truncator');
 var { execute } = require('yop-postgresql');
+var request = require('request');
 
 describe('Form 2 save', function() {
 
@@ -84,6 +85,28 @@ describe('Form 2 save', function() {
                     expect(rows.length).to.equal(0);
                     done();
                 });
+            });
+        });
+    });
+
+    it('is a rest service', function(done) {
+        request.post(home + '/forms', {form:{
+            token: 'any',
+            data: JSON.stringify({ any:'field' })
+        }}, function(err, response, body) {
+            expect(response.statusCode).to.equal(201);
+            var location = response.headers.location;
+            expect(location).to.contain('/forms/');
+            var id = parseInt(location.substring(location.lastIndexOf('/')+1));
+
+            execute('SELECT id, type, status, data FROM forms where id=$1', [id], function(rows) {
+                expect(rows.length).to.equal(1);
+
+                var { type, status, data } = rows[0];
+                expect(type).to.equal('form-2');
+                expect(status).to.equal('draft');
+                expect(data).to.equal(JSON.stringify({ any:'field' }));
+                done();
             });
         });
     });
