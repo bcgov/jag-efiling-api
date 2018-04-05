@@ -10,8 +10,7 @@ Server.prototype.start = function (port, ip, done) {
     this.http = require('http').createServer((request, response) => {
         response.setHeader('Access-Control-Allow-Origin', '*');
         response.setHeader('Content-Type', 'application/json');
-        this.restAdaptor.connect(request, response);        
-        response.end();               
+        this.restAdaptor.connect(request, response);                              
     });    
     this.io = require('socket.io')(this.http);
     this.io.on('connection', (socket) => { this.adaptor.connect(socket); });
@@ -40,6 +39,7 @@ Server.prototype.useTokenValidator = function(tokenValidator) {
 
 Server.prototype.useDatabase = function(database) {
     this.adaptor.useDatabase(database);
+    this.restAdaptor.useDatabase(database);
 };
 
 
