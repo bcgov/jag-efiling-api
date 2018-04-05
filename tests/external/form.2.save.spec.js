@@ -51,7 +51,7 @@ describe('Form 2 save', function() {
 
                     var { type, status, data } = rows[0];
                     expect(type).to.equal('form-2');
-                    expect(status).to.equal('draft');
+                    expect(status).to.equal('Draft');
                     expect(data).to.equal(JSON.stringify({
                         formSevenNumber:'ABC',
                         respondent:{
@@ -104,7 +104,7 @@ describe('Form 2 save', function() {
 
                 var { type, status, data } = rows[0];
                 expect(type).to.equal('form-2');
-                expect(status).to.equal('draft');
+                expect(status).to.equal('Draft');
                 expect(data).to.equal(JSON.stringify({ any:'field' }));
                 done();
             });

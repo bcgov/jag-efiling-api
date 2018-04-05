@@ -33,7 +33,7 @@ describe('Save form', function() {
                 var { id, type, status, data } = rows[0];
                 expect(id).to.equal(newId);
                 expect(type).to.equal('form-2');
-                expect(status).to.equal('draft');
+                expect(status).to.equal('Draft');
                 expect(data).to.equal(JSON.stringify({ value:42 }));
                 done();
             });
