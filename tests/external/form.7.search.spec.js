@@ -1,6 +1,7 @@
 var expect = require('chai').expect;
 var Server = require('../../app/server/server');
 var alwaysValid = require('../support/token.always.valid.js');
+var get = require('request');
 
 describe('Form 7 search', function() {
 
@@ -46,6 +47,14 @@ describe('Form 7 search', function() {
                 expect(data).to.deep.equal(null);     
                 done();
             });
+        });
+    });
+
+    it('is a rest service', function(done) {
+        get(home + '/forms?file=42&token=any', function(err, response, body) {
+            expect(response.statusCode).to.equal(200);
+            expect(JSON.parse(body)).to.deep.equal({ parties: [42] });
+            done();
         });
     });
 });

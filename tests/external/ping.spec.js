@@ -34,16 +34,6 @@ describe('Ping', function() {
         });
     });
 
-    it('accepts custom pong message', function(done) {
-        server.setMessage('custom');
-        request(home + '/ping', function(err, response, body) {
-            expect(JSON.parse(response.body)).to.deep.equal({
-                message: 'custom'
-            });            
-            done();
-        });
-    });  
-
     it('is default answer', function(done) {
         request(home + '/anything-unknown', function(err, response, body) {
             expect(response.statusCode).to.equal(200);            
