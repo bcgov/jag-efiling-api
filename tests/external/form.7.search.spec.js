@@ -51,7 +51,7 @@ describe('Form 7 search', function() {
     });
 
     it('is a rest service', function(done) {
-        get(home + '/forms?file=42&token=any', function(err, response, body) {
+        get(home + '/api/forms?file=42&token=any', function(err, response, body) {
             expect(response.statusCode).to.equal(200);
             expect(JSON.parse(body)).to.deep.equal({ parties: [42] });
             done();
@@ -64,7 +64,7 @@ describe('Form 7 search', function() {
                 callback(false);
             }
         });
-        get(home + '/forms?file=42&token=any', function(err, response, body) {
+        get(home + '/api/forms?file=42&token=any', function(err, response, body) {
             expect(response.statusCode).to.equal(403);
             expect(body).to.deep.equal('');
             done();

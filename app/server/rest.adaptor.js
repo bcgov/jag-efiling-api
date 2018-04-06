@@ -26,7 +26,7 @@ RestAdaptor.prototype.useDatabase = function(database) {
 RestAdaptor.prototype.connect = function(request, response) {    
     var parsed = url.parse(request.url, true);
     var params = parsed.query;  
-    if ('/forms' === parsed.pathname && request.method == 'GET') {
+    if ('/api/forms' === parsed.pathname && request.method == 'GET') {
         this.tokenValidator.validate(params.token, (isValid) => {
             if (!isValid) {
                 response.statusCode = 403;     
@@ -38,7 +38,7 @@ RestAdaptor.prototype.connect = function(request, response) {
             }
         });
     }
-    else if ('/forms' === parsed.pathname && request.method == 'POST') {      
+    else if ('/api/forms' === parsed.pathname && request.method == 'POST') {      
         var body = '';
         request.on('data', (data)=> {
             body += data;
@@ -59,7 +59,7 @@ RestAdaptor.prototype.connect = function(request, response) {
         });  
         
     }
-    else if ('/cases' === parsed.pathname) {
+    else if ('/api/cases' === parsed.pathname) {
         this.tokenValidator.validate(params.token, (isValid) => {
             if (!isValid) {
                 response.statusCode = 403;   

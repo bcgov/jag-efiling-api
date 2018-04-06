@@ -90,7 +90,7 @@ describe('Form 2 save', function() {
     });
 
     it('is a rest service', function(done) {
-        request.post(home + '/forms', {form:{
+        request.post(home + '/api/forms', {form:{
             token: 'any',
             data: JSON.stringify({ any:'field' })
         }}, function(err, response, body) {
@@ -117,7 +117,7 @@ describe('Form 2 save', function() {
                 callback(false);
             }
         });
-        request.post(home + '/forms', {form:{
+        request.post(home + '/api/forms', {form:{
             token: 'any',
             data: JSON.stringify({ any:'field' })
         }}, function(err, response, body) {

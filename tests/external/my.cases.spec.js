@@ -93,7 +93,7 @@ describe('My cases endpoint', function() {
                 execute('select last_value from forms_id_seq', [], function(rows) {
                     var newId = parseInt(rows[0].last_value);
 
-                    get(home + '/cases?token=any', function(err, response, body) {
+                    get(home + '/api/cases?token=any', function(err, response, body) {
                         expect(response.statusCode).to.equal(200);
                         expect(JSON.parse(body)).to.deep.equal({
                             cases: [
@@ -123,7 +123,7 @@ describe('My cases endpoint', function() {
                 execute('select last_value from forms_id_seq', [], function(rows) {
                     var newId = parseInt(rows[0].last_value);
 
-                    get(home + '/cases?token=any', function(err, response, body) {
+                    get(home + '/api/cases?token=any', function(err, response, body) {
                         expect(response.statusCode).to.equal(403);
                         expect(body).to.deep.equal('');
                         done();
