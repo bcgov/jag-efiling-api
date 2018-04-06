@@ -5,6 +5,7 @@ var Database = require('../../app/store/database');
 var Migrator = require('../../app/migrations/migrator');
 var Truncator = require('../support/truncator');
 var { execute } = require('yop-postgresql');
+var get = require('request');
 
 describe('My cases endpoint', function() {
 
@@ -74,6 +75,57 @@ describe('My cases endpoint', function() {
                 socket.on('connect', function() {
                     socket.emit('my-cases', { token:'any', data:{} }, function(data) {
                         expect(data).to.deep.equal(null);
+                        done();
+                    });
+                });
+            });
+        });
+    });
+
+    it('is a rest service', function(done){
+        execute('select current_timestamp', [], function(rows) {
+            var now = rows[0].current_timestamp;
+            now = JSON.stringify(now).toString();
+            now = now.substring(1, now.lastIndexOf('.'))+'Z';
+
+            execute('insert into forms(type, status, data) values($1, $2, $3);',
+                ['crazy', 'new', JSON.stringify({value:42})], function() {
+                execute('select last_value from forms_id_seq', [], function(rows) {
+                    var newId = parseInt(rows[0].last_value);
+
+                    get(home + '/cases?token=any', function(err, response, body) {
+                        expect(response.statusCode).to.equal(200);
+                        expect(JSON.parse(body)).to.deep.equal({
+                            cases: [
+                                { id:newId, type:'crazy', modified:now, status:'new', data:{value:42} }
+                            ]
+                        });
+                        done();
+                    });
+                });
+            });
+        });
+    });
+
+    it('is a rest service that requires a valid token', function(done){
+        server.useTokenValidator({
+            validate: function(token, callback) {
+                callback(false);
+            }
+        });
+        execute('select current_timestamp', [], function(rows) {
+            var now = rows[0].current_timestamp;
+            now = JSON.stringify(now).toString();
+            now = now.substring(1, now.lastIndexOf('.'))+'Z';
+
+            execute('insert into forms(type, status, data) values($1, $2, $3);',
+                ['crazy', 'new', JSON.stringify({value:42})], function() {
+                execute('select last_value from forms_id_seq', [], function(rows) {
+                    var newId = parseInt(rows[0].last_value);
+
+                    get(home + '/cases?token=any', function(err, response, body) {
+                        expect(response.statusCode).to.equal(403);
+                        expect(body).to.deep.equal('');
                         done();
                     });
                 });

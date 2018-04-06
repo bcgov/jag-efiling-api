@@ -6,7 +6,7 @@ var Database = function() {
 Database.prototype.saveForm = function(form, callback) {
     this.forms.create({
         type:form.type,
-        status:'draft',
+        status:'Draft',
         data:JSON.stringify(form.data)}, callback);
 };
 Database.prototype.myCases = function(token, callback) {
