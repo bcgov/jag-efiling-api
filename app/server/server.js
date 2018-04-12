@@ -1,6 +1,6 @@
-var RestAdaptor = require('./rest.adaptor');
-var express = require('express');
-var bodyParser = require("body-parser");
+let RestAdaptor = require('./rest.adaptor');
+let express = require('express');
+let bodyParser = require("body-parser");
 
 function Server() {    
     this.restAdaptor = new RestAdaptor();

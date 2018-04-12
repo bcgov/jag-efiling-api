@@ -1,8 +1,8 @@
-var SaveFormTwo = require('../features/save.form.2');
-var SearchFormSeven = require('../features/search.form.7');
-var MyCases = require('../features/my.cases');
+let SaveFormTwo = require('../features/save.form.2');
+let SearchFormSeven = require('../features/search.form.7');
+let MyCases = require('../features/my.cases');
 
-var SocketAdaptor = function() {
+let SocketAdaptor = function() {
     this.renderSearchFormSevenResult = function(data, callback) { callback({ parties: data }); };
     this.renderSaveFormTwoResult = function(data, callback) { callback({ status:201, id:data }); };
     this.renderMyCasesResult = function(data, callback) { callback({ cases:data }); };

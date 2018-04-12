@@ -1,6 +1,6 @@
-var { Forms } = require('./forms');
+let { Forms } = require('./forms');
 
-var Database = function() {
+let Database = function() {
     this.forms = new Forms();
 };
 Database.prototype.saveForm = function(form, callback) {
@@ -12,7 +12,7 @@ Database.prototype.saveForm = function(form, callback) {
 Database.prototype.myCases = function(token, callback) {
     this.forms.selectAll(function(rows) {
         callback(rows.map(function(row) {
-            var modified = row.modified;
+            let modified = row.modified;
             modified = JSON.stringify(modified).toString();
             modified = modified.substring(1, modified.lastIndexOf('.'))+'Z';
             return {
