@@ -11,6 +11,7 @@ Server.prototype.start = function (port, ip, done) {
     this.app.use((request, response, next)=>{
         response.setHeader('Access-Control-Allow-Origin', '*');
         response.setHeader('Content-Type', 'application/json');
+        next();
     });
     this.app.use(bodyParser.urlencoded({ extended: false }));    
     this.restAdaptor.route(this.app);
