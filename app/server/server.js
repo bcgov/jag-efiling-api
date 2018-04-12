@@ -8,6 +8,10 @@ function Server() {
 };
 
 Server.prototype.start = function (port, ip, done) {
+    this.app.use((request, response, next)=>{
+        response.setHeader('Access-Control-Allow-Origin', '*');
+        response.setHeader('Content-Type', 'application/json');
+    });
     this.app.use(bodyParser.urlencoded({ extended: false }));    
     this.restAdaptor.route(this.app);
     this.server = this.app.listen(port, ip, done);
