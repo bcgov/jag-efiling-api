@@ -25,31 +25,6 @@ describe('Form 7 search', function() {
         server.stop(done);
     });    
 
-    it('is a socket service', function(done) {
-        var socket = require('socket.io-client')(home, { forceNew: true });
-        socket.on('connect', function() {
-            socket.emit('form-7-search', { token:'any', file:42 }, function(data) {
-                expect(data).to.deep.equal({ parties: [42] });     
-                done();
-            });
-        });
-    });
-
-    it('requires a valid token', function(done) {
-        server.useTokenValidator({
-            validate: function(token, callback) {
-                callback(false);
-            }
-        });
-        var socket = require('socket.io-client')(home, { forceNew: true });
-        socket.on('connect', function() {
-            socket.emit('form-7-search', { token:'any', file:42 }, function(data) {
-                expect(data).to.deep.equal(null);     
-                done();
-            });
-        });
-    });
-
     it('is a rest service', function(done) {
         get(home + '/api/forms?file=42&token=any', function(err, response, body) {
             expect(response.statusCode).to.equal(200);

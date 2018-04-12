@@ -1,4 +1,4 @@
-var SearchFormSeven = function(service) {
+let SearchFormSeven = function(service) {
     this.hub = service;
 };
 

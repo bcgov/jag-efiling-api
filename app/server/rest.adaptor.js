@@ -1,10 +1,8 @@
-var url = require('url');
-var qs = require('querystring');
-var SearchFormSeven = require('../features/search.form.7');
-var MyCases = require('../features/my.cases');
-var SaveFormTwo = require('../features/save.form.2');
+let SearchFormSeven = require('../features/search.form.7');
+let MyCases = require('../features/my.cases');
+let SaveFormTwo = require('../features/save.form.2');
 
-var RestAdaptor = function() {
+let RestAdaptor = function() {
     this.renderSearchFormSevenResult = function(data, response) { response.write( JSON.stringify({ parties:data })); response.end(); };
     this.renderMyCasesResult = function(data, response) { response.write( JSON.stringify({ cases:data })); response.end(); };    
     this.renderSaveFormTwoResult = function(id, response) { 
@@ -23,58 +21,44 @@ RestAdaptor.prototype.useDatabase = function(database) {
     this.myCases = new MyCases(database);     
     this.saveFormTwo = new  SaveFormTwo(database); 
 };
-RestAdaptor.prototype.connect = function(request, response) {    
-    var parsed = url.parse(request.url, true);
-    var params = parsed.query;  
-    if ('/api/forms' === parsed.pathname && request.method == 'GET') {
-        this.tokenValidator.validate(params.token, (isValid) => {
-            if (!isValid) {
-                response.statusCode = 403;     
-                response.end();            
-            } else {
-                this.searchFormSeven.now({ file:parseInt(params.file) }, (data)=> {
-                    this.renderSearchFormSevenResult(data, response);
-                });
-            }
-        });
-    }
-    else if ('/api/forms' === parsed.pathname && request.method == 'POST') {      
-        var body = '';
-        request.on('data', (data)=> {
-            body += data;
-        });
-        request.on('end', ()=> {
-            params = qs.parse(body);
-            this.tokenValidator.validate(params.token, (isValid) => {
+RestAdaptor.prototype.route = function(app) {   
+    app.use((request, response, next)=> {
+        if(this.tokenValidator) {
+            let token = request.query? 
+                request.query.token : 
+                request.body? request.body.token : undefined;
+            this.tokenValidator.validate(token, (isValid) => {
                 if (!isValid) {
                     response.statusCode = 403;     
                     response.end();            
                 } else {
-                    params.data = JSON.parse(params.data);
-                    this.saveFormTwo.now(params, (data)=> {
-                        this.renderSaveFormTwoResult(data, response);
-                    });   
+                    next();
                 }
-            });            
-        });  
-        
-    }
-    else if ('/api/cases' === parsed.pathname) {
-        this.tokenValidator.validate(params.token, (isValid) => {
-            if (!isValid) {
-                response.statusCode = 403;   
-                response.end();              
-            } else {
-                this.myCases.now(params, (data)=> {                    
-                    this.renderMyCasesResult(data, response);
-                });
-            }
+            });        
+        }
+        else {
+            next();
+        }
+    });     
+
+    app.get('/api/forms', (request, response)=> {
+        this.searchFormSeven.now({ file:parseInt(request.query.file) }, (data)=> {
+            this.renderSearchFormSevenResult(data, response);
         });
-    }
-    else {
-        response.write( JSON.stringify({ message: 'pong' }) );
-        response.end(); 
-    }
+    });
+    app.post('/api/forms', (request, response)=> {
+        let params = request.body;
+        params.data = JSON.parse(params.data);
+        this.saveFormTwo.now(params, (data)=> {
+            this.renderSaveFormTwoResult(data, response);
+        });           
+    });
+    app.get('/api/cases', (request, response)=> {
+        this.myCases.now(request.query, (data)=> {                    
+            this.renderMyCasesResult(data, response);
+        });
+    });
+    app.get('/*', function (req, res) { res.send( JSON.stringify({ message: 'pong' }) ); });
 };
 
 

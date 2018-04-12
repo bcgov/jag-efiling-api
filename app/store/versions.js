@@ -1,6 +1,6 @@
-var { execute } = require('yop-postgresql');
+let { execute } = require('yop-postgresql');
 
-var Versions = function() {
+let Versions = function() {
 };
 
 Versions.prototype.selectAll = function(callback) {

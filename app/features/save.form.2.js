@@ -1,4 +1,4 @@
-var SaveFormTwo = function(database) {
+let SaveFormTwo = function(database) {
     this.database = database;
 };
 

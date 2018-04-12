@@ -1,4 +1,4 @@
-var MyCases = function(database) {
+let MyCases = function(database) {
     this.database = database;
 };
 
