@@ -21,43 +21,41 @@ RestAdaptor.prototype.useDatabase = function(database) {
     this.myCases = new MyCases(database);     
     this.saveFormTwo = new  SaveFormTwo(database); 
 };
-RestAdaptor.prototype.route = function(app) {    
+RestAdaptor.prototype.route = function(app) {   
+    app.use((request, response, next)=> {
+        if(this.tokenValidator) {
+            var token = request.query? 
+                request.query.token : 
+                request.body? request.body.token : undefined;
+            this.tokenValidator.validate(token, (isValid) => {
+                if (!isValid) {
+                    response.statusCode = 403;     
+                    response.end();            
+                } else {
+                    next();
+                }
+            });        
+        }
+        else {
+            next();
+        }
+    });     
+
     app.get('/api/forms', (request, response)=> {
-        this.tokenValidator.validate(request.query.token, (isValid) => {
-            if (!isValid) {
-                response.statusCode = 403;     
-                response.end();            
-            } else {
-                this.searchFormSeven.now({ file:parseInt(request.query.file) }, (data)=> {
-                    this.renderSearchFormSevenResult(data, response);
-                });
-            }
+        this.searchFormSeven.now({ file:parseInt(request.query.file) }, (data)=> {
+            this.renderSearchFormSevenResult(data, response);
         });
     });
     app.post('/api/forms', (request, response)=> {
         params = request.body;
-        this.tokenValidator.validate(params.token, (isValid) => {
-            if (!isValid) {
-                response.statusCode = 403;     
-                response.end();            
-            } else {
-                params.data = JSON.parse(params.data);
-                this.saveFormTwo.now(params, (data)=> {
-                    this.renderSaveFormTwoResult(data, response);
-                });   
-            }
-        });            
+        params.data = JSON.parse(params.data);
+        this.saveFormTwo.now(params, (data)=> {
+            this.renderSaveFormTwoResult(data, response);
+        });           
     });
     app.get('/api/cases', (request, response)=> {
-        this.tokenValidator.validate(request.query.token, (isValid) => {
-            if (!isValid) {
-                response.statusCode = 403;   
-                response.end();              
-            } else {
-                this.myCases.now(request.query, (data)=> {                    
-                    this.renderMyCasesResult(data, response);
-                });
-            }
+        this.myCases.now(request.query, (data)=> {                    
+            this.renderMyCasesResult(data, response);
         });
     });
     app.get('/*', function (req, res) { res.send( JSON.stringify({ message: 'pong' }) ); });
