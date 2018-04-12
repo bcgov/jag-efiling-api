@@ -1,5 +1,3 @@
-var url = require('url');
-var qs = require('querystring');
 var SearchFormSeven = require('../features/search.form.7');
 var MyCases = require('../features/my.cases');
 var SaveFormTwo = require('../features/save.form.2');
@@ -37,24 +35,18 @@ RestAdaptor.prototype.route = function(app) {
         });
     });
     app.post('/api/forms', (request, response)=> {
-        var body = '';
-        request.on('data', (data)=> {
-            body += data;
-        });
-        request.on('end', ()=> {
-            params = qs.parse(body);
-            this.tokenValidator.validate(params.token, (isValid) => {
-                if (!isValid) {
-                    response.statusCode = 403;     
-                    response.end();            
-                } else {
-                    params.data = JSON.parse(params.data);
-                    this.saveFormTwo.now(params, (data)=> {
-                        this.renderSaveFormTwoResult(data, response);
-                    });   
-                }
-            });            
-        });  
+        params = request.body;
+        this.tokenValidator.validate(params.token, (isValid) => {
+            if (!isValid) {
+                response.statusCode = 403;     
+                response.end();            
+            } else {
+                params.data = JSON.parse(params.data);
+                this.saveFormTwo.now(params, (data)=> {
+                    this.renderSaveFormTwoResult(data, response);
+                });   
+            }
+        });            
     });
     app.get('/api/cases', (request, response)=> {
         this.tokenValidator.validate(request.query.token, (isValid) => {

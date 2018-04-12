@@ -1,5 +1,6 @@
 var RestAdaptor = require('./rest.adaptor');
-const express = require('express');
+var express = require('express');
+var bodyParser = require("body-parser");
 
 function Server() {    
     this.restAdaptor = new RestAdaptor();
@@ -7,6 +8,7 @@ function Server() {
 };
 
 Server.prototype.start = function (port, ip, done) {
+    this.app.use(bodyParser.urlencoded({ extended: false }));
     this.restAdaptor.route(this.app);
     this.server = this.app.listen(port, ip, done);
 };
