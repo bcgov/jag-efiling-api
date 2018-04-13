@@ -40,9 +40,6 @@ describe('Update existing form', function() {
                 data: { value: s2 }
             };
 
-            // I don't like this, having the update within the callback function.
-            // TODO: SP - change to using Promises and wait for create to finish,
-            // or make the creation happen in beforeEach.
             database.updateForm(updatingData, function(updatedId) {
                 forms.selectOne(testform2.id, function(rows) {
                     expect(rows.length).to.equal(1);
