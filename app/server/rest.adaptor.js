@@ -1,12 +1,19 @@
 let SearchFormSeven = require('../features/search.form.7');
 let MyCases = require('../features/my.cases');
 let SaveFormTwo = require('../features/save.form.2');
+let SavePerson = require('../features/save.person');
 
 let RestAdaptor = function() {
     this.renderSearchFormSevenResult = function(data, response) { response.write( JSON.stringify({ parties:data })); response.end(); };
     this.renderMyCasesResult = function(data, response) { response.write( JSON.stringify({ cases:data })); response.end(); };    
     this.renderSaveFormTwoResult = function(id, response) { 
         response.writeHead(201, {'Location': '/forms/' + id});
+        response.write(JSON.stringify({}));
+        response.end();
+    };
+    this.renderSavePersonResult = function(id, response) { 
+        response.writeHead(201, {'Location': '/persons/' + id});
+        response.write(JSON.stringify({}));
         response.end();
     };
 };
@@ -20,6 +27,7 @@ RestAdaptor.prototype.useTokenValidator = function(tokenValidator) {
 RestAdaptor.prototype.useDatabase = function(database) {
     this.myCases = new MyCases(database);     
     this.saveFormTwo = new  SaveFormTwo(database); 
+    this.savePerson = new  SavePerson(database); 
 };
 RestAdaptor.prototype.route = function(app) {   
     app.use((request, response, next)=> {
@@ -57,6 +65,13 @@ RestAdaptor.prototype.route = function(app) {
         this.myCases.now(request.query, (data)=> {                    
             this.renderMyCasesResult(data, response);
         });
+    });
+    app.post('/api/persons', (request, response)=> {
+        let params = request.body;
+        let person = params.data;
+        this.savePerson.now(person, (data)=> {
+            this.renderSavePersonResult(data, response);
+        });          
     });
     app.get('/*', function (req, res) { res.send( JSON.stringify({ message: 'pong' }) ); });
 };

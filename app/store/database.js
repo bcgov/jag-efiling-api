@@ -1,7 +1,9 @@
 let { Forms } = require('./forms');
+let { Persons } = require('./persons');
 
 let Database = function() {
     this.forms = new Forms();
+    this.persons = new Persons();
 };
 Database.prototype.saveForm = function(form, callback) {
     this.forms.create({
@@ -24,6 +26,17 @@ Database.prototype.myCases = function(token, callback) {
             };
         }));
     });
+};
+Database.prototype.savePerson = function(person, callback) {
+    this.persons.findByLogin(person.login, (rows)=> {
+        if (rows.length ==0) {
+            this.persons.create(person, callback);
+        }
+        else {
+            let id = rows[0].id;
+            callback(id);
+        }
+    });    
 };
 
 module.exports = Database;

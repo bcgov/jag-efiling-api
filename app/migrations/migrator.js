@@ -9,9 +9,10 @@ Migrator.prototype.migrateNow = function(done) {
         this.file('/1.create.table.versions.sql'),
         this.file('/2.create.table.forms.sql'),
         this.file('/3.alter.table.forms.add.column.modified.sql'),
+        this.file('/4.create.table.person.sql'),
         
         'truncate table versions',
-        { sql:'insert into versions(id) values($1)', params:[3] }
+        { sql:'insert into versions(id) values($1)', params:[4] }
     ];
     execute(calls, function(rows, error) {
         done(error);
