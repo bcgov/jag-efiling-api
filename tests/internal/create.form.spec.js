@@ -4,17 +4,17 @@ var Migrator = require('../../app/migrations/migrator');
 var Truncator = require('../support/truncator');
 var { Forms } = require('../../app/store/forms');
 var { execute } = require('yop-postgresql');
-var SaveFormTwo = require('../../app/features/save.form.2');
+var CreateFormTwo = require('../../app/features/create.form.2');
 
-describe('Save form', function() {
+describe('Create form', function() {
 
     var database;
     var forms;
-    var saveForm;
+    var createForm;
 
     beforeEach(function(success) {
         database = new Database();
-        saveForm = new SaveFormTwo(database);
+        createForm = new CreateFormTwo(database);
         forms = new Forms();
         var migrator = new Migrator();
         migrator.migrateNow(function() {
@@ -36,7 +36,7 @@ describe('Save form', function() {
                 data: { value:42 },
                 person_id: 1
             };
-            saveForm.now(form, function(newId) {
+            createForm.now(form, function(newId) {
                 expect(newId).not.to.equal(undefined);
                 forms.selectByLogin('max', function(rows) {
                     expect(rows.length).to.equal(1);
@@ -62,7 +62,7 @@ describe('Save form', function() {
                 data: { value:42 },
                 person_id: 1
             };
-            saveForm.now(form, function(newId) {
+            createForm.now(form, function(newId) {
                 expect(newId).not.to.equal(undefined);
                 forms.selectByLogin('max', function(rows) {
                     expect(rows.length).to.equal(1);
