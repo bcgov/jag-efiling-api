@@ -3,12 +3,22 @@ let { Forms } = require('./forms');
 let Database = function() {
     this.forms = new Forms();
 };
-Database.prototype.saveForm = function(form, callback) {
+
+Database.prototype.createForm = function(form, callback) {
     this.forms.create({
         type:form.type,
         status:'Draft',
         data:JSON.stringify(form.data)}, callback);
 };
+
+Database.prototype.updateForm = function(form, callback) {
+    this.forms.update({
+        id:form.id,
+        type:form.type,
+        status:'Draft',
+        data:JSON.stringify(form.data)}, callback);
+};
+
 Database.prototype.myCases = function(token, callback) {
     this.forms.selectAll(function(rows) {
         callback(rows.map(function(row) {

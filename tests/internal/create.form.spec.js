@@ -4,7 +4,7 @@ var Migrator = require('../../app/migrations/migrator');
 var Truncator = require('../support/truncator');
 var { Forms } = require('../../app/store/forms');
 
-describe('Save form', function() {
+describe('Create form', function() {
 
     var database;
     var forms;
@@ -26,7 +26,7 @@ describe('Save form', function() {
             type: 'form-2',
             data: { value:42 }
         };
-        database.saveForm(form, function(newId) {
+        database.createForm(form, function(newId) {
             expect(newId).not.to.equal(undefined);
             forms.selectAll(function(rows) {
                 expect(rows.length).to.equal(1);

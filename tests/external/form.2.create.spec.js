@@ -7,7 +7,7 @@ var Truncator = require('../support/truncator');
 var { execute } = require('yop-postgresql');
 var request = require('request');
 
-describe('Form 2 save', function() {
+describe('Form 2 create', function() {
 
     var server;
     var port = 5000;
