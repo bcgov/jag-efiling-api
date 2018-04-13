@@ -38,5 +38,10 @@ Database.prototype.savePerson = function(person, callback) {
         }
     });    
 };
+Database.prototype.findPersonByLogin = function(login, callback) {
+    this.persons.findByLogin(login, (rows)=> {
+        callback(rows[0]);
+    });
+}
 
 module.exports = Database;

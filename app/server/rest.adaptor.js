@@ -2,6 +2,7 @@ let SearchFormSeven = require('../features/search.form.7');
 let MyCases = require('../features/my.cases');
 let SaveFormTwo = require('../features/save.form.2');
 let SavePerson = require('../features/save.person');
+let PersonInfo = require('../features/person.info');
 
 let RestAdaptor = function() {
     this.renderSearchFormSevenResult = function(data, response) { response.write( JSON.stringify({ parties:data })); response.end(); };
@@ -16,6 +17,10 @@ let RestAdaptor = function() {
         response.write(JSON.stringify({}));
         response.end();
     };
+    this.renderPersonInfoResult = function(person, response) { 
+        response.write(JSON.stringify(person));
+        response.end();
+    };
 };
 
 RestAdaptor.prototype.useHub = function(hub) {
@@ -26,8 +31,9 @@ RestAdaptor.prototype.useTokenValidator = function(tokenValidator) {
 };
 RestAdaptor.prototype.useDatabase = function(database) {
     this.myCases = new MyCases(database);     
-    this.saveFormTwo = new  SaveFormTwo(database); 
-    this.savePerson = new  SavePerson(database); 
+    this.saveFormTwo = new SaveFormTwo(database); 
+    this.savePerson = new SavePerson(database); 
+    this.personInfo = new PersonInfo(database);
 };
 RestAdaptor.prototype.route = function(app) {   
     app.use((request, response, next)=> {
@@ -72,6 +78,12 @@ RestAdaptor.prototype.route = function(app) {
         this.savePerson.now(person, (data)=> {
             this.renderSavePersonResult(data, response);
         });          
+    });
+    app.get('/api/persons/:login', (request, response, next)=> {
+        let login = request.params.login;
+        this.personInfo.now(login, (data)=> {
+            this.renderPersonInfoResult(data, response);
+        });
     });
     app.get('/*', function (req, res) { res.send( JSON.stringify({ message: 'pong' }) ); });
 };
