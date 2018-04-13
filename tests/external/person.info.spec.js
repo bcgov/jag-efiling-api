@@ -33,13 +33,21 @@ describe('Person info endpoint', function() {
         server.stop(done);
     });
 
-    it('is a rest service', function(done){
+    it('is a rest service', (done)=> {
         execute('insert into person(login) values($1);', ['max'], function() {
             get(home + '/api/persons/max', function(err, response, body) {
                 expect(response.statusCode).to.equal(200);
                 expect(JSON.parse(body).login).to.equal('max');
                 done();
             });
+        });
+    });
+
+    it('resists unknown user', (done)=> {
+        get(home + '/api/persons/max', function(err, response, body) {
+            expect(response.statusCode).to.equal(404);
+            expect(body).to.equal('');
+            done();
         });
     });
 });

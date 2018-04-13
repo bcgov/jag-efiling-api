@@ -18,7 +18,12 @@ let RestAdaptor = function() {
         response.end();
     };
     this.renderPersonInfoResult = function(person, response) { 
-        response.write(JSON.stringify(person));
+        if (person !== undefined) {
+            response.write(JSON.stringify(person));
+        } 
+        else {
+            response.statusCode = 404;
+        }
         response.end();
     };
 };

@@ -5,19 +5,13 @@ var Truncator = function() {
 };
 
 Truncator.prototype.truncateTablesNow = function(success) {
-    var ps = new Promises();
-    ps.waitFor(this.run('TRUNCATE TABLE forms;'));
-    ps.done(function() {
-        success();
+    let calls = [ 
+        'TRUNCATE TABLE forms;',
+        'TRUNCATE TABLE person;'
+    ];
+    execute(calls, function(rows, error) {
+        success(error);
     });
-};
-
-Truncator.prototype.run = function(sql) {
-    var p = new Promise();
-    execute(sql, [], function() {
-        p.resolve();
-    });
-    return p;
 };
 
 module.exports = Truncator;
