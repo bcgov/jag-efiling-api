@@ -50,7 +50,17 @@ describe('Form 2 save', function() {
             expect(location).to.contain('/forms/');
             var id = parseInt(location.substring(location.lastIndexOf('/')+1));
 
-            execute('SELECT forms.id, type, status, data, person.login as login FROM forms, person where forms.id=$1 and forms.person_id=person.id', [id], function(rows) {
+            var sql = `
+                SELECT  forms.id, 
+                        type, 
+                        status, 
+                        data, 
+                        person.login as login 
+                FROM forms, person
+                WHERE forms.id=$1
+                AND forms.person_id=person.id
+            `;
+            execute(sql, [id], function(rows) {
                 expect(rows.length).to.equal(1);
 
                 var { type, status, data, login } = rows[0];
