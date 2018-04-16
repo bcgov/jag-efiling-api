@@ -3,7 +3,9 @@ let SaveFormTwo = function(database) {
 };
 
 SaveFormTwo.prototype.now = function(params, callback) {
-    this.database.saveForm({ type:'form-2', data:params.data, person_id:params.person_id }, callback);
+    params.type = 'form-2';
+    params.status = 'Draft';
+    this.database.saveForm(params, callback);
 };
 
 module.exports = SaveFormTwo;
