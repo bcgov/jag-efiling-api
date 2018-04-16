@@ -77,7 +77,8 @@ RestAdaptor.prototype.route = function(app) {
         });
     });
     app.get('/api/cases', (request, response)=> {
-        this.myCases.now(request.query, (data)=> {                    
+        let login = request.headers['x-user'];
+        this.myCases.now(login, (data)=> {                    
             this.renderMyCasesResult(data, response);
         });
     });

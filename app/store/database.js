@@ -8,8 +8,8 @@ let Database = function() {
 Database.prototype.saveForm = function(form, callback) {
     this.forms.create(form, callback);
 };
-Database.prototype.myCases = function(token, callback) {
-    this.forms.selectAll(function(rows) {
+Database.prototype.myCases = function(login, callback) {
+    this.forms.selectByLogin(login, function(rows) {
         callback(rows.map(function(row) {
             let modified = row.modified;
             modified = JSON.stringify(modified).toString();

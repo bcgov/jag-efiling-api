@@ -2,8 +2,8 @@ let MyCases = function(database) {
     this.database = database;
 };
 
-MyCases.prototype.now = function(params, callback) {
-    this.database.myCases(params.token, callback);
+MyCases.prototype.now = function(login, callback) {
+    this.database.myCases(login, callback);
 };
 
 module.exports = MyCases;
