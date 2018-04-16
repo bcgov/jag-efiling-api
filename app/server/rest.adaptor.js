@@ -66,11 +66,15 @@ RestAdaptor.prototype.route = function(app) {
         });
     });
     app.post('/api/forms', (request, response)=> {
-        let params = request.body;
-        params.data = JSON.parse(params.data);
-        this.saveFormTwo.now(params, (data)=> {
-            this.renderSaveFormTwoResult(data, response);
-        });           
+        let login = request.headers['x-user'];
+        this.savePerson.now(login, (id)=> {
+            let params = request.body;
+            params.data = JSON.parse(params.data);
+            params.person_id = id;
+            this.saveFormTwo.now(params, (data)=> {
+                this.renderSaveFormTwoResult(data, response);
+            });           
+        });
     });
     app.get('/api/cases', (request, response)=> {
         this.myCases.now(request.query, (data)=> {                    

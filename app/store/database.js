@@ -9,7 +9,9 @@ Database.prototype.saveForm = function(form, callback) {
     this.forms.create({
         type:form.type,
         status:'Draft',
-        data:JSON.stringify(form.data)}, callback);
+        data:JSON.stringify(form.data),
+        person_id: form.person_id
+    }, callback);
 };
 Database.prototype.myCases = function(token, callback) {
     this.forms.selectAll(function(rows) {
