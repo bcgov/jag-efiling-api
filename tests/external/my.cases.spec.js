@@ -39,20 +39,30 @@ describe('My cases endpoint', function() {
             now = JSON.stringify(now).toString();
             now = now.substring(1, now.lastIndexOf('.'))+'Z';
 
-            execute('insert into forms(type, status, data) values($1, $2, $3);',
-                ['crazy', 'new', JSON.stringify({value:42})], function() {
-                execute('select last_value from forms_id_seq', [], function(rows) {
-                    var newId = parseInt(rows[0].last_value);
-
-                    get(home + '/api/cases?token=any', function(err, response, body) {
-                        expect(response.statusCode).to.equal(200);
-                        expect(JSON.parse(body)).to.deep.equal({
-                            cases: [
-                                { id:newId, type:'crazy', modified:now, status:'new', data:{value:42} }
-                            ]
-                        });
-                        done();
+            var background = [
+                'alter sequence person_id_seq restart',
+                { sql:'insert into person(login) values ($1)', params:['bob'] },
+                { sql:'insert into person(login) values ($1)', params:['max'] },
+                { sql: 'insert into forms(person_id, type, status, data) values($1, $2, $3, $4);', params:[1, 'crazy-bob', 'new', JSON.stringify({value:'bob'})] },
+                { sql: 'insert into forms(person_id, type, status, data) values($1, $2, $3, $4);', params:[2, 'crazy-max', 'new', JSON.stringify({value:'max'})] },
+                'select last_value from forms_id_seq'
+            ];
+            execute(background, function(rows) {
+                var newId = parseInt(rows[0].last_value);
+                var options = {
+                    url: home + '/api/cases?token=any',
+                    headers: {
+                        'X-USER': 'max'
+                    }
+                };
+                get(options, (err, response, body)=> {
+                    expect(response.statusCode).to.equal(200);
+                    expect(JSON.parse(body)).to.deep.equal({
+                        cases: [
+                            { id:newId, type:'crazy-max', modified:now, status:'new', data:{value:'max'} }
+                        ]
                     });
+                    done();
                 });
             });
         });

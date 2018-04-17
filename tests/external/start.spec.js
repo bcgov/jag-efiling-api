@@ -19,7 +19,7 @@ describe('start script', function() {
     it('migrates database', function(done) {
         execute('select id from versions', [], function(rows) {
             expect(rows.length).to.equal(1);
-            expect(rows[0].id).to.equal(3);
+            expect(rows[0].id).to.equal(5);
             done();
         });      
     });

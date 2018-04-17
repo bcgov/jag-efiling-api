@@ -1,16 +1,15 @@
 let { Forms } = require('./forms');
+let { Persons } = require('./persons');
 
 let Database = function() {
     this.forms = new Forms();
+    this.persons = new Persons();
 };
 Database.prototype.saveForm = function(form, callback) {
-    this.forms.create({
-        type:form.type,
-        status:'Draft',
-        data:JSON.stringify(form.data)}, callback);
+    this.forms.create(form, callback);
 };
-Database.prototype.myCases = function(token, callback) {
-    this.forms.selectAll(function(rows) {
+Database.prototype.myCases = function(login, callback) {
+    this.forms.selectByLogin(login, function(rows) {
         callback(rows.map(function(row) {
             let modified = row.modified;
             modified = JSON.stringify(modified).toString();
@@ -25,5 +24,21 @@ Database.prototype.myCases = function(token, callback) {
         }));
     });
 };
+Database.prototype.savePerson = function(person, callback) {
+    this.persons.findByLogin(person.login, (rows)=> {
+        if (rows.length ==0) {
+            this.persons.create(person, callback);
+        }
+        else {
+            let id = rows[0].id;
+            callback(id);
+        }
+    });    
+};
+Database.prototype.findPersonByLogin = function(login, callback) {
+    this.persons.findByLogin(login, (rows)=> {
+        callback(rows[0]);
+    });
+}
 
 module.exports = Database;
