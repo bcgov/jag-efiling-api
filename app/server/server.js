@@ -10,8 +10,16 @@ function Server() {
 Server.prototype.start = function (port, ip, done) {
     this.app.use((request, response, next)=>{
         response.setHeader('Access-Control-Allow-Origin', '*');
+        response.setHeader('Access-Control-Allow-Methods', 'GET, PUT, POST, OPTIONS');
+        response.setHeader('Access-Control-Allow-Headers', 'Content-Type, Authorization, Content-Length, X-Requested-With');
         response.setHeader('Content-Type', 'application/json');
-        next();
+
+        // allow 'preflight': (required for allowing any method other than GET and POST)
+        if (request.method === 'OPTIONS') {
+            response.sendStatus(200);
+        } else {
+            next();
+        }
     });
     this.app.use(bodyParser.urlencoded({ extended: false }));    
     this.restAdaptor.route(this.app);

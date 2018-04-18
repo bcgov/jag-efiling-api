@@ -1,6 +1,7 @@
 let SearchFormSeven = require('../features/search.form.7');
 let MyCases = require('../features/my.cases');
 let createFormTwo = require('../features/create.form.2');
+let updateFormTwo = require('../features/update.form.2');
 
 let RestAdaptor = function() {
     this.renderSearchFormSevenResult = function(data, response) { response.write( JSON.stringify({ parties:data })); response.end(); };
@@ -9,6 +10,10 @@ let RestAdaptor = function() {
         response.writeHead(201, {'Location': '/forms/' + id});
         response.end();
     };
+    this.renderUpdateFormTwoResult = function(id, response) {
+        response.writeHead(200, {'Location': '/forms/' + id});
+        response.end();
+    }
 };
 
 RestAdaptor.prototype.useHub = function(hub) {
@@ -20,8 +25,9 @@ RestAdaptor.prototype.useTokenValidator = function(tokenValidator) {
 RestAdaptor.prototype.useDatabase = function(database) {
     this.myCases = new MyCases(database);     
     this.createFormTwo = new  createFormTwo(database);
+    this.updateFormTwo = new updateFormTwo(database);
 };
-RestAdaptor.prototype.route = function(app) {   
+RestAdaptor.prototype.route = function(app) {
     app.use((request, response, next)=> {
         if(this.tokenValidator) {
             let token = request.query? 
@@ -52,6 +58,12 @@ RestAdaptor.prototype.route = function(app) {
         this.createFormTwo.now(params, (data)=> {
             this.renderCreateFormTwoResult(data, response);
         });           
+    });
+    app.put('/api/forms/*', (request, response)=> {
+        let data = JSON.parse(request.body.data);
+        this.updateFormTwo.now(request.params[0], data, (data)=> {
+            this.renderUpdateFormTwoResult(data, response);
+        });
     });
     app.get('/api/cases', (request, response)=> {
         this.myCases.now(request.query, (data)=> {                    
