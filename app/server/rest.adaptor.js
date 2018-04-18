@@ -31,6 +31,10 @@ let RestAdaptor = function() {
         }
         response.end();
     };
+    this.renderUpdateFormTwoResult = function(id, response) {
+        response.writeHead(200, {'Location': '/forms/' + id});
+        response.end();
+    }
 };
 
 RestAdaptor.prototype.useHub = function(hub) {
@@ -46,7 +50,7 @@ RestAdaptor.prototype.useDatabase = function(database) {
     this.savePerson = new SavePerson(database); 
     this.personInfo = new PersonInfo(database);
 };
-RestAdaptor.prototype.route = function(app) {   
+RestAdaptor.prototype.route = function(app) {
     app.use((request, response, next)=> {
         if(this.tokenValidator) {
             let token = request.query? 
@@ -92,6 +96,12 @@ RestAdaptor.prototype.route = function(app) {
             });
         });
     });
+    // app.put('/api/forms/*', (request, response)=> {
+    //     let data = JSON.parse(request.body.data);
+    //     this.updateFormTwo.now(request.params[0], data, (data)=> {
+    //         this.renderUpdateFormTwoResult(data, response);
+    //     });
+    // });
     app.get('/api/cases', (request, response)=> {
         let login = request.headers['x-user'];
         this.myCases.now(login, (data)=> {                    

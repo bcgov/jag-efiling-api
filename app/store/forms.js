@@ -30,9 +30,9 @@ Forms.prototype.create = function(options, callback) {
             });
         });
 };
-Forms.prototype.update = function(options, callback) {
-    execute('update forms set type = $1, status = $2, data = $3 where id = $4;',
-        [options.type, options.status, options.data, options.id], function() {
+Forms.prototype.update = function(form, callback) {
+    execute('update forms set type = $1, status = $2, data = $3 where id = $4',
+        [form.type, form.status, form.data, form.id], function() {
             execute('SELECT last_value FROM forms_id_seq;', [], function(rows) {
                 let id = rows[0].last_value;
                 callback(parseInt(id));
