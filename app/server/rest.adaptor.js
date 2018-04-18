@@ -31,10 +31,6 @@ let RestAdaptor = function() {
         }
         response.end();
     };
-    this.renderUpdateFormTwoResult = function(id, response) {
-        response.writeHead(200, {'Location': '/forms/' + id});
-        response.end();
-    }
 };
 
 RestAdaptor.prototype.useHub = function(hub) {
@@ -44,7 +40,7 @@ RestAdaptor.prototype.useTokenValidator = function(tokenValidator) {
     this.tokenValidator = tokenValidator; 
 };
 RestAdaptor.prototype.useDatabase = function(database) {
-    this.myCases = new MyCases(database);     
+    this.myCases = new MyCases(database);
     this.createFormTwo = new  CreateFormTwo(database);
     this.updateFormTwo = new UpdateFormTwo(database);
     this.savePerson = new SavePerson(database); 

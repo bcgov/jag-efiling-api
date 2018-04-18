@@ -3,18 +3,14 @@ var Database = require('../../app/store/database');
 var Migrator = require('../../app/migrations/migrator');
 var Truncator = require('../support/truncator');
 var { Forms } = require('../../app/store/forms');
-var { execute } = require('yop-postgresql');
-var CreateFormTwo = require('../../app/features/create.form.2');
 
 describe('Create form', function() {
 
     var database;
     var forms;
-    var createForm;
 
     beforeEach(function(success) {
         database = new Database();
-        createForm = new CreateFormTwo(database);
         forms = new Forms();
         var migrator = new Migrator();
         migrator.migrateNow(function() {
@@ -25,53 +21,22 @@ describe('Create form', function() {
         });
     });
 
-    it('is linked to a person', (done)=> {
-        var background = [
-            'alter sequence person_id_seq restart',
-            { sql:'insert into person(login) values ($1)', params:['max'] },
-        ];
-        execute(background, ()=>{
-            var form = {
-                type: 'form-2',
-                data: { value:42 },
-                person_id: 1
-            };
-            createForm.now(form, function(newId) {
-                expect(newId).not.to.equal(undefined);
-                forms.selectByLogin('max', function(rows) {
-                    expect(rows.length).to.equal(1);
-                    var { id, type, data } = rows[0];
-                    
-                    expect(id).to.equal(newId);
-                    expect(type).to.equal('form-2');
-                    expect(data).to.equal(JSON.stringify({ value:42 }));
-                    done();
-                });
+    it('defaults status to draft', function(done) {
+        var form = {
+            type: 'form-2',
+            data: { value:42 }
+        };
+        database.createForm(form, function(newId) {
+            expect(newId).not.to.equal(undefined);
+            forms.selectAll(function(rows) {
+                expect(rows.length).to.equal(1);
+                var { id, type, status, data } = rows[0];
+                expect(id).to.equal(newId);
+                expect(type).to.equal('form-2');
+                expect(status).to.equal('Draft');
+                expect(data).to.equal(JSON.stringify({ value:42 }));
+                done();
             });
         });
-    });    
-
-    it('defaults status to draft', (done)=> {
-        var background = [
-            'alter sequence person_id_seq restart',
-            { sql:'insert into person(login) values ($1)', params:['max'] },
-        ];
-        execute(background, ()=> {
-            var form = {
-                type: 'form-2',
-                data: { value:42 },
-                person_id: 1
-            };
-            createForm.now(form, function(newId) {
-                expect(newId).not.to.equal(undefined);
-                forms.selectByLogin('max', function(rows) {
-                    expect(rows.length).to.equal(1);
-                    var { status } = rows[0];
-    
-                    expect(status).to.equal('Draft');
-                    done();
-                });
-            });
-        });        
     });
 });

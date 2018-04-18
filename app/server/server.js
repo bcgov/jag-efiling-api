@@ -14,7 +14,7 @@ Server.prototype.start = function (port, ip, done) {
         response.setHeader('Access-Control-Allow-Origin', '*');
         response.setHeader('Access-Control-Allow-Headers', 'x-user,Content-Type, Authorization, Content-Length, X-Requested-With');
         response.setHeader('Access-Control-Allow-Methods', 'GET, PUT, POST, OPTIONS');
-        response.setHeader('Content-Type', 'application/json');
+       response.setHeader('Content-Type', 'application/json');
 
         // allow 'preflight': (required for allowing any method other than GET and POST)
         if (request.method === 'OPTIONS') {
