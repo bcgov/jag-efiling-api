@@ -18,8 +18,8 @@ Database.prototype.updateForm = function(form, callback) {
         data:JSON.stringify(form.data)}, callback);
 };
 
-Database.prototype.myCases = function(token, callback) {
-    this.forms.selectAll(function(rows) {
+Database.prototype.myCases = function(login, callback) {
+    this.forms.selectByLogin(login, function(rows) {
         callback(rows.map(function(row) {
             let modified = row.modified;
             modified = JSON.stringify(modified).toString();
@@ -49,6 +49,6 @@ Database.prototype.findPersonByLogin = function(login, callback) {
     this.persons.findByLogin(login, (rows)=> {
         callback(rows[0]);
     });
-}
+};
 
 module.exports = Database;

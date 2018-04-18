@@ -87,21 +87,11 @@ RestAdaptor.prototype.route = function(app) {
         });
     });
     app.put('/api/forms/*', (request, response)=> {
-        let login = request.headers['x-user'];
-        this.savePerson.now(login, (id)=> {
-            let data = JSON.parse(request.body.data);
-            console.log("App.put, id, data, callback is ", request.params[0], data, this.renderUpdateFormTwoResult);
-            this.updateFormTwo.now(request.params[0], data, (data)=> {
-                this.renderUpdateFormTwoResult(data, response);
-            });
+        let data = JSON.parse(request.body.data);
+        this.updateFormTwo.now(request.params[0], data, (data)=> {
+            this.renderUpdateFormTwoResult(data, response);
         });
     });
-    // app.put('/api/forms/*', (request, response)=> {
-    //     let data = JSON.parse(request.body.data);
-    //     this.updateFormTwo.now(request.params[0], data, (data)=> {
-    //         this.renderUpdateFormTwoResult(data, response);
-    //     });
-    // });
     app.get('/api/cases', (request, response)=> {
         let login = request.headers['x-user'];
         this.myCases.now(login, (data)=> {                    
