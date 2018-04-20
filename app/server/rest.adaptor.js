@@ -82,9 +82,9 @@ RestAdaptor.prototype.route = function(app) {
             });           
         });
     });
-    app.put('/api/forms/*', (request, response)=> {
+    app.put('/api/forms/:id', (request, response)=> {
         let data = JSON.parse(request.body.data);
-        this.updateFormTwo.now(request.params[0], data, (data)=> {
+        this.updateFormTwo.now(request.params.id, data, (data)=> {
             this.renderUpdateFormTwoResult(data, response);
         });
     });
