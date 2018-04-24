@@ -5,9 +5,19 @@ let Database = function() {
     this.forms = new Forms();
     this.persons = new Persons();
 };
-Database.prototype.saveForm = function(form, callback) {
+
+Database.prototype.createForm = function(form, callback) {
     this.forms.create(form, callback);
 };
+
+Database.prototype.updateForm = function(form, callback) {
+    this.forms.update({
+        id:form.id,
+        type:form.type,
+        status:'Draft',
+        data:JSON.stringify(form.data)}, callback);
+};
+
 Database.prototype.myCases = function(login, callback) {
     this.forms.selectByLogin(login, function(rows) {
         callback(rows.map(function(row) {
@@ -39,6 +49,6 @@ Database.prototype.findPersonByLogin = function(login, callback) {
     this.persons.findByLogin(login, (rows)=> {
         callback(rows[0]);
     });
-}
+};
 
 module.exports = Database;

@@ -1,15 +1,20 @@
 let SearchFormSeven = require('../features/search.form.7');
 let MyCases = require('../features/my.cases');
-let SaveFormTwo = require('../features/save.form.2');
+let CreateFormTwo = require('../features/create.form.2');
 let SavePerson = require('../features/save.person');
 let PersonInfo = require('../features/person.info');
+let UpdateFormTwo = require('../features/update.form.2');
 
 let RestAdaptor = function() {
     this.renderSearchFormSevenResult = function(data, response) { response.write( JSON.stringify({ parties:data })); response.end(); };
     this.renderMyCasesResult = function(data, response) { response.write( JSON.stringify({ cases:data })); response.end(); };    
-    this.renderSaveFormTwoResult = function(id, response) { 
+    this.renderCreateFormTwoResult = function(id, response) {
         response.writeHead(201, {'Location': '/forms/' + id});
         response.write(JSON.stringify({}));
+        response.end();
+    };
+    this.renderUpdateFormTwoResult = function(id, response) {
+        response.writeHead(200, {'Location': '/forms/' + id});
         response.end();
     };
     this.renderSavePersonResult = function(id, response) { 
@@ -35,12 +40,13 @@ RestAdaptor.prototype.useTokenValidator = function(tokenValidator) {
     this.tokenValidator = tokenValidator; 
 };
 RestAdaptor.prototype.useDatabase = function(database) {
-    this.myCases = new MyCases(database);     
-    this.saveFormTwo = new SaveFormTwo(database); 
+    this.myCases = new MyCases(database);
+    this.createFormTwo = new  CreateFormTwo(database);
+    this.updateFormTwo = new UpdateFormTwo(database);
     this.savePerson = new SavePerson(database); 
     this.personInfo = new PersonInfo(database);
 };
-RestAdaptor.prototype.route = function(app) {   
+RestAdaptor.prototype.route = function(app) {
     app.use((request, response, next)=> {
         if(this.tokenValidator) {
             let token = request.query? 
@@ -71,9 +77,15 @@ RestAdaptor.prototype.route = function(app) {
             let params = request.body;
             params.data = JSON.parse(params.data);
             params.person_id = id;
-            this.saveFormTwo.now(params, (data)=> {
-                this.renderSaveFormTwoResult(data, response);
+            this.createFormTwo.now(params, (data)=> {
+                this.renderCreateFormTwoResult(data, response);
             });           
+        });
+    });
+    app.put('/api/forms/:id', (request, response)=> {
+        let data = JSON.parse(request.body.data);
+        this.updateFormTwo.now(request.params.id, data, (data)=> {
+            this.renderUpdateFormTwoResult(data, response);
         });
     });
     app.get('/api/cases', (request, response)=> {
@@ -87,7 +99,7 @@ RestAdaptor.prototype.route = function(app) {
         let person = params.data;
         this.savePerson.now(person, (data)=> {
             this.renderSavePersonResult(data, response);
-        });          
+        });
     });
     app.get('/api/persons/:login', (request, response, next)=> {
         let login = request.params.login;
