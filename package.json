@@ -8,6 +8,7 @@
         "morgan": "^1.9.0",
         "pg": "^7.4.1",
         "querystring": "^0.2.0",
+        "soap": "^0.24.0",
         "socket.io": "^2.0.4",
         "url": "^0.11.0",
         "yop-postgresql": "^1.1.0",
