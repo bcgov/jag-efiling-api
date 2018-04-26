@@ -18,11 +18,10 @@
         "chai": "latest",
         "istanbul": "latest",
         "jsdom": "latest",
-        "lodash": "latest",
         "log4js": "latest",
         "mkdirp": "latest",
         "mocha": "latest",
-        "request": "^2.85.0",
+        "request": "2.81.0",
         "sinon": "latest",
         "sinon-chai": "latest",
         "zombie": "latest"
