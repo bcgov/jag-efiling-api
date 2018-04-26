@@ -1,6 +1,5 @@
 var expect = require('chai').expect;
 var Server = require('../../app/server/server');
-var alwaysValid = require('../support/token.always.valid.js');
 var Database = require('../../app/store/database');
 var Migrator = require('../../app/migrations/migrator');
 var Truncator = require('../support/truncator');
@@ -17,7 +16,6 @@ describe('Form 2 create', function() {
 
     beforeEach(function(done) {
         server = new Server();
-        server.useTokenValidator(alwaysValid);
         database = new Database();
         server.useDatabase(database);
         var migrator = new Migrator();
@@ -70,22 +68,6 @@ describe('Form 2 create', function() {
                 expect(login).to.equal('max');
                 done();
             });
-        });
-    });
-
-    it('is a rest service that requires a valid token', function(done) {
-        server.useTokenValidator({
-            validate: function(token, callback) {
-                callback(false);
-            }
-        });
-        request.post(home + '/api/forms', {form:{
-            token: 'any',
-            data: JSON.stringify({ any:'field' })
-        }}, function(err, response, body) {
-            expect(response.statusCode).to.equal(403);
-            expect(body).to.equal('');
-            done();
         });
     });
 });
