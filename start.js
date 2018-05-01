@@ -9,7 +9,6 @@ var migrator = new Migrator();
 
 var Server = require('./app/server/server');
 var server = new Server();
-server.useTokenValidator(require('./tests/support/token.always.valid.js'));
 server.useService(require('./tests/support/in.memory.service.js'));
 server.useDatabase(database);
 

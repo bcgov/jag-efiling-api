@@ -1,6 +1,5 @@
 var expect = require('chai').expect;
 var Server = require('../../app/server/server');
-var alwaysValid = require('../support/token.always.valid.js');
 var get = require('request');
 
 describe('Form 7 search', function() {
@@ -13,7 +12,6 @@ describe('Form 7 search', function() {
     beforeEach(function(done) {
         server = new Server();
         server.start(port, ip, done);
-        server.useTokenValidator(alwaysValid);
         server.useService({
             searchForm7: function(fileNumber, callback) {
                 callback([fileNumber]);
@@ -29,19 +27,6 @@ describe('Form 7 search', function() {
         get(home + '/api/forms?file=42&token=any', function(err, response, body) {
             expect(response.statusCode).to.equal(200);
             expect(JSON.parse(body)).to.deep.equal({ parties: [42] });
-            done();
-        });
-    });
-
-    it('is a rest service that requires a valid token', function(done) {
-        server.useTokenValidator({
-            validate: function(token, callback) {
-                callback(false);
-            }
-        });
-        get(home + '/api/forms?file=42&token=any', function(err, response, body) {
-            expect(response.statusCode).to.equal(403);
-            expect(body).to.deep.equal('');
             done();
         });
     });

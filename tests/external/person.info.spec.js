@@ -1,6 +1,5 @@
 var expect = require('chai').expect;
 var Server = require('../../app/server/server');
-var alwaysValid = require('../support/token.always.valid.js');
 var Database = require('../../app/store/database');
 var Migrator = require('../../app/migrations/migrator');
 var Truncator = require('../support/truncator');
@@ -17,7 +16,6 @@ describe('Person info endpoint', function() {
 
     beforeEach(function(done) {
         server = new Server();
-        server.useTokenValidator(alwaysValid);
         database = new Database();
         server.useDatabase(database);
         var migrator = new Migrator();

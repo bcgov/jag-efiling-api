@@ -36,9 +36,6 @@ let RestAdaptor = function() {
 RestAdaptor.prototype.useHub = function(hub) {
     this.searchFormSeven = new SearchFormSeven(hub);
 };
-RestAdaptor.prototype.useTokenValidator = function(tokenValidator) { 
-    this.tokenValidator = tokenValidator; 
-};
 RestAdaptor.prototype.useDatabase = function(database) {
     this.myCases = new MyCases(database);
     this.createFormTwo = new  CreateFormTwo(database);
@@ -47,25 +44,6 @@ RestAdaptor.prototype.useDatabase = function(database) {
     this.personInfo = new PersonInfo(database);
 };
 RestAdaptor.prototype.route = function(app) {
-    app.use((request, response, next)=> {
-        if(this.tokenValidator) {
-            let token = request.query? 
-                request.query.token : 
-                request.body? request.body.token : undefined;
-            this.tokenValidator.validate(token, (isValid) => {
-                if (!isValid) {
-                    response.statusCode = 403;     
-                    response.end();            
-                } else {
-                    next();
-                }
-            });        
-        }
-        else {
-            next();
-        }
-    });     
-
     app.get('/api/forms', (request, response)=> {
         this.searchFormSeven.now({ file:parseInt(request.query.file) }, (data)=> {
             this.renderSearchFormSevenResult(data, response);

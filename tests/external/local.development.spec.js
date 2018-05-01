@@ -1,6 +1,5 @@
 var expect = require('chai').expect;
 var Server = require('../../app/server/server');
-var alwaysValid = require('../support/token.always.valid.js');
 const jsdom = require("jsdom");
 const { JSDOM } = jsdom;
 
@@ -14,7 +13,6 @@ describe('Local development', ()=>{
     beforeEach(function(done) {
         server = new Server();
         server.start(port, ip, done);
-        server.useTokenValidator(alwaysValid);
     });
 
     afterEach(function(done) {

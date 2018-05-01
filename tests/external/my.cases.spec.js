@@ -1,6 +1,5 @@
 var expect = require('chai').expect;
 var Server = require('../../app/server/server');
-var alwaysValid = require('../support/token.always.valid.js');
 var Database = require('../../app/store/database');
 var Migrator = require('../../app/migrations/migrator');
 var Truncator = require('../support/truncator');
@@ -17,7 +16,6 @@ describe('My cases endpoint', function() {
 
     beforeEach(function(done) {
         server = new Server();
-        server.useTokenValidator(alwaysValid);
         database = new Database();
         server.useDatabase(database);
         var migrator = new Migrator();
@@ -57,38 +55,14 @@ describe('My cases endpoint', function() {
                 };
                 get(options, (err, response, body)=> {
                     expect(response.statusCode).to.equal(200);
-                    expect(JSON.parse(body)).to.deep.equal({
-                        cases: [
-                            { id:newId, type:'crazy-max', modified:now, status:'new', data:{value:'max'} }
-                        ]
-                    });
+                    let theCase = JSON.parse(body).cases[0];
+
+                    expect(theCase.id).to.equal(newId);
+                    expect(theCase.type).to.equal('crazy-max');
+                    expect(theCase.status).to.equal('new');
+                    expect(theCase.data).to.deep.equal({value:'max'});
+                    expect(new Date()-new Date(theCase.modified)).to.be.lessThan(1000);
                     done();
-                });
-            });
-        });
-    });
-
-    it('is a rest service that requires a valid token', function(done){
-        server.useTokenValidator({
-            validate: function(token, callback) {
-                callback(false);
-            }
-        });
-        execute('select current_timestamp', [], function(rows) {
-            var now = rows[0].current_timestamp;
-            now = JSON.stringify(now).toString();
-            now = now.substring(1, now.lastIndexOf('.'))+'Z';
-
-            execute('insert into forms(type, status, data) values($1, $2, $3);',
-                ['crazy', 'new', JSON.stringify({value:42})], function() {
-                execute('select last_value from forms_id_seq', [], function(rows) {
-                    var newId = parseInt(rows[0].last_value);
-
-                    get(home + '/api/cases?token=any', function(err, response, body) {
-                        expect(response.statusCode).to.equal(403);
-                        expect(body).to.deep.equal('');
-                        done();
-                    });
                 });
             });
         });
