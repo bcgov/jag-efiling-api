@@ -7,9 +7,9 @@ Hub.prototype.searchForm7 = function(file, callback) {
     var self = this;
     request(this.url, function(err, response, body) {
         var data = JSON.parse(body);
-        var parties = data['soap:Envelope']['soap:Body']['ViewCasePartyResponse']['ViewCasePartyResult']['Parties']['Party']
-        var appellant = parties[0];
-        var respondent = parties[1];
+        var parties = self.parties(data);
+        var appellant = self.appellant(parties);
+        var respondent = self.respondent(parties);
 
         callback({
             appellant: { 
@@ -30,6 +30,23 @@ Hub.prototype.searchForm7 = function(file, callback) {
             }
         });
     });    
+};
+Hub.prototype.parties = function(data) {
+    return data['soap:Envelope']['soap:Body']['ViewCasePartyResponse']['ViewCasePartyResult']['Parties']['Party'];
+};
+Hub.prototype.appellant = function(parties) {
+    var found = undefined;
+    parties.forEach((party)=>{        
+        if (party['PartyRole'] == 'Appellant') { found = party; }
+    });
+    return found;
+};
+Hub.prototype.respondent = function(parties) {
+    var found = undefined;
+    parties.forEach((party)=>{        
+        if (party['PartyRole'] == 'Respondent') { found = party; }
+    });
+    return found;
 };
 Hub.prototype.name = function(dude) {
     return dude['FirstName']+' '+dude['LastName'];
