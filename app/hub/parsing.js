@@ -12,14 +12,14 @@ var buildPartyInfo = function(party) {
         }
     }
 };
-var rawAppellant = function(parties) {
+var rawAppellants = function(parties) {
     var found = [];
     parties.forEach((party)=>{        
         if (party['PartyRole'] == 'Appellant') { found.push(party); }
     });
     return found;
 };
-var rawRespondent = function(parties) {
+var rawRespondents = function(parties) {
     var found = [];
     parties.forEach((party)=>{        
         if (party['PartyRole'] == 'Respondent') { found.push(party); }
@@ -44,8 +44,8 @@ var lawyerFirmAddress = function(party) {
 module.exports = {
     extractParties:extractParties,
     buildPartyInfo:buildPartyInfo,
-    rawAppellant:rawAppellant,
-    rawRespondent:rawRespondent,
+    rawAppellants:rawAppellants,
+    rawRespondents:rawRespondents,
     name:name,
     lawyer:lawyer,
     lawyerFirm:lawyerFirm,

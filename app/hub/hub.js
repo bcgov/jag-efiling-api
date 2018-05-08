@@ -1,5 +1,5 @@
 var request = require('request');
-var { extractParties, buildPartyInfo, rawAppellant, rawRespondent } = require('./parsing');
+var { extractParties, buildPartyInfo, rawAppellants, rawRespondents } = require('./parsing');
 
 function Hub(url) {
     this.url = url;
@@ -10,8 +10,8 @@ Hub.prototype.searchForm7 = function(file, callback) {
         var parties = extractParties(data);
 
         callback({
-            appellants: rawAppellant(parties).map(buildPartyInfo),
-            respondents: rawRespondent(parties).map(buildPartyInfo)
+            appellants: rawAppellants(parties).map(buildPartyInfo),
+            respondents: rawRespondents(parties).map(buildPartyInfo)
         });
     });    
 };

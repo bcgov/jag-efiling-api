@@ -36,11 +36,27 @@ describe('Hub search-form-7', ()=> {
                             name:'John Smith',
                             address:'123 - Nice Street B201 Here V1V 0M0'
                         }
+                    },
+                    {
+                        name:'MAX SUPERFREE',
+                        organization:'FREE Inc.',
+                        sollicitor: {
+                            name:'John Smith',
+                            address:'123 - Nice Street B201 Here V1V 0M0'
+                        }
                     }
                 ],
                 respondents: [
                     {
                         name:'Bob NOT SO FREE',
+                        organization:'NOT FREE Inc.',
+                        sollicitor: {
+                            name:'Jane Doe',
+                            address:'456 - Near Street A2 Far V2V 0M0'
+                        }
+                    },
+                    {
+                        name:'BOB NOT FREE',
                         organization:'NOT FREE Inc.',
                         sollicitor: {
                             name:'Jane Doe',
