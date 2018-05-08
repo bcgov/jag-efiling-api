@@ -5,7 +5,7 @@ function Hub(url) {
     this.url = url;
 };
 Hub.prototype.searchForm7 = function(file, callback) {    
-    request(this.url, function(err, response, body) {
+    request(this.url + '/form7s?caseNumber='+file, function(err, response, body) {
         var data = JSON.parse(body);
         var parties = extractParties(data);
 
