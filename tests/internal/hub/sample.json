@@ -1,0 +1,84 @@
+{
+    "soap:Envelope": {
+        "@xmlns:soap": "any",
+        "@xmlns:xsi": "any",
+        "@xmlns:xsd": "any",
+        "soap:Body": {
+            "ViewCasePartyResponse": {
+                "@xmlns": "any",
+                "ViewCasePartyResult": {
+                    "CaseId": "67890",
+                    "CaseNumber": "CA12345",
+                    "CaseStatus": "Active",
+                    "CaseType": "Civil",
+                    "FilingDate": "2011-05-13T09:00:00",
+                    "StyleOfCauseA": "E-Filing Deployment",
+                    "StyleOfCauseAppellantA": "true",
+                    "StyleOfCauseB": "Test Case",
+                    "Parties": {
+                        "Party": [
+                            {
+                                "FirstName": "Max",
+                                "InPerson": "false",
+                                "LastName": "FREE",
+                                "LegalRepresentation": {
+                                    "Lawyer": {
+                                        "Cell": null,
+                                        "Email": null,
+                                        "Firm": {
+                                            "Address1": "123 - Nice Street",
+                                            "Address2": "B201",
+                                            "City": "Here",
+                                            "Fax": "111-222-3333",
+                                            "FirmName": "Firm name",
+                                            "Phone": "111-222-3333",
+                                            "PostalCode": "V1V 0M0",
+                                            "Province": "British Columbia"
+                                        },
+                                        "FirstName": "John",
+                                        "LastName": "Smith",
+                                        "Phone": "111-222-3333",
+                                        "QueensCounsel": "false"
+                                    }
+                                },
+                                "Organization": "FREE Inc.",
+                                "PartyID": "666666",
+                                "PartyRole": "Appellant",
+                                "RoleInPreviousCourt": "Other"
+                            },
+                            {
+                                "FirstName": "Bob",
+                                "InPerson": "false",
+                                "LastName": "NOT SO FREE",
+                                "LegalRepresentation": {
+                                    "Lawyer": {
+                                        "Cell": null,
+                                        "Email": null,
+                                        "Firm": {
+                                            "Address1": "456 - Near Street",
+                                            "Address2": "A2",
+                                            "City": "Far",
+                                            "Fax": "111-222-3333",
+                                            "FirmName": "Another firm",
+                                            "Phone": "111-222-3333",
+                                            "PostalCode": "V2V 0M0",
+                                            "Province": "British Columbia"
+                                        },
+                                        "FirstName": "Jane",
+                                        "LastName": "Doe",
+                                        "Phone": "111-222-3333",
+                                        "QueensCounsel": "false"
+                                    }
+                                },
+                                "Organization": "NOT FREE Inc.",
+                                "PartyID": "777777",
+                                "PartyRole": "Respondent",
+                                "RoleInPreviousCourt": "Other"
+                            }
+                        ]
+                    }
+                }
+            }
+        }
+    }
+}
