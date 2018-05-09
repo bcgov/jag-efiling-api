@@ -24,9 +24,9 @@ describe('Form 7 search', function() {
     });    
 
     it('is a rest service', function(done) {
-        get(home + '/api/forms?file=42&token=any', function(err, response, body) {
+        get(home + '/api/forms?file=CA42', function(err, response, body) {
             expect(response.statusCode).to.equal(200);
-            expect(JSON.parse(body)).to.deep.equal({ parties: [42] });
+            expect(JSON.parse(body)).to.deep.equal({ parties: ['CA42'] });
             done();
         });
     });

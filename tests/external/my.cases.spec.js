@@ -48,7 +48,7 @@ describe('My cases endpoint', function() {
             execute(background, function(rows) {
                 var newId = parseInt(rows[0].last_value);
                 var options = {
-                    url: home + '/api/cases?token=any',
+                    url: home + '/api/cases',
                     headers: {
                         'X-USER': 'max'
                     }

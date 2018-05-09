@@ -10,6 +10,11 @@ var migrator = new Migrator();
 var Server = require('./app/server/server');
 var server = new Server();
 server.useService(require('./tests/support/in.memory.service.js'));
+if (process.env.HUB_URL) {
+    var Hub = require('./app/hub/hub');
+    var hub = new Hub(process.env.HUB_URL);
+    server.useService(hub);
+}
 server.useDatabase(database);
 
 console.log('migrating...');
