@@ -33,4 +33,30 @@ describe('start script', function() {
             done();
         });
     });
+
+    it('uses Hub when env variable is set', (done)=>{
+        server.stop(()=>{
+            process.env.HUB_URL = 'this-url';
+            let name = require.resolve('../../start');
+            delete require.cache[name];
+            server = require('../../start');
+            setTimeout(function() {
+                expect(server.restAdaptor.searchFormSeven.hub.url).to.equal('this-url');
+                done();
+            }, 300);
+        });
+    });
+
+    it('uses static values when env variable is not set', (done)=>{
+        server.stop(()=>{
+            let name = require.resolve('../../start');
+            delete require.cache[name];
+            process.env.HUB_URL = undefined;
+            server = require('../../start');
+            setTimeout(function() {
+                expect(server.restAdaptor.searchFormSeven.hub.expected.appellant.name).to.equal('Jason Dent');
+                done();
+            }, 300);
+        });
+    });
 });
