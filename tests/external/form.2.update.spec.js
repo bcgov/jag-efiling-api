@@ -42,7 +42,6 @@ describe('Form 2 update', function() {
             var options = {
                 url: home + '/api/forms/1',
                 form:{
-                    token: 'any',
                     data: JSON.stringify({ field:'new value' })
                 },
                 headers: {
@@ -84,7 +83,6 @@ describe('Form 2 update', function() {
             let options = {
                 url: home + '/api/forms/1',
                 form: {
-                    token: 'any',
                     data: JSON.stringify({field: 'new value'})
                 },
                 headers: {
@@ -95,9 +93,9 @@ describe('Form 2 update', function() {
                 expect(response.statusCode).to.equal(200);
 
                 let sql = `
-                   SELECT data, modified
-                   FROM forms
-                   WHERE forms.id=$1
+                    SELECT data, modified
+                    FROM forms
+                    WHERE forms.id=$1
                 `;
                 execute(sql, [1], function (rows) {
                     expect(rows.length).to.equal(1);
