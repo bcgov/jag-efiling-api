@@ -16,7 +16,6 @@ Migrator.prototype.migrateNow = function(done) {
         { sql:'insert into versions(id) values($1)', params:[5] }
     ];
     execute(calls, function(rows, error) {
-        if (error) { console.log(error); }
         done(error);
     });
 };
