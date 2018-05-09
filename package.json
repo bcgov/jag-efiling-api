@@ -26,6 +26,10 @@
         "sinon-chai": "latest",
         "zombie": "latest"
     },
+    "engines": {
+        "node": ">=6.14.0",
+        "npm": ">=3.10.10"
+    },
     "scripts": {
         "pretest": "dropdb --if-exists $PGDATABASE -U postgres; createdb $PGDATABASE -U postgres",
         "test": "npm run external-tests",
