@@ -6,7 +6,15 @@ let PersonInfo = require('../features/person.info');
 let UpdateFormTwo = require('../features/update.form.2');
 
 let RestAdaptor = function() {
-    this.renderSearchFormSevenResult = function(data, response) { response.write( JSON.stringify({ parties:data })); response.end(); };
+    this.renderSearchFormSevenResult = function(data, response) { 
+        if (data.indexOf('404') == 0) {
+            response.statusCode = 404;
+            response.write('NOT FOUND');
+        } else {
+            response.write( JSON.stringify({ parties:data })); 
+        }        
+        response.end(); 
+    };
     this.renderMyCasesResult = function(data, response) { response.write( JSON.stringify({ cases:data })); response.end(); };    
     this.renderCreateFormTwoResult = function(id, response) {
         response.writeHead(201, {'Location': '/forms/' + id});

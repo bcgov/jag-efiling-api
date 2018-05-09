@@ -30,4 +30,17 @@ describe('Form 7 search', function() {
             done();
         });
     });
+
+    it('propagates 404', function(done) {
+        server.useService({
+            searchForm7: function(fileNumber, callback) {
+                callback('404:NOT FOUND');
+            }
+        });
+        get(home + '/api/forms?file=CA42', function(err, response, body) {
+            expect(response.statusCode).to.equal(404);
+            expect(body).to.deep.equal('NOT FOUND');
+            done();
+        });
+    });
 });
