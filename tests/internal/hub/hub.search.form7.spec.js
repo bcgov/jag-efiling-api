@@ -1,6 +1,7 @@
 var expect = require('chai').expect;
 var fs = require('fs');
 var http = require('http');
+var path = require('path');
 var Hub = require('../../../app/hub/hub');
 
 describe('Hub search-form-7', ()=> {
@@ -10,7 +11,7 @@ describe('Hub search-form-7', ()=> {
     var port = 8111;
     var ip = 'localhost';
     var far = 'http://' + ip + ':' + port;
-    var body = fs.readFileSync('./tests/internal/hub/sample.json').toString();
+    var body = fs.readFileSync(path.join(__dirname, 'sample.json')).toString();
     var received;
 
     beforeEach((done)=> {
