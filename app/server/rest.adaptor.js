@@ -45,7 +45,7 @@ RestAdaptor.prototype.useDatabase = function(database) {
 };
 RestAdaptor.prototype.route = function(app) {
     app.get('/api/forms', (request, response)=> {
-        this.searchFormSeven.now({ file:parseInt(request.query.file) }, (data)=> {
+        this.searchFormSeven.now({ file:request.query.file }, (data)=> {
             this.renderSearchFormSevenResult(data, response);
         });
     });
