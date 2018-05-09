@@ -78,4 +78,20 @@ describe('Hub search-form-7', ()=> {
             exit();
         });
     });
+
+    it('propagates 404', (done)=>{
+        server.close(()=>{
+            server = http.createServer((request, response)=>{
+                response.statusCode = 404;
+                response.setHeader('content-type', 'application/json');
+                response.write('NOT FOUND');
+                response.end();
+            }).listen(port, ()=>{
+                hub.searchForm7('any', (data)=> {
+                    expect(data).to.equal('404:NOT FOUND');
+                    done();
+                });    
+            });
+        })
+    });
 });
