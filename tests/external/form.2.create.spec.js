@@ -35,7 +35,6 @@ describe('Form 2 create', function() {
         var options = {
             url: home + '/api/forms',
             form:{
-                token: 'any',
                 data: JSON.stringify({ any:'field' })
             },
             headers: {

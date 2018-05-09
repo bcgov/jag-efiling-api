@@ -42,7 +42,6 @@ describe('Form 2 update', function() {
             var options = {
                 url: home + '/api/forms/1',
                 form:{
-                    token: 'any',
                     data: JSON.stringify({ field:'new value' })
                 },
                 headers: {
@@ -89,7 +88,6 @@ describe('Form 2 update', function() {
                 let options = {
                     url: home + '/api/forms/1',
                     form: {
-                        token: 'any',
                         data: JSON.stringify({field: 'new value'})
                     },
                     headers: {
