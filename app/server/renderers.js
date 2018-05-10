@@ -1,7 +1,7 @@
 let renderSearchFormSevenResult = function(data, response) { 
     if (data == '404:NOT FOUND') {
         response.statusCode = 404;
-        response.write('NOT FOUND');
+        response.write(JSON.stringify({message:'not found'}));
     } else {
         response.write( JSON.stringify({ parties:data })); 
     }        
