@@ -3,14 +3,17 @@ var extractParties = function(data) {
 };
 
 var buildPartyInfo = function(party) {
-    return { 
+    let info = { 
         name:name(party),
-        organization:party['Organization'] ,
-        solicitor : {
+        organization:party['Organization']
+    };
+    if (lawyer(party)) {
+        info.solicitor = {
             name: name(lawyer(party)),
             address: lawyerFirmAddress(party)
         }
-    }
+    };
+    return info;
 };
 var rawAppellants = function(parties) {
     var found = [];
@@ -30,7 +33,7 @@ var name = function(dude) {
     return dude['FirstName']+' '+dude['LastName'];
 };
 var lawyer = function(party) {
-    return party['LegalRepresentation']['Lawyer']
+    return party['LegalRepresentation'] ? party['LegalRepresentation']['Lawyer'] : null;
 };
 var lawyerFirm = function(party) {
     return lawyer(party)['Firm'];

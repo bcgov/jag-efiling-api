@@ -118,4 +118,39 @@ describe('Hub search-form-7', ()=> {
             });
         })
     });
+
+    it('resists missing Legal representation', (exit)=>{
+        body = fs.readFileSync(path.join(__dirname, 'sample.with.missing.legal.json')).toString();
+        hub.searchForm7('any', (data)=> {
+            expect(data).to.deep.equal({
+                appellants: [
+                    {
+                        name:'Max FREE',
+                        organization:'FREE Inc.',
+                        solicitor: {
+                            name:'John Smith',
+                            address: {
+                                addressLine1:'123 - Nice Street',
+                                addressLine2:'B201',
+                                city:'Here',
+                                province:'British Columbia',
+                                postalCode:'V1V 0M0'
+                            }
+                        }
+                    },
+                    {
+                        name:'Max FREE',
+                        organization:'FREE Inc.'                        
+                    }
+                ],
+                respondents: [
+                    {
+                        name:'Bob NOT SO FREE',
+                        organization:'NOT FREE Inc.'
+                    }
+                ]
+            });
+            exit();
+        });
+    });
 });
