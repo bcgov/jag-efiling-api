@@ -6,7 +6,7 @@ var buildPartyInfo = function(party) {
     return { 
         name:name(party),
         organization:party['Organization'] ,
-        sollicitor : {
+        solicitor : {
             name: name(lawyer(party)),
             address: lawyerFirmAddress(party)
         }
@@ -38,7 +38,13 @@ var lawyerFirm = function(party) {
 var lawyerFirmAddress = function(party) {
     var firm = lawyerFirm(party);
 
-    return firm['Address1']+' '+firm['Address2']+' '+firm['City']+' '+firm['PostalCode'];
+    return {
+        addressLine1:firm['Address1'],
+        addressLine2:firm['Address2'],
+        city:firm['City'],
+        postalCode:firm['PostalCode'],
+        province:firm['Province']
+    };
 };
 
 module.exports = {

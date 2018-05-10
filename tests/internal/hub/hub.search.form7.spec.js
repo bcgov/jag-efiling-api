@@ -42,17 +42,29 @@ describe('Hub search-form-7', ()=> {
                     {
                         name:'Max FREE',
                         organization:'FREE Inc.',
-                        sollicitor: {
+                        solicitor: {
                             name:'John Smith',
-                            address:'123 - Nice Street B201 Here V1V 0M0'
+                            address: {
+                                addressLine1:'123 - Nice Street',
+                                addressLine2:'B201',
+                                city:'Here',
+                                province:'British Columbia',
+                                postalCode:'V1V 0M0'
+                            }
                         }
                     },
                     {
                         name:'MAX SUPERFREE',
                         organization:'FREE Inc.',
-                        sollicitor: {
+                        solicitor: {
                             name:'John Smith',
-                            address:'123 - Nice Street B201 Here V1V 0M0'
+                            address: {
+                                addressLine1:'123 - Nice Street',
+                                addressLine2:'B201',
+                                city:'Here',
+                                province:'British Columbia',
+                                postalCode:'V1V 0M0'
+                            }
                         }
                     }
                 ],
@@ -60,17 +72,29 @@ describe('Hub search-form-7', ()=> {
                     {
                         name:'Bob NOT SO FREE',
                         organization:'NOT FREE Inc.',
-                        sollicitor: {
+                        solicitor: {
                             name:'Jane Doe',
-                            address:'456 - Near Street A2 Far V2V 0M0'
+                            address: {
+                                addressLine1:'456 - Near Street',
+                                addressLine2:'A2',
+                                city:'Far',
+                                province:'British Columbia',
+                                postalCode:'V2V 0M0'
+                            }
                         }
                     },
                     {
                         name:'BOB NOT FREE',
                         organization:'NOT FREE Inc.',
-                        sollicitor: {
+                        solicitor: {
                             name:'Jane Doe',
-                            address:'456 - Near Street A2 Far V2V 0M0'
+                            address: {
+                                addressLine1:'456 - Near Street',
+                                addressLine2:'A2',
+                                city:'Far',
+                                province:'British Columbia',
+                                postalCode:'V2V 0M0'
+                            }
                         }
                     }
                 ]
