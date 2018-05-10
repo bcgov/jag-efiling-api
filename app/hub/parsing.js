@@ -3,8 +3,9 @@ var extractParties = function(data) {
 };
 
 var buildPartyInfo = function(party) {
-    let info = { 
-        name:name(party)        
+    let info = {};
+    if (party['FirstName']) { 
+        info.name = name(party)        
     };
     if (party['Organization']) {
         info.organization = party['Organization'];

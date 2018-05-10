@@ -169,4 +169,20 @@ describe('Hub search-form-7', ()=> {
             exit();
         });
     });
+
+    it('resists missing name', (exit)=>{
+        body = fs.readFileSync(path.join(__dirname, 'sample.with.missing.name.json')).toString();
+        hub.searchForm7('any', (data)=> {
+            expect(data).to.deep.equal({
+                appellants: [
+                    {
+                        organization:'Freedom Inc.'                  
+                    }
+                ],
+                respondents: [                    
+                ]
+            });
+            exit();
+        });
+    });
 });
