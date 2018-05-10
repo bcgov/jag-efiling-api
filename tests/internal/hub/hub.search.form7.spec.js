@@ -153,4 +153,20 @@ describe('Hub search-form-7', ()=> {
             exit();
         });
     });
+
+    it('resists missing organization', (exit)=>{
+        body = fs.readFileSync(path.join(__dirname, 'sample.with.missing.organization.json')).toString();
+        hub.searchForm7('any', (data)=> {
+            expect(data).to.deep.equal({
+                appellants: [
+                    {
+                        name:'Max FREE'                  
+                    }
+                ],
+                respondents: [                    
+                ]
+            });
+            exit();
+        });
+    });
 });
