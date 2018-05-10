@@ -185,4 +185,12 @@ describe('Hub search-form-7', ()=> {
             exit();
         });
     });
+
+    it('resists empty response', (exit)=>{
+        body = fs.readFileSync(path.join(__dirname, 'empty.response.json')).toString();
+        hub.searchForm7('any', (data)=> {
+            expect(data).to.equal('404:NOT FOUND');
+            exit();
+        });
+    });
 });

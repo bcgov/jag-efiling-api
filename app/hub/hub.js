@@ -13,11 +13,15 @@ Hub.prototype.searchForm7 = function(file, callback) {
         else {
             var data = JSON.parse(body);
             var parties = extractParties(data);
-
-            callback({
-                appellants: rawAppellants(parties).map(buildPartyInfo),
-                respondents: rawRespondents(parties).map(buildPartyInfo)
-            });
+            if (parties) {
+                callback({
+                    appellants: rawAppellants(parties).map(buildPartyInfo),
+                    respondents: rawRespondents(parties).map(buildPartyInfo)
+                });
+            }
+            else {
+                callback('404:NOT FOUND');
+            }
         }
     });    
 };

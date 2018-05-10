@@ -1,5 +1,7 @@
 var extractParties = function(data) {
-    return data['soap:Envelope']['soap:Body']['ViewCasePartyResponse']['ViewCasePartyResult']['Parties']['Party'];
+    if (data['soap:Envelope']['soap:Body']['ViewCasePartyResponse']) {
+        return data['soap:Envelope']['soap:Body']['ViewCasePartyResponse']['ViewCasePartyResult']['Parties']['Party'];
+    }    
 };
 
 var buildPartyInfo = function(party) {

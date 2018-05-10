@@ -1,0 +1,10 @@
+{
+    "soap:Envelope": {
+        "@xmlns:soap": "any",
+        "@xmlns:xsi": "any",
+        "@xmlns:xsd": "any",
+        "soap:Body": {
+            "ViewCasePartyResponse": null
+        }
+    }
+}
