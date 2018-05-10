@@ -42,7 +42,6 @@ describe('Form 2 update', function() {
             var options = {
                 url: home + '/api/forms/1',
                 form:{
-                    token: 'any',
                     data: JSON.stringify({ field:'new value' })
                 },
                 headers: {
@@ -69,51 +68,42 @@ describe('Form 2 update', function() {
     });
 
     it('it updates the modified time', function(done) {
-
-        let longAgo = new Date('1999-12-31 23:59:59');
-        execute('select current_timestamp', [], function (rows) {
-            // record time for comparison to modified date; test should take within one second to complete
-            let recent = rows[0].current_timestamp;
-            recent = new Date(recent);
-
-            let background = [
-                'alter sequence person_id_seq restart',
-                'alter sequence forms_id_seq restart',
-                {sql: 'insert into person(login) values ($1)', params: ['max']},
-                {
-                    sql: 'insert into forms(person_id, type, status, data, modified) values($1, $2, $3, $4, $5);',
-                    params: [1, 'crazy-max', 'new', JSON.stringify({field: 'old value'}), longAgo]
+        let yesterday = new Date();
+        yesterday.setDate(yesterday.getDate()-1);
+        let background = [
+            'alter sequence person_id_seq restart',
+            'alter sequence forms_id_seq restart',
+            {sql: 'insert into person(login) values ($1)', params: ['max']},
+            {
+                sql: 'insert into forms(person_id, type, status, data, modified) values($1, $2, $3, $4, $5);',
+                params: [1, 'crazy-max', 'new', JSON.stringify({field: 'old value'}), yesterday]
+            },
+        ];
+        execute(background, (rows, error) => {
+            let options = {
+                url: home + '/api/forms/1',
+                form: {
+                    data: JSON.stringify({field: 'new value'})
                 },
-            ];
-            execute(background, (rows, error) => {
-                let options = {
-                    url: home + '/api/forms/1',
-                    form: {
-                        token: 'any',
-                        data: JSON.stringify({field: 'new value'})
-                    },
-                    headers: {
-                        'X-USER': 'max'
-                    }
-                };
-                request.put(options, function (err, response, body) {
-                    expect(response.statusCode).to.equal(200);
+                headers: {
+                    'X-USER': 'max'
+                }
+            };
+            request.put(options, function (err, response, body) {
+                expect(response.statusCode).to.equal(200);
 
-                    let sql = `
-                       SELECT data, modified
-                       FROM forms
-                       WHERE forms.id=$1
-                    `;
-                    execute(sql, [1], function (rows) {
-                        expect(rows.length).to.equal(1);
-                        let {data, modified} = rows[0];
-                        let timeUpdated = new Date(modified);
-                        let timeElapsed = timeUpdated - recent;
-                        expect( timeElapsed < 1000 && timeElapsed > 0 ).to.equal(true);
-                        expect(timeUpdated - longAgo).not.to.equal(0);
-                        expect(data).to.equal(JSON.stringify({field: 'new value'}));
-                        done();
-                    });
+                let sql = `
+                    SELECT data, modified
+                    FROM forms
+                    WHERE forms.id=$1
+                `;
+                execute(sql, [1], function (rows) {
+                    expect(rows.length).to.equal(1);
+                    let {data, modified} = rows[0];
+                    let timeUpdated = new Date(modified);
+
+                    expect(timeUpdated).not.to.equal(yesterday);
+                    done();
                 });
             });
         });

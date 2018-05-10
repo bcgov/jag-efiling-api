@@ -19,12 +19,12 @@
         "istanbul": "latest",
         "jsdom": "latest",
         "log4js": "latest",
-        "mkdirp": "latest",
         "mocha": "latest",
-        "request": "2.81.0",
-        "sinon": "latest",
-        "sinon-chai": "latest",
-        "zombie": "latest"
+        "request": "2.81.0"
+    },
+    "engines": {
+        "node": ">=6.14.0",
+        "npm": ">=3.10.10"
     },
     "scripts": {
         "pretest": "dropdb --if-exists $PGDATABASE -U postgres; createdb $PGDATABASE -U postgres",
@@ -32,6 +32,7 @@
         "start": "node start.js",
         "external-tests": "mocha tests/external --recursive --exit --timeout 0",
         "internal-tests": "mocha tests/internal/*.spec.js tests/support/*.spec.js tests/internal/hub/*.spec.js --recursive --exit",
-        "test:coverage": "istanbul cover node_modules/mocha/bin/_mocha -- app/server/spec/* app/client/spec/*"
+        "test:coverage": "istanbul cover --report lcovonly node_modules/mocha/bin/_mocha -- --recursive tests",
+        "coverage:report": "istanbul report"
     }
 }

@@ -33,7 +33,6 @@ describe('Person save', function() {
 
     it('is a rest service', function(done) {
         request.post(home + '/api/persons', {form:{
-            token: 'any',
             data: 'joe'
         }}, function(err, response, body) {
             expect(response.statusCode).to.equal(201);
@@ -53,7 +52,6 @@ describe('Person save', function() {
 
     it('does not duplicate entries', function(done) {
         request.post(home + '/api/persons', {form:{
-            token: 'any',
             data: 'joe'
         }}, function(err, response, body) {
             
@@ -63,7 +61,6 @@ describe('Person save', function() {
             var id = parseInt(location.substring(location.lastIndexOf('/')+1));
 
             request.post(home + '/api/persons', {form:{
-                token: 'any',
                 data: 'joe'
             }}, function(err, response, body) {
                 

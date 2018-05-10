@@ -3,9 +3,6 @@ let { execute } = require('yop-postgresql');
 let Persons = function() {
 };
 
-Persons.prototype.selectAll = function(callback) {
-    execute('select id, username from person', [], callback);
-};
 Persons.prototype.create = function(options, callback) {
     execute('insert into person(login) values($1);', 
         [options.login], function() {

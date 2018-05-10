@@ -1,6 +1,7 @@
 var expect = require('chai').expect;
 var fs = require('fs');
 var http = require('http');
+var path = require('path');
 var Hub = require('../../../app/hub/hub');
 
 describe('Hub search-form-7', ()=> {
@@ -10,7 +11,7 @@ describe('Hub search-form-7', ()=> {
     var port = 8111;
     var ip = 'localhost';
     var far = 'http://' + ip + ':' + port;
-    var body = fs.readFileSync('./tests/internal/hub/sample.json').toString();
+    var body = fs.readFileSync(path.join(__dirname, 'sample.json')).toString();
     var received;
 
     beforeEach((done)=> {
@@ -76,5 +77,21 @@ describe('Hub search-form-7', ()=> {
             });
             exit();
         });
+    });
+
+    it('propagates 404', (done)=>{
+        server.close(()=>{
+            server = http.createServer((request, response)=>{
+                response.statusCode = 404;
+                response.setHeader('content-type', 'application/json');
+                response.write('NOT FOUND');
+                response.end();
+            }).listen(port, ()=>{
+                hub.searchForm7('any', (data)=> {
+                    expect(data).to.equal('404:NOT FOUND');
+                    done();
+                });    
+            });
+        })
     });
 });
