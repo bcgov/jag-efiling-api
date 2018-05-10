@@ -1,5 +1,5 @@
 let renderSearchFormSevenResult = function(data, response) { 
-    if (data.indexOf('404') == 0) {
+    if (data == '404:NOT FOUND') {
         response.statusCode = 404;
         response.write('NOT FOUND');
     } else {

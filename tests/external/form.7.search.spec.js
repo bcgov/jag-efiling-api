@@ -14,7 +14,7 @@ describe('Form 7 search', function() {
         server.start(port, ip, done);
         server.useService({
             searchForm7: function(fileNumber, callback) {
-                callback([fileNumber]);
+                callback({fileNumber:fileNumber});
             }
         });
     });
@@ -26,7 +26,7 @@ describe('Form 7 search', function() {
     it('is a rest service', function(done) {
         get(home + '/api/forms?file=CA42', function(err, response, body) {
             expect(response.statusCode).to.equal(200);
-            expect(JSON.parse(body)).to.deep.equal({ parties: ['CA42'] });
+            expect(JSON.parse(body)).to.deep.equal({ parties: { fileNumber:'CA42'} });
             done();
         });
     });
