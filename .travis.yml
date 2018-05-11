@@ -11,3 +11,4 @@ before_script:
   - export PGDATABASE=ci
   - export PGUSER=postgres
   - export PGPASSWORD=
+script: npm run test:coverage
