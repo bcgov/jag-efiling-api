@@ -13,6 +13,7 @@ Forms.prototype.selectByLogin = function(login, callback) {
         FROM forms, person
         WHERE person.login = $1
         AND forms.person_id = person.id
+        AND status <> 'archived'
     `;
     execute(select, [login], callback);
 };

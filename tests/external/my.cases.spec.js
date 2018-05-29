@@ -61,4 +61,29 @@ describe('My cases endpoint', function() {
             });
         });
     });
+
+    it('ignores archived case', function(done){
+        var background = [
+            'alter sequence person_id_seq restart',
+            { sql:'insert into person(login) values ($1)', params:['max'] },
+            { sql: 'insert into forms(person_id, type, status, data) values($1, $2, $3, $4);', params:[1, 'crazy-max', 'archived', JSON.stringify({value:'max'})] },
+            'select last_value from forms_id_seq'
+        ];
+        execute(background, function(rows) {
+            var newId = parseInt(rows[0].last_value);
+            var options = {
+                url: home + '/api/cases',
+                headers: {
+                    'X-USER': 'max'
+                }
+            };
+            get(options, (err, response, body)=> {
+                expect(response.statusCode).to.equal(200);                
+                let cases = JSON.parse(body).cases;
+                
+                expect(cases.length).to.equal(0);
+                done();
+            });
+        });
+    });
 });
