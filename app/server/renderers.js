@@ -34,6 +34,9 @@ let renderPersonInfoResult = function(person, response) {
     }
     response.end();
 };
+let renderArchiveCasesResult = function(response) {
+    response.end();
+};
 
 module.exports = {
     renderSearchFormSevenResult:renderSearchFormSevenResult,
@@ -41,5 +44,6 @@ module.exports = {
     renderCreateFormTwoResult:renderCreateFormTwoResult,
     renderUpdateFormTwoResult:renderUpdateFormTwoResult,
     renderSavePersonResult:renderSavePersonResult,
-    renderPersonInfoResult:renderPersonInfoResult
+    renderPersonInfoResult:renderPersonInfoResult,
+    renderArchiveCasesResult:renderArchiveCasesResult
 };

@@ -39,6 +39,16 @@ Forms.prototype.update = function(form, callback) {
             });
         });
 };
+Forms.prototype.archive = function(ids, callback) {
+    let statements = [];
+    for (var i=0; i<ids.length; i++) {
+        let statement = { sql:`update forms set status='archived' where id = $1`, params:[ids[i]] }
+        statements.push(statement);
+    }
+    execute(statements, [], function(rows, err) {
+        callback();
+    });
+};
 
 module.exports = {
     Forms:Forms
