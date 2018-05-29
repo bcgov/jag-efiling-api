@@ -1,6 +1,8 @@
-let { SearchFormSeven, MyCases, CreateFormTwo, SavePerson, PersonInfo, UpdateFormTwo } = require('../features');
+let { SearchFormSeven, MyCases, CreateFormTwo, SavePerson, PersonInfo, UpdateFormTwo, 
+      ArchiveCases } = require('../features');
 let { renderSearchFormSevenResult, renderMyCasesResult, renderCreateFormTwoResult,
-      renderUpdateFormTwoResult, renderSavePersonResult, renderPersonInfoResult } = require('./renderers');
+      renderUpdateFormTwoResult, renderSavePersonResult, renderPersonInfoResult,
+      renderArchiveCasesResult } = require('./renderers');
 
 let RestAdaptor = function() {};
 
@@ -13,6 +15,7 @@ RestAdaptor.prototype.useDatabase = function(database) {
     this.updateFormTwo = new UpdateFormTwo(database);
     this.savePerson = new SavePerson(database); 
     this.personInfo = new PersonInfo(database);
+    this.archiveCases = new ArchiveCases(database);
 };
 RestAdaptor.prototype.route = function(app) {
     app.get('/api/forms', (request, response)=> {
@@ -54,6 +57,13 @@ RestAdaptor.prototype.route = function(app) {
         let login = request.params.login;
         this.personInfo.now(login, (data)=> {
             renderPersonInfoResult(data, response);
+        });
+    });
+    app.post('/api/cases/archive', (request, response)=> {
+        let params = request.body;
+        let ids = JSON.parse(params.ids);
+        this.archiveCases.now(ids, ()=> {
+            renderArchiveCasesResult(response);
         });
     });
     app.get('/*', function (req, res) { res.send( JSON.stringify({ message: 'pong' }) ); });

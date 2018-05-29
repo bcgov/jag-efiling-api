@@ -50,5 +50,8 @@ Database.prototype.findPersonByLogin = function(login, callback) {
         callback(rows[0]);
     });
 };
+Database.prototype.archiveCases = function(ids, callback) {        
+    this.forms.archive(ids, callback);
+};
 
 module.exports = Database;

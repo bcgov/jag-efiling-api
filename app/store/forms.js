@@ -13,6 +13,7 @@ Forms.prototype.selectByLogin = function(login, callback) {
         FROM forms, person
         WHERE person.login = $1
         AND forms.person_id = person.id
+        AND status <> 'archived'
     `;
     execute(select, [login], callback);
 };
@@ -38,6 +39,16 @@ Forms.prototype.update = function(form, callback) {
                 callback(parseInt(id));
             });
         });
+};
+Forms.prototype.archive = function(ids, callback) {
+    let statements = [];
+    for (var i=0; i<ids.length; i++) {
+        let statement = { sql:`update forms set status='archived' where id = $1`, params:[ids[i]] }
+        statements.push(statement);
+    }
+    execute(statements, [], function(rows, err) {
+        callback();
+    });
 };
 
 module.exports = {
