@@ -12,13 +12,6 @@ describe('Hub unavailable', function() {
 
     beforeEach((done)=> {
         brokenhub = new Hub(broken);
-        server = http.createServer((request, response)=>{
-            console.log("request url, response: ", request.url, response);
-            received = request.url;
-            response.setHeader('content-type', 'application/json');
-            response.write(body);
-            response.end();
-        }).listen(port, done);
     });
 
     afterEach(function(done) {
