@@ -76,12 +76,14 @@ describe('PDF service', function() {
                         <head>
                             <style>
                                 .align-right {
-                                    text-align: right
+                                    text-align: right;
+                                    font-size: 12pt;
+                                    font-family: Arial;
                                 }
                             </style>
                         </head>
                         <body>
-                            <div class="align-right">hello world</div>
+                            <div class="align-right">A</div>
                         </body>
                     </html>`
                 },
