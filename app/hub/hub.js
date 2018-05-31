@@ -12,7 +12,7 @@ Hub.prototype.searchForm7 = function(file, callback) {
             callback("503:SERVICE UNAVAILABLE");
         } else if (response.statusCode === 404) {
             callback('404:NOT FOUND');
-        } else if (response.statsCode === 200) {
+        } else if (response.statusCode === 200) {
             var data = JSON.parse(body);
             var parties = extractParties(data);
             if (parties) {
