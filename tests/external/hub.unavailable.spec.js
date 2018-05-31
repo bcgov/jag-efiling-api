@@ -1,5 +1,4 @@
 var expect = require('chai').expect;
-var http = require ('http');
 var Hub = require('../../app/hub/hub');
 
 describe('Hub unavailable', function() {
@@ -8,7 +7,6 @@ describe('Hub unavailable', function() {
     var brokenhub;
     var port = 8111;
     var broken = 'http://bob' + ":" + port;
-    var received;
 
     beforeEach((done)=> {
         brokenhub = new Hub(broken);
