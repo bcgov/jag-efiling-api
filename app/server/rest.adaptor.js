@@ -66,6 +66,15 @@ RestAdaptor.prototype.route = function(app) {
             renderArchiveCasesResult(response);
         });
     });
+    app.post('/api/pdf', (request, response) => {
+        response.writeHead(200, {'Content-type': 'application/pdf'});
+        let params = request.body;
+        let html = params.html;
+        var pdf = require('html-pdf');
+        pdf.create(html).toStream(function(err, stream){            
+            stream.pipe(response);
+        });
+    });
     app.get('/*', function (req, res) { res.send( JSON.stringify({ message: 'pong' }) ); });
 };
 
