@@ -25,7 +25,12 @@ describe('Hub search-form-7', ()=> {
     });
 
     afterEach(function(done) {
-        server.close(done);
+        if (server.listening) { 
+            server.close(done);
+        }
+        else {
+            done();
+        }
     });
 
     it('sends the search request', (exit)=>{
@@ -191,6 +196,15 @@ describe('Hub search-form-7', ()=> {
         hub.searchForm7('any', (data)=> {
             expect(data).to.equal('404:NOT FOUND');
             exit();
+        });
+    });
+
+    it('resists hub offline', (done)=>{
+        server.close(()=>{
+            hub.searchForm7('any', (data)=> {
+                expect(data).to.equal('503:SERVICE UNAVAILABLE');
+                done();
+            });
         });
     });
 });

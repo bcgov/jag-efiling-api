@@ -10,24 +10,15 @@ describe('Hub unavailable', function() {
     var ip = 'localhost';
     var home = 'http://' + ip + ':' + port;
 
-    beforeEach(function(done) {
-        brokenhub = new Hub('http://bob');
-
+    beforeEach(function(done) {        
         server = new Server();
-        server.start(port, ip, done);
         server.useService(new Hub('http://bob'));
+        server.start(port, ip, done);        
     });
 
     afterEach(function(done) {
         server.stop(done);
     });  
-
-    it('handles internet outages gracefully', function(done) {
-        brokenhub.searchForm7('this-id', (data)=> {
-            expect(data).to.equal('503:SERVICE UNAVAILABLE');
-            done();
-        });        
-    });
 
     it('propagates 503', function(done) {
         get(home + '/api/forms?file=CA42', function(err, response, body) {   
