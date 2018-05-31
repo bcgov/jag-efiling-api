@@ -9,7 +9,7 @@ var fs = require('fs');
 var PDFParser = require("pdf2json");
 var deepEqual = require('deep-equal');
 
-describe.only('PDF service', function() {
+describe('PDF service', function() {
 
     var server;
     var port = 5000;
@@ -71,7 +71,19 @@ describe.only('PDF service', function() {
             var options = {
                 url: home + '/api/pdf',
                 form:{
-                    html: '<html><body>hello worldA</body></html>'
+                    html: `
+                    <html>
+                        <head>
+                            <style>
+                                .align-right {
+                                    text-align: right
+                                }
+                            </style>
+                        </head>
+                        <body>
+                            <div class="align-right">hello world</div>
+                        </body>
+                    </html>`
                 },
                 headers: {
                     'X-USER': 'max'
