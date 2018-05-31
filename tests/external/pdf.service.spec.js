@@ -1,4 +1,4 @@
-var expect = require('chai').use(require('chai-bytes')).expect;
+var expect = require('chai').expect;
 var Server = require('../../app/server/server');
 var Database = require('../../app/store/database');
 var Migrator = require('../../app/migrations/migrator');
@@ -7,9 +7,9 @@ var { execute } = require('yop-postgresql');
 var request = require('request');
 var fs = require('fs');
 var PDFParser = require("pdf2json");
-var { Promise, Promises } = require('yop-promises');
+var deepEqual = require('deep-equal');
 
-describe('PDF service', function() {
+describe.only('PDF service', function() {
 
     var server;
     var port = 5000;
@@ -51,47 +51,42 @@ describe('PDF service', function() {
         });
     });
 
-    it('uses html', function(done) {
-        let expected = 'expected';
-        let actual = 'actual';
-        
-        var readExpected = new Promise();
+    let parser = function(callback) {
         let pdfParser = new PDFParser();
-        pdfParser.on("pdfParser_dataError", errData => readExpected.reject(errData.parserError));
+        pdfParser.on("pdfParser_dataError", errData => callback(errData.parserError));
         pdfParser.on("pdfParser_dataReady", pdfData => {            
-            expected = pdfData;
-            readExpected.resolve();
+            callback(pdfData);
         });
-        pdfParser.loadPDF('./tests/external/files/hello.world.pdf');
+        return pdfParser;
+    };
+    let readExpectedPdf = function(filename, callback) {
+        parser(callback).loadPDF(filename);
+    };
+    let parsePdf = function(buffer, callback) {
+        parser(callback).parseBuffer(buffer);
+    };
 
-        var readActual = new Promise();
-        var options = {
-            url: home + '/api/pdf',
-            form:{
-                html: '<html><body>hello world</body></html>'
-            },
-            headers: {
-                'X-USER': 'max'
-            },
-            encoding: null
-        };
-        request.post(options, function(err, response, body) {
-            var expected = fs.readFileSync('./tests/external/files/hello.world.pdf');
-            let pdfParser = new PDFParser();
-            pdfParser.on("pdfParser_dataError", errData => readActual.reject(errData.parserError));
-            pdfParser.on("pdfParser_dataReady", pdfData => {
-                actual = pdfData;
-                readActual.resolve();
+    it('uses html', function(done) {
+        readExpectedPdf('./tests/external/files/hello.world.pdf', (expected)=>{
+            var options = {
+                url: home + '/api/pdf',
+                form:{
+                    html: '<html><body>hello worldA</body></html>'
+                },
+                headers: {
+                    'X-USER': 'max'
+                },
+                encoding: null
+            };
+            request.post(options, function(err, response, body) {
+                parsePdf(body, (actual)=>{
+                    if (!deepEqual(expected, actual)) {
+                        fs.writeFileSync('./tests/external/files/hello.world-actual.pdf', body);
+                    }
+                    expect(actual).to.deep.equal(expected);
+                    done();
+                });
             });
-            pdfParser.parseBuffer(body);
         });
-
-        var just = new Promises();
-        just.done(()=>{
-            expect(actual).to.deep.equal(expected);
-            done();
-        })
-        just.waitFor(readExpected);
-        just.waitFor(readActual);
     });
 });

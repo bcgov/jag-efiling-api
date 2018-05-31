@@ -17,6 +17,7 @@
     },
     "devDependencies": {
         "chai": "latest",
+        "deep-equal": "^1.0.1",
         "istanbul": "latest",
         "jsdom": "latest",
         "log4js": "latest",
