@@ -2,6 +2,10 @@ let renderSearchFormSevenResult = function(data, response) {
     if (data == '404:NOT FOUND') {
         response.statusCode = 404;
         response.write(JSON.stringify({message:'not found'}));
+    } 
+    else if (data == '503:SERVICE UNAVAILABLE') {
+        response.statusCode = 503;
+        response.write(JSON.stringify({message:'service unavailable'}));
     } else {
         response.write( JSON.stringify({ parties:data })); 
     }        
