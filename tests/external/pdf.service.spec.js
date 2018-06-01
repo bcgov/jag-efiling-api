@@ -77,8 +77,8 @@ describe('PDF service', function() {
                             <style>
                                 .align-right {
                                     text-align: right;
-                                    font-family: "QuickType Pi";
-                                    font-size: 12pt;
+                                    font-family: sans-serif;
+                                    font-size: 10pt;
                                     font-style: normal;
                                 }
                             </style>
