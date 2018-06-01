@@ -65,6 +65,24 @@ describe('PDF service', function() {
     let parsePdf = function(buffer, callback) {
         parser(callback).parseBuffer(buffer);
     };
+    let xy = function(data) {
+        return { 
+            x:data.formImage.Pages[0].Texts[0].x,
+            y:data.formImage.Pages[0].Texts[0].y
+        }
+    }
+    let spaceBetween = function(actual, expected) {
+        let actualPosition = xy(actual);
+        let expectedPosition = xy(expected);
+
+        if (actualPosition.y == expectedPosition.y) {
+            return Math.abs(actualPosition.x - expectedPosition.x);
+        }
+        if (actualPosition.x == expectedPosition.x) {
+            return Math.abs(actualPosition.y - expectedPosition.y);
+        }
+        return Math.abs(actualPosition.x - expectedPosition.x) * Math.abs(actualPosition.y - expectedPosition.y);
+    }
 
     it('uses html', function(done) {
         readExpectedPdf('./tests/external/files/hello.world.pdf', (expected)=>{
@@ -75,18 +93,10 @@ describe('PDF service', function() {
                     <html>
                         <head>
                             <style>
-                                body {
-                                    padding: 0px;
-                                    margin: 0px;
-                                }
                                 .align-right {
-                                    padding: 0px;
-                                    margin: 0px;
-                                    text-align: center;
+                                    text-align: right;
                                     font-family: sans-serif;
                                     font-size: 10px;
-                                    font-style: normal;
-                                    font-weight: normal;
                                 }
                             </style>
                         </head>
@@ -105,7 +115,11 @@ describe('PDF service', function() {
                     if (!deepEqual(expected, actual)) {
                         fs.writeFileSync('./tests/external/files/hello.world-actual.pdf', body);
                     }
-                    expect(actual).to.deep.equal(expected);
+                    if (spaceBetween(actual, expected) > 1) {
+                        console.log(xy(actual));
+                        console.log(xy(expected));
+                        expect(actual).to.deep.equal(expected);
+                    }
                     done();
                 });
             });
