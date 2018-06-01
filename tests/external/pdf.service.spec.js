@@ -75,11 +75,18 @@ describe('PDF service', function() {
                     <html>
                         <head>
                             <style>
+                                body {
+                                    padding: 0px;
+                                    margin: 0px;
+                                }
                                 .align-right {
-                                    text-align: right;
+                                    padding: 0px;
+                                    margin: 0px;
+                                    text-align: center;
                                     font-family: sans-serif;
                                     font-size: 10px;
                                     font-style: normal;
+                                    font-weight: normal;
                                 }
                             </style>
                         </head>
