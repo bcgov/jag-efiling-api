@@ -31,7 +31,6 @@ describe('Hub search-form-7', ()=> {
 
     it('resists connection socket timeout', (done)=>{
         hub.searchForm7('any', (data)=> {
-            console.log("Data ", data);
             expect(data).to.equal('503:SERVICE UNAVAILABLE');
             done();
         });
