@@ -7,7 +7,7 @@ function Hub(url) {
 Hub.prototype.searchForm7 = function(file, callback) {    
     var target = this.url + '/form7s?caseNumber='+file;
 
-    request(target, {timeout: 1990}, function(err, response, body) {
+    request(target, {timeout: 2000 }, function(err, response, body) {
 
         if (err) {
             callback("503:SERVICE UNAVAILABLE");
