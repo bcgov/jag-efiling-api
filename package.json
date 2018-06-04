@@ -34,7 +34,7 @@
         "test": "npm run external-tests",
         "start": "node start.js",
         "external-tests": "mocha tests/external --recursive --exit --timeout 0",
-        "internal-tests": "mocha tests/internal/*.spec.js tests/support/*.spec.js tests/internal/hub/*.spec.js --recursive --exit",
+        "internal-tests": "mocha tests/internal/*.spec.js tests/support/*.spec.js tests/internal/hub/*.spec.js --recursive --exit --timeout 0",
         "test:coverage": "istanbul cover --report lcovonly node_modules/mocha/bin/_mocha -- --recursive tests",
         "coverage:report": "istanbul report"
     }
