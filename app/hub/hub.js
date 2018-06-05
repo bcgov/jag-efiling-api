@@ -10,7 +10,7 @@ Hub.prototype.searchForm7 = function(file, callback) {
 
     request(target, {timeout: this.timeout }, function(err, response, body) {
 
-        if (err) {
+        if (err || response.statusCode == 503) {
             callback('503:SERVICE UNAVAILABLE');            
         } 
         else {
