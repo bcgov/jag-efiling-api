@@ -12,8 +12,12 @@ var server = new Server();
 server.useService(require('./tests/support/in.memory.service.js'));
 if (process.env.HUB_URL !=='undefined' && process.env.HUB_URL !==undefined) {
     console.log('hub is ' + process.env.HUB_URL);
+    let timeout = (process.env.HUB_TIMEOUT!=='undefined' && process.env.HUB_TIMEOUT!==undefined) ?
+                parseInt(process.env.HUB_TIMEOUT):2000;
+    if (isNaN(timeout)) { timeout = 2000; }
+    console.log('hub timeout is ' + timeout);
     var Hub = require('./app/hub/hub');
-    var hub = new Hub(process.env.HUB_URL);
+    var hub = new Hub(process.env.HUB_URL, timeout);
     server.useService(hub);
 }
 server.useDatabase(database);
