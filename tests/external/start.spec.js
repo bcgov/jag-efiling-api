@@ -59,4 +59,46 @@ describe('start script', function() {
             }, 300);
         });
     });
+
+    it('uses Hub timeout when env variable is set', (done)=>{
+        server.stop(()=>{
+            process.env.HUB_URL = 'this-url';
+            process.env.HUB_TIMEOUT = 333;
+            let name = require.resolve('../../start');
+            delete require.cache[name];
+            server = require('../../start');
+            setTimeout(function() {
+                expect(server.restAdaptor.searchFormSeven.hub.timeout).to.equal(333);
+                done();
+            }, 300);
+        });
+    });
+
+    it('defaults Hub timeout when env variable is not set', (done)=>{
+        server.stop(()=>{
+            process.env.HUB_URL = 'this-url';
+            process.env.HUB_TIMEOUT = undefined;
+            let name = require.resolve('../../start');
+            delete require.cache[name];
+            server = require('../../start');
+            setTimeout(function() {
+                expect(server.restAdaptor.searchFormSeven.hub.timeout).to.equal(2000);
+                done();
+            }, 300);
+        });
+    });
+
+    it('resists NaN', (done)=>{
+        server.stop(()=>{
+            process.env.HUB_URL = 'this-url';
+            process.env.HUB_TIMEOUT = 'invalid-value';
+            let name = require.resolve('../../start');
+            delete require.cache[name];
+            server = require('../../start');
+            setTimeout(function() {
+                expect(server.restAdaptor.searchFormSeven.hub.timeout).to.equal(2000);
+                done();
+            }, 300);
+        });
+    });
 });
