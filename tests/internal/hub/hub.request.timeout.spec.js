@@ -9,14 +9,15 @@ describe('Hub search-form-7', ()=> {
     var port = 8111;
     var ip = 'localhost';
     var far = 'http://' + ip + ':' + port;
+    var timeout = 200;
 
     beforeEach((done)=> {
-        hub = new Hub(far);
+        hub = new Hub(far, timeout);
         server = http.createServer((request, response)=>{
             setTimeout(() => {
-                response.write("not important");
+                response.write('not important');
                 response.end();
-            }, 5000);
+            }, timeout*10);
         }).listen(port, done);
     });
 
