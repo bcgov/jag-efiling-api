@@ -117,7 +117,7 @@ describe('Hub search-form-7', ()=> {
                 response.end();
             }).listen(port, ()=>{
                 hub.searchForm7('any', (data)=> {
-                    expect(data).to.equal('404:NOT FOUND');
+                    expect(data).to.deep.equal({ error:{code:404} });
                     done();
                 });    
             });
@@ -194,7 +194,7 @@ describe('Hub search-form-7', ()=> {
     it('resists empty response', (exit)=>{
         body = fs.readFileSync(path.join(__dirname, 'empty.response.json')).toString();
         hub.searchForm7('any', (data)=> {
-            expect(data).to.equal('404:NOT FOUND');
+            expect(data).to.deep.equal({ error:{code:404} });
             exit();
         });
     });
@@ -202,7 +202,7 @@ describe('Hub search-form-7', ()=> {
     it('resists hub offline', (done)=>{
         server.close(()=>{
             hub.searchForm7('any', (data)=> {
-                expect(data).to.equal('503:SERVICE UNAVAILABLE');
+                expect(data).to.deep.equal({ error:{code:503} });
                 done();
             });
         });

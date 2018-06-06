@@ -11,7 +11,7 @@ Hub.prototype.searchForm7 = function(file, callback) {
     request(target, {timeout: this.timeout }, function(err, response, body) {
 
         if (err || response.statusCode == 503) {
-            callback('503:SERVICE UNAVAILABLE');            
+            callback({ error: {code:503} });
         } 
         else {
             if (response.statusCode === 200) {
@@ -24,11 +24,11 @@ Hub.prototype.searchForm7 = function(file, callback) {
                     });
                 }
                 else {
-                    callback('404:NOT FOUND');
+                    callback({ error: {code:404} });
                 }
             }
             else {
-                callback('404:NOT FOUND');
+                callback({ error: {code:404} });
             }
         }
     });    

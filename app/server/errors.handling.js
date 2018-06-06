@@ -8,14 +8,12 @@ let send404 = function(response) {
     response.end(JSON.stringify({message:'not found'}));   
 };
 module.exports = function(data, response) {
-    var next = { then: function(callback) { callback(); }};
-    if (data.error && data.error.code === 503 || data == '503:SERVICE UNAVAILABLE') {
-        send503(response);
-        next = { then: function() {} };
+    var withoutError = { then: function(callback) { callback(); }};
+    var stopHere = { then: function(callback) {}};
+    if (data.error) {
+        if (data.error.code === 503) { send503(response); }
+        if (data.error.code === 404) { send404(response); }
+        return stopHere;
     }
-    if (data.error && data.error.code === 404 || data == '404:NOT FOUND') {
-        send404(response);
-        next = { then: function() {} };
-    } 
-    return next;
+    return withoutError;
 };
