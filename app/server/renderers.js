@@ -1,11 +1,17 @@
+let render503 = function(response) {
+    response.statusCode = 503;   
+    response.write(JSON.stringify({message:'service unavailable'}));     
+};
+let render404 = function(response) {
+    response.statusCode = 404;
+    response.write(JSON.stringify({message:'not found'}));     
+};
 let renderSearchFormSevenResult = function(data, response) { 
     if (data == '404:NOT FOUND') {
-        response.statusCode = 404;
-        response.write(JSON.stringify({message:'not found'}));
+        render404(response);
     } 
     else if (data == '503:SERVICE UNAVAILABLE') {
-        response.statusCode = 503;
-        response.write(JSON.stringify({message:'service unavailable'}));
+        render503(response);
     } else {
         response.write( JSON.stringify({ parties:data })); 
     }        
@@ -13,7 +19,7 @@ let renderSearchFormSevenResult = function(data, response) {
 };
 let renderMyCasesResult = function(data, response) { 
     if (data.error) {
-        response.statusCode = 503;        
+        render503(response);
     }
     else {
         response.write( JSON.stringify({ cases:data })); 

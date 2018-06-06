@@ -38,6 +38,7 @@ describe('Database', function() {
         };
         get(options, (err, response, body)=> {
             expect(response.statusCode).to.equal(503);
+            expect(JSON.parse(body)).to.deep.equal({message:'service unavailable'});
             done();
         });
     });
