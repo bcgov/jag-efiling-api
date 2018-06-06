@@ -6,10 +6,21 @@ let Database = function() {
     this.persons = new Persons();
 };
 
+Database.prototype.sendError = function(callback, orContinue) {
+    return (rows, error)=> {
+        if (error) {
+            callback({error:error});
+        } 
+        else {
+            orContinue(rows);
+        }
+    }
+};
+
 Database.prototype.createForm = function(form, callback) {
-    this.forms.create(form, (rows, error)=> {
+    this.forms.create(form, this.sendError(callback, (rows)=> {
         callback(rows[0].last_value);
-    });
+    }));
 };
 
 Database.prototype.updateForm = function(form, callback) {
@@ -18,59 +29,49 @@ Database.prototype.updateForm = function(form, callback) {
         type:form.type,
         status:'Draft',
         data:JSON.stringify(form.data)}, 
-        (rows, error)=> {
+        this.sendError(callback, (rows)=> {
             callback(rows[0].last_value);
-        }
+        })
     );
 };
 
 Database.prototype.myCases = function(login, callback) {
-    this.forms.selectByLogin(login, function(rows, error) {
-        if (error) {
-            callback({error:error});
-        }   
-        else {     
-            callback(rows.map(function(row) {
-                let modified = row.modified;
-                modified = JSON.stringify(modified).toString();
-                modified = modified.substring(1, modified.lastIndexOf('.'))+'Z';
-                return {
-                    id: row.id,
-                    type: row.type,
-                    status: row.status,
-                    modified: modified,
-                    data: JSON.parse(row.data)
-                };
-            }));
-        }
-    });
+    this.forms.selectByLogin(login, this.sendError(callback, (rows)=> {
+        callback(rows.map(function(row) {
+            let modified = row.modified;
+            modified = JSON.stringify(modified).toString();
+            modified = modified.substring(1, modified.lastIndexOf('.'))+'Z';
+            return {
+                id: row.id,
+                type: row.type,
+                status: row.status,
+                modified: modified,
+                data: JSON.parse(row.data)
+            };
+        }));
+    }));
 };
 Database.prototype.savePerson = function(person, callback) {
-    this.persons.findByLogin(person.login, (rows, error)=> {
-        if (error) {
-            callback({error:error});
-        } 
-        else {
-            if (rows.length ==0) {
-                this.persons.create(person, (rows, error)=>{
-                    callback(rows[0].last_value);
-                });
-            }
-            else {
-                callback(rows[0].id);
-            }
+    this.persons.findByLogin(person.login, this.sendError(callback, (rows)=> {
+        if (rows.length ==0) {
+            this.persons.create(person, this.sendError(callback, (rows)=>{
+                callback(rows[0].last_value);
+            }));
         }
-    });    
+        else {
+            callback(rows[0].id);
+        }
+    }));    
 };
 Database.prototype.findPersonByLogin = function(login, callback) {
-    this.persons.findByLogin(login, (rows, error)=> {
+    this.persons.findByLogin(login, this.sendError(callback, (rows)=> {
         callback(rows[0]);
-    });
+    }));
 };
 Database.prototype.archiveCases = function(ids, callback) {        
-    this.forms.archive(ids, (rows, error)=> {
+    this.forms.archive(ids, this.sendError(callback, (rows)=> {
         callback(rows);
-    });
+    }));
 };
 
 module.exports = Database;
