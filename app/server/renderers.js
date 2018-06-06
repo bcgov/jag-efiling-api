@@ -39,7 +39,7 @@ let renderCreateFormTwoResult = function(id, response) {
 let renderUpdateFormTwoResult = function(id, response) {
     render(id, response, (cases, response) => { 
         response.writeHead(200, {'Location': '/forms/' + id});
-        response.end();
+        response.end(JSON.stringify({}));
     });  
 };
 let renderSavePersonResult = function(id, response) { 
