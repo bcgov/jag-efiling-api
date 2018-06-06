@@ -39,9 +39,7 @@ Forms.prototype.archive = function(ids, callback) {
     for (var i=0; i<ids.length; i++) {
         statements.push({ sql:`update forms set status='archived' where id = $1`, params:[ids[i]] });
     }
-    execute(statements, [], function(rows, err) {
-        callback();
-    });
+    execute(statements, [], callback);
 };
 
 module.exports = {

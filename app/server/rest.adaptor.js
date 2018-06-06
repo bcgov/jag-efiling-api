@@ -67,8 +67,8 @@ RestAdaptor.prototype.route = function(app) {
     app.post('/api/cases/archive', (request, response)=> {
         let params = request.body;
         let ids = JSON.parse(params.ids);
-        this.archiveCases.now(ids, ()=> {
-            renderArchiveCasesResult(response);
+        this.archiveCases.now(ids, (data)=> {
+            renderArchiveCasesResult(data, response);
         });
     });
     app.post('/api/pdf', (request, response) => {

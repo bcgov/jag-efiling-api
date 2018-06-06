@@ -17,44 +17,62 @@ let renderSearchFormSevenResult = function(data, response) {
     }        
     response.end(); 
 };
-let renderMyCasesResult = function(data, response) { 
-    if (data.error) {
+let renderMyCasesResult = function(cases, response) { 
+    if (cases.error) {
         render503(response);
     }
     else {
-        response.write( JSON.stringify({ cases:data })); 
+        response.write( JSON.stringify({ cases:cases })); 
     }    
     response.end(); 
 };    
-let renderCreateFormTwoResult = function(data, response) {
-    if (data.error) {
+let renderCreateFormTwoResult = function(id, response) {
+    if (id.error) {
         render503(response);
     }
     else {
-        response.writeHead(201, {'Location': '/forms/' + data});
+        response.writeHead(201, {'Location': '/forms/' + id});
         response.write(JSON.stringify({}));
     }
     response.end();
 };
 let renderUpdateFormTwoResult = function(id, response) {
-    response.writeHead(200, {'Location': '/forms/' + id});
+    if (id.error) {
+        render503(response);
+    }
+    else {
+        response.writeHead(200, {'Location': '/forms/' + id});
+    }
     response.end();
 };
 let renderSavePersonResult = function(id, response) { 
-    response.writeHead(201, {'Location': '/persons/' + id});
-    response.write(JSON.stringify({}));
+    if (id.error) {
+        render503(response);
+    }
+    else {
+        response.writeHead(201, {'Location': '/persons/' + id});
+        response.write(JSON.stringify({}));
+    }
     response.end();
 };
 let renderPersonInfoResult = function(person, response) { 
     if (person !== undefined) {
-        response.write(JSON.stringify(person));
+        if (person.error) {
+            render503(response);
+        }
+        else {
+            response.write(JSON.stringify(person));
+        }
     } 
     else {
         response.statusCode = 404;
     }
     response.end();
 };
-let renderArchiveCasesResult = function(response) {
+let renderArchiveCasesResult = function(data, response) {
+    if (data.error) {
+        render503(response);
+    }
     response.end();
 };
 
