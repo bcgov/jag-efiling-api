@@ -44,7 +44,7 @@ describe('Person info endpoint', function() {
     it('resists unknown user', (done)=> {
         get(home + '/api/persons/max', function(err, response, body) {
             expect(response.statusCode).to.equal(404);
-            expect(body).to.equal('');
+            expect(JSON.parse(body)).to.deep.equal({});
             done();
         });
     });
