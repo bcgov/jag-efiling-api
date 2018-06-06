@@ -40,13 +40,19 @@ Database.prototype.myCases = function(login, callback) {
     });
 };
 Database.prototype.savePerson = function(person, callback) {
-    this.persons.findByLogin(person.login, (rows)=> {
-        if (rows.length ==0) {
-            this.persons.create(person, callback);
-        }
+    this.persons.findByLogin(person.login, (rows, error)=> {
+        if (error) {
+            callback({error:error});
+        } 
         else {
-            let id = rows[0].id;
-            callback(id);
+            if (rows.length ==0) {
+                this.persons.create(person, (rows)=>{
+                    callback(rows[0].last_value);
+                });
+            }
+            else {
+                callback(rows[0].id);
+            }
         }
     });    
 };

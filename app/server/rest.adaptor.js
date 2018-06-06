@@ -25,13 +25,18 @@ RestAdaptor.prototype.route = function(app) {
     });
     app.post('/api/forms', (request, response)=> {
         let login = request.headers['x-user'];
-        this.savePerson.now(login, (id)=> {
-            let params = request.body;
-            params.data = JSON.parse(params.data);
-            params.person_id = id;
-            this.createFormTwo.now(params, (data)=> {
+        this.savePerson.now(login, (data)=> {
+            if (data.error) {
                 renderCreateFormTwoResult(data, response);
-            });           
+            }
+            else {
+                let params = request.body;
+                params.data = JSON.parse(params.data);
+                params.person_id = data;
+                this.createFormTwo.now(params, (data)=> {
+                    renderCreateFormTwoResult(data, response);
+                });   
+            }        
         });
     });
     app.put('/api/forms/:id', (request, response)=> {

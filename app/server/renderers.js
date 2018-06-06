@@ -26,9 +26,14 @@ let renderMyCasesResult = function(data, response) {
     }    
     response.end(); 
 };    
-let renderCreateFormTwoResult = function(id, response) {
-    response.writeHead(201, {'Location': '/forms/' + id});
-    response.write(JSON.stringify({}));
+let renderCreateFormTwoResult = function(data, response) {
+    if (data.error) {
+        render503(response);
+    }
+    else {
+        response.writeHead(201, {'Location': '/forms/' + data});
+        response.write(JSON.stringify({}));
+    }
     response.end();
 };
 let renderUpdateFormTwoResult = function(id, response) {
