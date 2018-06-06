@@ -8,12 +8,12 @@ let send404 = function(response) {
     response.end(JSON.stringify({message:'not found'}));   
 };
 module.exports = function(data, response) {
-    var withoutError = { then: function(callback) { callback(); }};
-    var stopHere = { then: function(callback) {}};
+    let withoutError = { then: (doThat)=> { doThat(); }};
+    let errorFound = { then: (stop)=> {}};
     if (data.error) {
         if (data.error.code === 503) { send503(response); }
         if (data.error.code === 404) { send404(response); }
-        return stopHere;
+        return errorFound;
     }
     return withoutError;
 };
