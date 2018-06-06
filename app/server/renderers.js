@@ -1,4 +1,4 @@
-let ifNoError = require('./errors');
+let ifNoError = require('./errors.handling');
 
 module.exports = {
     renderSearchFormSevenResult: function (data, response) {
