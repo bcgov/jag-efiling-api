@@ -19,19 +19,24 @@ Database.prototype.updateForm = function(form, callback) {
 };
 
 Database.prototype.myCases = function(login, callback) {
-    this.forms.selectByLogin(login, function(rows) {
-        callback(rows.map(function(row) {
-            let modified = row.modified;
-            modified = JSON.stringify(modified).toString();
-            modified = modified.substring(1, modified.lastIndexOf('.'))+'Z';
-            return {
-                id: row.id,
-                type: row.type,
-                status: row.status,
-                modified: modified,
-                data: JSON.parse(row.data)
-            };
-        }));
+    this.forms.selectByLogin(login, function(rows, error) {
+        if (error) {
+            callback({error:error});
+        }   
+        else {     
+            callback(rows.map(function(row) {
+                let modified = row.modified;
+                modified = JSON.stringify(modified).toString();
+                modified = modified.substring(1, modified.lastIndexOf('.'))+'Z';
+                return {
+                    id: row.id,
+                    type: row.type,
+                    status: row.status,
+                    modified: modified,
+                    data: JSON.parse(row.data)
+                };
+            }));
+        }
     });
 };
 Database.prototype.savePerson = function(person, callback) {

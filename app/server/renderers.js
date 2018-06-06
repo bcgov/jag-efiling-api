@@ -12,7 +12,12 @@ let renderSearchFormSevenResult = function(data, response) {
     response.end(); 
 };
 let renderMyCasesResult = function(data, response) { 
-    response.write( JSON.stringify({ cases:data })); 
+    if (data.error) {
+        response.statusCode = 503;        
+    }
+    else {
+        response.write( JSON.stringify({ cases:data })); 
+    }    
     response.end(); 
 };    
 let renderCreateFormTwoResult = function(id, response) {
