@@ -39,7 +39,7 @@ describe('Form 7 search', function() {
         });
         get(home + '/api/forms?file=CA42', function(err, response, body) {
             expect(response.statusCode).to.equal(404);
-            expect(JSON.parse(body)).to.deep.deep.equal({message:'not found'});
+            expect(JSON.parse(body)).to.deep.equal({message:'not found'});
             done();
         });
     });

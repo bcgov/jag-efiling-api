@@ -8,13 +8,14 @@ let render404 = function(response) {
     response.end(JSON.stringify({message:'not found'}));   
 };
 module.exports = function(data, response) {
+    var next = { then: function(callback) { callback(); }};
     if (data.error || data == '503:SERVICE UNAVAILABLE') {
         render503(response);
-        return { then: function() {} };
+        next = { then: function() {} };
     }
     if (data == '404:NOT FOUND') {
         render404(response);
-        return { then: function() {} };
+        next = { then: function() {} };
     } 
-    return { then: function(callback) { callback(data, response); }};
+    return next;
 };

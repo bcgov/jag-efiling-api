@@ -1,47 +1,47 @@
 let ifNoError = require('./errors.handling');
 
 module.exports = {
-    renderSearchFormSevenResult: function (data, response) {
-        ifNoError(data, response).then((data, response) => {
+    renderSearchFormSevenResult: (data, response)=> {
+        ifNoError(data, response).then(()=> {
             response.end(JSON.stringify({ parties: data }));
         });
     },
-    renderMyCasesResult: function (cases, response) {
-        ifNoError(cases, response).then((cases, response) => {
+    renderMyCasesResult: (cases, response)=> {
+        ifNoError(cases, response).then(()=> {
             response.end(JSON.stringify({ cases: cases }));
         });
     },
-    renderCreateFormTwoResult: function (id, response) {
-        ifNoError(id, response).then((cases, response) => {
+    renderCreateFormTwoResult: (id, response)=> {
+        ifNoError(id, response).then(()=> {
             response.writeHead(201, { 'Location': '/forms/' + id });
             response.end(JSON.stringify({}));
         });
     },
-    renderUpdateFormTwoResult: function (id, response) {
-        ifNoError(id, response).then((cases, response) => {
+    renderUpdateFormTwoResult: (id, response)=> {
+        ifNoError(id, response).then(()=> {
             response.writeHead(200, { 'Location': '/forms/' + id });
             response.end(JSON.stringify({}));
         });
     },
-    renderSavePersonResult: function (id, response) {
-        ifNoError(id, response).then((cases, response) => {
+    renderSavePersonResult: (id, response)=> {
+        ifNoError(id, response).then(()=> {
             response.writeHead(201, { 'Location': '/persons/' + id });
             response.end(JSON.stringify({}));
         });
     },
-    renderPersonInfoResult: function (person, response) {
+    renderPersonInfoResult: (person, response)=> {
         if (person !== undefined) {
-            ifNoError(person, response).then((cases, response) => {
+            ifNoError(person, response).then(()=> {
                 response.end(JSON.stringify(person));
             });
         }
         else {
             response.statusCode = 404;
-            response.end(JSON.stringify({}));
+            response.end(JSON.stringify({message:'not found'}));
         }
     },
-    renderArchiveCasesResult: function (data, response) {
-        ifNoError(data, response).then((cases, response) => {
+    renderArchiveCasesResult: (data, response)=> {
+        ifNoError(data, response).then(()=> {
             response.end(JSON.stringify({}));
         });
     }
