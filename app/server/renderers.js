@@ -7,50 +7,48 @@ let render404 = function(response) {
     response.statusCode = 404;
     response.end(JSON.stringify({message:'not found'}));   
 };
-let render = function(data, response, orContinue) {
-    if (data.error) {
+let ifNoError = function(data, response) {
+    if (data.error || data == '503:SERVICE UNAVAILABLE') {
         render503(response);
+        return { then: function() {} };
     }
-    else {
-        orContinue(data, response);
-    }
-}
-let renderSearchFormSevenResult = function(data, response) { 
     if (data == '404:NOT FOUND') {
         render404(response);
+        return { then: function() {} };
     } 
-    else if (data == '503:SERVICE UNAVAILABLE') {
-        render503(response);
-    } else {
+    return { then: function(callback) { callback(data, response); }};
+};
+let renderSearchFormSevenResult = function(data, response) { 
+    ifNoError(data, response).then((data, response)=>{
         response.end( JSON.stringify({ parties:data })); 
-    }            
+    });
 };
 let renderMyCasesResult = function(cases, response) { 
-    render(cases, response, (cases, response) => { 
+    ifNoError(cases, response).then((cases, response) => { 
         response.end( JSON.stringify({ cases:cases })); 
     });      
 };    
 let renderCreateFormTwoResult = function(id, response) {
-    render(id, response, (cases, response) => { 
+    ifNoError(id, response).then((cases, response) => { 
         response.writeHead(201, {'Location': '/forms/' + id});
         response.end(JSON.stringify({}));
     });
 };
 let renderUpdateFormTwoResult = function(id, response) {
-    render(id, response, (cases, response) => { 
+    ifNoError(id, response).then((cases, response) => { 
         response.writeHead(200, {'Location': '/forms/' + id});
         response.end(JSON.stringify({}));
     });  
 };
 let renderSavePersonResult = function(id, response) { 
-    render(id, response, (cases, response) => { 
+    ifNoError(id, response).then((cases, response) => { 
         response.writeHead(201, {'Location': '/persons/' + id});
         response.end(JSON.stringify({}));
     });
 };
 let renderPersonInfoResult = function(person, response) { 
     if (person !== undefined) {
-        render(person, response, (cases, response) => { 
+        ifNoError(person, response).then((cases, response) => { 
             response.end(JSON.stringify(person));
         });
     } 
@@ -60,7 +58,7 @@ let renderPersonInfoResult = function(person, response) {
     }    
 };
 let renderArchiveCasesResult = function(data, response) {
-    render(data, response, (cases, response) => { 
+    ifNoError(data, response).then((cases, response) => { 
         response.end();
     });
 };
