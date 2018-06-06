@@ -30,15 +30,9 @@ module.exports = {
         });
     },
     renderPersonInfoResult: (person, response)=> {
-        if (person !== undefined) {
-            ifNoError(person, response).then(()=> {
-                response.end(JSON.stringify(person));
-            });
-        }
-        else {
-            response.statusCode = 404;
-            response.end(JSON.stringify({message:'not found'}));
-        }
+        ifNoError(person, response).then(()=> {
+            response.end(JSON.stringify(person));
+        });
     },
     renderArchiveCasesResult: (data, response)=> {
         ifNoError(data, response).then(()=> {

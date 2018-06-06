@@ -8,8 +8,8 @@ let Database = function() {
 
 Database.prototype.sendError = function(callback, orContinue) {
     return (rows, error)=> {
-        if (error) {
-            callback({error:error});
+        if (error) {            
+            callback({ error: {code:503} });
         } 
         else {
             orContinue(rows);
@@ -65,7 +65,12 @@ Database.prototype.savePerson = function(person, callback) {
 };
 Database.prototype.findPersonByLogin = function(login, callback) {
     this.persons.findByLogin(login, this.sendError(callback, (rows)=> {
-        callback(rows[0]);
+        if (rows.length === 0) {
+            callback({ error: {code:404} });
+        }
+        else {
+            callback(rows[0]);
+        }
     }));
 };
 Database.prototype.archiveCases = function(ids, callback) {        
