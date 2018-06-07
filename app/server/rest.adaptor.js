@@ -1,8 +1,8 @@
 let { SearchFormSeven, MyCases, CreateFormTwo, SavePerson, PersonInfo, UpdateFormTwo, 
       ArchiveCases } = require('../features');
-let { renderSearchFormSevenResult, renderMyCasesResult, renderCreateFormTwoResult,
-      renderUpdateFormTwoResult, renderSavePersonResult, renderPersonInfoResult,
-      renderArchiveCasesResult } = require('./renderers');
+let { searchFormSevenResponse, myCasesResponse, createFormTwoResponse,
+      updateFormTwoResponse, savePersonResponse, personInfoResponse,
+      archiveCasesResponse } = require('./responses');
 
 let RestAdaptor = function() {};
 
@@ -20,50 +20,55 @@ RestAdaptor.prototype.useDatabase = function(database) {
 RestAdaptor.prototype.route = function(app) {
     app.get('/api/forms', (request, response)=> {
         this.searchFormSeven.now({ file:request.query.file }, (data)=> {
-            renderSearchFormSevenResult(data, response);
+            searchFormSevenResponse(data, response);
         });
     });
     app.post('/api/forms', (request, response)=> {
         let login = request.headers['x-user'];
-        this.savePerson.now(login, (id)=> {
-            let params = request.body;
-            params.data = JSON.parse(params.data);
-            params.person_id = id;
-            this.createFormTwo.now(params, (data)=> {
-                renderCreateFormTwoResult(data, response);
-            });           
+        this.savePerson.now(login, (data)=> {
+            if (data.error) {
+                createFormTwoResponse(data, response);
+            }
+            else {
+                let params = request.body;
+                params.data = JSON.parse(params.data);
+                params.person_id = data;
+                this.createFormTwo.now(params, (data)=> {
+                    createFormTwoResponse(data, response);
+                });   
+            }        
         });
     });
     app.put('/api/forms/:id', (request, response)=> {
         let data = JSON.parse(request.body.data);
         this.updateFormTwo.now(request.params.id, data, (data)=> {
-            renderUpdateFormTwoResult(data, response);
+            updateFormTwoResponse(data, response);
         });
     });
     app.get('/api/cases', (request, response)=> {
         let login = request.headers['x-user'];
         this.myCases.now(login, (data)=> {                    
-            renderMyCasesResult(data, response);
+            myCasesResponse(data, response);
         });
     });
     app.post('/api/persons', (request, response)=> {
         let params = request.body;
         let person = params.data;
         this.savePerson.now(person, (data)=> {
-            renderSavePersonResult(data, response);
+            savePersonResponse(data, response);
         });
     });
     app.get('/api/persons/:login', (request, response, next)=> {
         let login = request.params.login;
         this.personInfo.now(login, (data)=> {
-            renderPersonInfoResult(data, response);
+            personInfoResponse(data, response);
         });
     });
     app.post('/api/cases/archive', (request, response)=> {
         let params = request.body;
         let ids = JSON.parse(params.ids);
-        this.archiveCases.now(ids, ()=> {
-            renderArchiveCasesResult(response);
+        this.archiveCases.now(ids, (data)=> {
+            archiveCasesResponse(data, response);
         });
     });
     app.post('/api/pdf', (request, response) => {

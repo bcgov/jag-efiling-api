@@ -50,6 +50,8 @@ describe('Form 2 update', function() {
             };
             request.put(options, function(err, response, body) {
                 expect(response.statusCode).to.equal(200);
+                expect(JSON.parse(body)).to.deep.equal({});
+                expect(response.headers.location).to.equal('/forms/1');
 
                 let sql = `
                    SELECT data

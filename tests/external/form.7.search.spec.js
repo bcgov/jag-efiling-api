@@ -34,12 +34,12 @@ describe('Form 7 search', function() {
     it('propagates 404', function(done) {
         server.useService({
             searchForm7: function(fileNumber, callback) {
-                callback('404:NOT FOUND');
+                callback({ error: {code:404} });
             }
         });
         get(home + '/api/forms?file=CA42', function(err, response, body) {
             expect(response.statusCode).to.equal(404);
-            expect(JSON.parse(body)).to.deep.deep.equal({message:'not found'});
+            expect(JSON.parse(body)).to.deep.equal({message:'not found'});
             done();
         });
     });

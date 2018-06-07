@@ -32,41 +32,49 @@ describe('Form 2 create', function() {
     });
 
     it('is a rest service', function(done) {
-        var options = {
-            url: home + '/api/forms',
-            form:{
-                data: JSON.stringify({ any:'field' })
-            },
-            headers: {
-                'X-USER': 'max'
-            }
-        };
-        request.post(options, function(err, response, body) {
-            expect(response.statusCode).to.equal(201);
-            var location = response.headers.location;
-            expect(location).to.contain('/forms/');
-            var id = parseInt(location.substring(location.lastIndexOf('/')+1));
-
-            var sql = `
-                SELECT  forms.id, 
-                        type, 
-                        status, 
-                        data, 
-                        person.login as login 
-                FROM forms, person
-                WHERE forms.id=$1
-                AND forms.person_id=person.id
-            `;
-            execute(sql, [id], function(rows) {
-                expect(rows.length).to.equal(1);
-
-                var { type, status, data, login } = rows[0];
-                expect(type).to.equal('form-2');
-                expect(status).to.equal('Draft');
-                expect(data).to.equal(JSON.stringify({ any:'field' }));
-                expect(login).to.equal('max');
-                done();
+        var background = [
+            'alter sequence person_id_seq restart',
+            'alter sequence forms_id_seq restart',
+            { sql: 'insert into person(login) values ($1)', params:['max'] }
+        ];
+        execute(background, (rows, error)=> {
+            var options = {
+                url: home + '/api/forms',
+                form:{
+                    data: JSON.stringify({ any:'field' })
+                },
+                headers: {
+                    'X-USER': 'max'
+                }
+            };
+            request.post(options, function(err, response, body) {
+                expect(response.statusCode).to.equal(201);
+                expect(JSON.parse(body)).to.deep.equal({});
+                expect(response.headers.location).to.equal('/forms/1');
+                var location = response.headers.location;
+                var id = parseInt(location.substring(location.lastIndexOf('/')+1));
+    
+                var sql = `
+                    SELECT  forms.id, 
+                            type, 
+                            status, 
+                            data, 
+                            person.login as login 
+                    FROM forms, person
+                    WHERE forms.id=$1
+                    AND forms.person_id=person.id
+                `;
+                execute(sql, [id], function(rows) {
+                    expect(rows.length).to.equal(1);
+    
+                    var { type, status, data, login } = rows[0];
+                    expect(type).to.equal('form-2');
+                    expect(status).to.equal('Draft');
+                    expect(data).to.equal(JSON.stringify({ any:'field' }));
+                    expect(login).to.equal('max');
+                    done();
+                });
             });
-        });
+        });        
     });
 });

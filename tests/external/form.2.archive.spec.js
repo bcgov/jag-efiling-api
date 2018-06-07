@@ -52,6 +52,7 @@ describe('Form 2 archive', function() {
             };
             request.post(options, function(err, response, body) {
                 expect(response.statusCode).to.equal(200);
+                expect(JSON.parse(body)).to.deep.equal({});
 
                 let sql = `
                    SELECT id, status

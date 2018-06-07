@@ -5,11 +5,8 @@ let Persons = function() {
 
 Persons.prototype.create = function(options, callback) {
     execute('insert into person(login) values($1);', 
-        [options.login], function() {
-            execute('SELECT last_value FROM person_id_seq;', [], function(rows) {
-                let id = rows[0].last_value; 
-                callback(parseInt(id));   
-            });
+        [options.login], ()=> {            
+            execute('SELECT last_value FROM person_id_seq;', [], callback);
         });
 };
 Persons.prototype.findByLogin = function(login, callback) {
