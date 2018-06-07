@@ -3,40 +3,42 @@ let ifNoError = require('./errors.handling');
 module.exports = {
     searchFormSevenResponse: (data, response)=> {
         ifNoError(data, response).then(()=> {
-            response.end(JSON.stringify({ parties: data }));
+            response.json({ parties: data });
         });
     },
     myCasesResponse: (cases, response)=> {
         ifNoError(cases, response).then(()=> {
-            response.end(JSON.stringify({ cases: cases }));
+            response.json({ cases: cases });
         });
     },
     createFormTwoResponse: (id, response)=> {
         ifNoError(id, response).then(()=> {
-            response.writeHead(201, { 'Location': '/forms/' + id });
-            response.end(JSON.stringify({}));
+            response.statusCode = 201;
+            response.setHeader('Location', '/forms/' + id );
+            response.json({});
         });
     },
     updateFormTwoResponse: (id, response)=> {
         ifNoError(id, response).then(()=> {
-            response.writeHead(200, { 'Location': '/forms/' + id });
-            response.end(JSON.stringify({}));
+            response.setHeader('Location', '/forms/' + id );
+            response.json({});
         });
     },
     savePersonResponse: (id, response)=> {
         ifNoError(id, response).then(()=> {
-            response.writeHead(201, { 'Location': '/persons/' + id });
-            response.end(JSON.stringify({}));
+            response.statusCode = 201;
+            response.setHeader('Location', '/persons/' + id );
+            response.json({});
         });
     },
     personInfoResponse: (person, response)=> {
         ifNoError(person, response).then(()=> {
-            response.end(JSON.stringify(person));
+            response.json(person);
         });
     },
     archiveCasesResponse: (data, response)=> {
         ifNoError(data, response).then(()=> {
-            response.end(JSON.stringify({}));
+            response.json({});
         });
     }
 };
