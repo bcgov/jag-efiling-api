@@ -1,8 +1,8 @@
 let { SearchFormSeven, MyCases, CreateFormTwo, SavePerson, PersonInfo, UpdateFormTwo, 
-      ArchiveCases } = require('../features');
+      ArchiveCases, PreviewForm2 } = require('../features');
 let { searchFormSevenResponse, myCasesResponse, createFormTwoResponse,
       updateFormTwoResponse, savePersonResponse, personInfoResponse,
-      archiveCasesResponse } = require('./responses');
+      archiveCasesResponse, previewForm2Response } = require('./responses');
 
 let RestAdaptor = function() {};
 
@@ -16,6 +16,7 @@ RestAdaptor.prototype.useDatabase = function(database) {
     this.savePerson = new SavePerson(database); 
     this.personInfo = new PersonInfo(database);
     this.archiveCases = new ArchiveCases(database);
+    this.previewForm2 = new PreviewForm2(database);
 };
 RestAdaptor.prototype.route = function(app) {
     app.get('/api/forms', (request, response)=> {
@@ -79,6 +80,12 @@ RestAdaptor.prototype.route = function(app) {
         pdf.create(html).toStream(function(err, stream){            
             stream.pipe(response);
         });
+    });
+    app.get('/api/forms/:id/preview', (request, response) => {
+        let id = request.params.id;
+        this.previewForm2.now(id, (html)=> {
+            previewForm2Response(html, response);            
+        })        
     });
     app.get('/*', function (req, res) { res.send( JSON.stringify({ message: 'pong' }) ); });
 };

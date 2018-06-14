@@ -82,5 +82,10 @@ Database.prototype.archiveCases = function(ids, callback) {
         callback(rows);
     }));
 };
+Database.prototype.formData = function(id, callback) {
+    this.forms.selectOne(id, (rows)=>{
+        callback(JSON.parse(rows[0].data));
+    });
+};
 
 module.exports = Database;

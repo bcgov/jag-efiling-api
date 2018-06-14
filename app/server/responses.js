@@ -40,5 +40,11 @@ module.exports = {
         ifNoError(data, response).then(()=> {
             response.json({});
         });
+    },
+    previewForm2Response: (html, response)=> {
+        ifNoError(html, response).then(()=> {
+            response.writeHead(200, {'Content-type': 'text/html'});
+            response.end(html);
+        });
     }
 };

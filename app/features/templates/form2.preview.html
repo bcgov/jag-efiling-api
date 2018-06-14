@@ -1,0 +1,54 @@
+<div id="form2-preview">
+    <h2 style="text-align:center">FORM 2 (RULES 5 (A), 13 (A) AND 17 (A))</h2>
+    <div style="text-align:right">
+        <span>Court of Appeal File No. </span>
+        <span>{formSevenNumber}</span>
+    </div>
+    
+    <h3 style="text-align:center">COURT OF APPEAL</h3>
+    <table width="100%"><tbody>
+    <tr>
+        <td style="font-weight:bold; vertical-align:top;">BETWEEN:</td>
+        <td id="appellant-name" style="padding-left:4px;">{appellants}</td>
+        <td style="text-align:right; font-weight:bold; padding-left:70px; vertical-align:top;">{appellantsLabel}</td>
+    </tr>
+    <tr>
+        <td style="font-weight:bold; vertical-align:top;">AND:</td>
+        <td id="respondent-name" style="padding-left:40px;">{respondents}
+        </td>
+        <td style="text-align:right; font-weight:bold; padding-left:70px; vertical-align:top;">{respondentsLabel}</td>
+    </tr>
+    </tbody></table>
+    
+    <h3 style="text-align:center">NOTICE OF APPEARANCE</h3>                    
+    <table width="100%"><tbody>
+    <tr>
+        <td>
+        <strong>Enter an appearance on behalf of:</strong>
+        </td>
+    </tr>
+    <tr>
+        <td>{selectedRespondentName}</td>
+    </tr>
+    <tr><td><strong>Address for service:</strong></td></tr>
+    <tr>
+        <td>
+            {selectedRespondentAddress1}
+            &nbsp;
+            {selectedRespondentAddress2}
+            
+            <br/>
+            {selectedRespondentCity}, {selectedRespondentProvince}, {selectedRespondentPostalCode}
+            <br/>
+            Canada
+        </td>
+    </tr>    
+    </tbody></table>                    
+
+    <p style="text-align:right">
+        ............................................................................................................
+        <br/>
+        <i>Respondent/Solicitor for the Respondent</i>
+    </p>
+
+</div> 
