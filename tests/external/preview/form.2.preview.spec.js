@@ -56,4 +56,27 @@ describe('Form 2 preview', function() {
             });
         });
     });
+    it('resists unknown form', (done)=>{
+        var data = fs.readFileSync('./tests/external/preview/form2.json').toString();
+        var background = [
+            'alter sequence person_id_seq restart',
+            'alter sequence forms_id_seq restart',
+            { sql: 'insert into person(login) values ($1)', params:['max'] },
+            { sql: 'insert into forms(person_id, type, status, data) values($1, $2, $3, $4);', params:[1, 'crazy-max', 'new', data] },
+        ];
+        execute(background, (rows, error)=> {
+            var options = {
+                url: home + '/api/forms/2/preview',
+                headers: {
+                    'X-USER': 'max'
+                }
+            };
+            request.get(options, function(err, response, body) {
+                expect(response.statusCode).to.equal(404);
+                expect(response.headers['content-type']).to.equal('application/json');
+                expect(body).to.deep.equal(JSON.stringify({message:'not found'}));
+                done();
+            });
+        });
+    });
 });
