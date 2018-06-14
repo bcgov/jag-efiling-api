@@ -15,7 +15,7 @@ module.exports = {
         ifNoError(id, response).then(()=> {
             response.statusCode = 201;
             response.setHeader('Location', '/forms/' + id );
-            response.json({});
+            response.json({id:parseInt(id)});
         });
     },
     updateFormTwoResponse: (id, response)=> {
