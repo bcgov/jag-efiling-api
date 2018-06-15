@@ -82,5 +82,15 @@ Database.prototype.archiveCases = function(ids, callback) {
         callback(rows);
     }));
 };
+Database.prototype.formData = function(id, callback) {
+    this.forms.selectOne(id, ifError({notify:callback}).otherwise((rows)=> {
+        if (rows.length === 0) {
+            callback({ error: {code:404} });
+        }
+        else {
+            callback(JSON.parse(rows[0].data));
+        }
+    }));
+};
 
 module.exports = Database;

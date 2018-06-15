@@ -5,6 +5,7 @@ let SavePerson = require('./save.person');
 let PersonInfo = require('./person.info');
 let UpdateFormTwo = require('./update.form.2');
 let ArchiveCases = require('./archive.cases');
+let PreviewForm2 = require('./preview.form2');
 
 module.exports = {
     SearchFormSeven:SearchFormSeven,
@@ -13,5 +14,6 @@ module.exports = {
     SavePerson:SavePerson,
     PersonInfo:PersonInfo,
     UpdateFormTwo:UpdateFormTwo,
-    ArchiveCases:ArchiveCases
+    ArchiveCases:ArchiveCases,
+    PreviewForm2:PreviewForm2
 }

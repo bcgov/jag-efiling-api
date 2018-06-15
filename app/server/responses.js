@@ -15,7 +15,7 @@ module.exports = {
         ifNoError(id, response).then(()=> {
             response.statusCode = 201;
             response.setHeader('Location', '/forms/' + id );
-            response.json({});
+            response.json({id:parseInt(id)});
         });
     },
     updateFormTwoResponse: (id, response)=> {
@@ -39,6 +39,12 @@ module.exports = {
     archiveCasesResponse: (data, response)=> {
         ifNoError(data, response).then(()=> {
             response.json({});
+        });
+    },
+    previewForm2Response: (html, response)=> {
+        ifNoError(html, response).then(()=> {
+            response.writeHead(200, {'Content-type': 'text/html'});
+            response.end(html);
         });
     }
 };

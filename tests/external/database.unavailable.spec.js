@@ -109,4 +109,18 @@ describe('When database is not responding', function() {
             done();
         });
     });
+
+    it('returns 503 when previewing a form', (done)=> {
+        var options = {
+            url: home + '/api/forms/1/preview',
+            headers: {
+                'X-USER': 'max'
+            }
+        };
+        request.get(options, function(err, response, body) {
+            expect(response.statusCode).to.equal(503);
+            expect(JSON.parse(body)).to.deep.equal({message:'service unavailable'});
+            done();
+        });
+    });
 });
