@@ -6,7 +6,7 @@ var Truncator = require('../support/truncator');
 var { execute } = require('yop-postgresql');
 var request = require('request');
 var fs = require('fs');
-var PDFParser = require("pdf2json");
+const PDFParser = require("pdf2json");
 var deepEqual = require('deep-equal');
 
 describe('PDF service', function() {
