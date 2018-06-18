@@ -3,6 +3,10 @@ let { SearchFormSeven, MyCases, CreateFormTwo, SavePerson, PersonInfo, UpdateFor
 let { searchFormSevenResponse, myCasesResponse, createFormTwoResponse,
       updateFormTwoResponse, savePersonResponse, personInfoResponse,
       archiveCasesResponse, previewForm2Response } = require('./responses');
+let ifNoError = require('./errors.handling');
+let pdf = require('html-pdf');
+let archiver = require('archiver');
+let { Promise, Promises } = require('yop-promises');
 
 let RestAdaptor = function() {};
 
@@ -75,8 +79,7 @@ RestAdaptor.prototype.route = function(app) {
     app.post('/api/pdf', (request, response) => {
         response.writeHead(200, {'Content-type': 'application/pdf'});
         let params = request.body;
-        let html = params.html;
-        var pdf = require('html-pdf');
+        let html = params.html;        
         pdf.create(html).toStream(function(err, stream){            
             stream.pipe(response);
         });
@@ -86,6 +89,40 @@ RestAdaptor.prototype.route = function(app) {
         this.previewForm2.now(id, (html)=> {
             previewForm2Response(html, response);            
         })        
+    });
+    
+    app.get('/api/zip', (request, response)=>{
+        let error;
+        var self = this;
+        let ids = Array.from(request.query.id);        
+        var archive = archiver('zip');                
+        var ps = new Promises();
+        for (var index=0; index<ids.length; index++) {
+            var id = ids[index];
+            const name = 'form2-' + id + '.pdf';
+            const p = new Promise();
+            ps.waitFor(p);
+            self.previewForm2.now(id, (html)=> {   
+                if (html.error) {
+                    error = html.error;
+                    p.reject();
+                }
+                else {
+                    pdf.create(html).toStream(function(err, stream){
+                        archive.append(stream, { name: name });
+                        p.resolve();
+                    });
+                }
+            });            
+        }        
+        ps.done(function() { 
+            ifNoError({error:error}, response).then(()=> {
+                archive.finalize(); 
+                response.setHeader('Content-type', 'application/zip');
+                response.attachment('forms.zip');
+                archive.pipe(response);
+            });
+        });
     });
     app.get('/*', function (req, res) { res.send( JSON.stringify({ message: 'pong' }) ); });
 };
