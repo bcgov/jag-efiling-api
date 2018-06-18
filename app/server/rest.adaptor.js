@@ -3,7 +3,7 @@ let { SearchFormSeven, MyCases, CreateFormTwo, SavePerson, PersonInfo, UpdateFor
 let { searchFormSevenResponse, myCasesResponse, createFormTwoResponse,
       updateFormTwoResponse, savePersonResponse, personInfoResponse,
       archiveCasesResponse, previewForm2Response } = require('./responses');
-      
+let ifNoError = require('./errors.handling');
 let pdf = require('html-pdf');
 let archiver = require('archiver');
 let { Promise, Promises } = require('yop-promises');
@@ -90,16 +90,16 @@ RestAdaptor.prototype.route = function(app) {
             previewForm2Response(html, response);            
         })        
     });
-
+    
     app.get('/api/zip', (request, response)=>{
+        let error;
         var self = this;
         let ids = Array.from(request.query.id);
         
         response.setHeader('Content-type', 'application/zip');
         response.attachment('forms.zip');
         var archive = archiver('zip');        
-
-        archive.pipe(response);
+        
         var ps = new Promises();
         for (var index=0; index<ids.length; index++) {
             var id = ids[index];
@@ -107,13 +107,29 @@ RestAdaptor.prototype.route = function(app) {
             const p = new Promise();
             ps.waitFor(p);
             self.previewForm2.now(id, (html)=> {   
-                pdf.create(html).toStream(function(err, stream){
-                    archive.append(stream, { name: name });
-                    p.resolve();
-                });
+                if (html.error) {
+                    error = html.error;
+                    p.reject();
+                }
+                else {
+                    pdf.create(html).toStream(function(err, stream){
+                        archive.append(stream, { name: name });
+                        p.resolve();
+                    });
+                }
             });            
         }        
-        ps.done(function() { archive.finalize(); });
+        ps.done(function() { 
+            if (!error) {
+                archive.finalize(); 
+                archive.pipe(response);
+            }
+            else {
+                response.statusCode = 503;   
+                response.write(JSON.stringify({message:'service unavailable'})); 
+                response.end(); 
+            }
+        });
     });
     app.get('/*', function (req, res) { res.send( JSON.stringify({ message: 'pong' }) ); });
 };
