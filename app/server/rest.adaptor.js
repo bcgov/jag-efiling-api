@@ -94,12 +94,8 @@ RestAdaptor.prototype.route = function(app) {
     app.get('/api/zip', (request, response)=>{
         let error;
         var self = this;
-        let ids = Array.from(request.query.id);
-        
-        response.setHeader('Content-type', 'application/zip');
-        response.attachment('forms.zip');
-        var archive = archiver('zip');        
-        
+        let ids = Array.from(request.query.id);        
+        var archive = archiver('zip');                
         var ps = new Promises();
         for (var index=0; index<ids.length; index++) {
             var id = ids[index];
@@ -120,15 +116,12 @@ RestAdaptor.prototype.route = function(app) {
             });            
         }        
         ps.done(function() { 
-            if (!error) {
+            ifNoError({error:error}, response).then(()=> {
                 archive.finalize(); 
+                response.setHeader('Content-type', 'application/zip');
+                response.attachment('forms.zip');
                 archive.pipe(response);
-            }
-            else {
-                response.statusCode = 503;   
-                response.write(JSON.stringify({message:'service unavailable'})); 
-                response.end(); 
-            }
+            });
         });
     });
     app.get('/*', function (req, res) { res.send( JSON.stringify({ message: 'pong' }) ); });

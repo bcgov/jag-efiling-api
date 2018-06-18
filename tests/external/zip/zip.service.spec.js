@@ -104,4 +104,19 @@ describe('ZIP service', function() {
                 entry.pipe(new PDFParser()).pipe(json);
             });              
     });
+
+    it('resists unknow form', function(done) {
+        var options = {
+            url: home + '/api/zip?id=1&id=666',
+            headers: {
+                'X-USER': 'max'
+            }
+        };
+        request.get(options, (err, response, body)=>{
+            expect(response.statusCode).to.equal(404);
+            expect(response.headers['content-type']).to.equal('application/json');
+            expect(body).to.deep.equal(JSON.stringify({message:'not found'}));
+            done();
+        });
+    });
 });
