@@ -21,6 +21,8 @@ PreviewForm2.prototype.now = function(id, callback) {
                 .replace('{selectedRespondentCity}', this.extract('city', data))
                 .replace('{selectedRespondentProvince}', this.extract('province', data))
                 .replace('{selectedRespondentPostalCode}', this.extract('postalCode', data))
+                .replace('{selectedRespondentPhone}', data.phone)
+                .replace('{selectedRespondentEmail}', data.email)
                 ;
             callback(html);
         }
