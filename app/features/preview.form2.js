@@ -39,6 +39,6 @@ PreviewForm2.prototype.address = function(data) {
     return data.respondents[data.selectedRespondentIndex].address;
 };
 PreviewForm2.prototype.extract = function(field, data) {
-    return  this.address(data) ? this.address(data)[field] : '';
+    return  this.address(data) && this.address(data)[field] ? this.address(data)[field] : '';
 };
 module.exports = PreviewForm2;
