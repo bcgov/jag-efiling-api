@@ -97,9 +97,7 @@ RestAdaptor.prototype.route = function(app) {
         let ids = Array.from(request.query.id);        
         var archive = archiver('zip');                
         var ps = new Promises();
-        for (var index=0; index<ids.length; index++) {
-            var id = ids[index];
-            const name = 'form2-' + id + '.pdf';
+        var doItForEach = (id) => {
             const p = new Promise();
             ps.waitFor(p);
             self.previewForm2.now(id, (html)=> {   
@@ -108,12 +106,17 @@ RestAdaptor.prototype.route = function(app) {
                     p.reject();
                 }
                 else {
-                    pdf.create(html).toStream(function(err, stream){
+                    pdf.create(html).toStream(function(err, stream) {
+                        const name = 'form2-' + id + '.pdf';
                         archive.append(stream, { name: name });
                         p.resolve();
                     });
                 }
-            });            
+            }); 
+        };
+        for (var index=0; index<ids.length; index++) {
+            var id = ids[index]; 
+            doItForEach(id);
         }        
         ps.done(function() { 
             ifNoError({error:error}, response).then(()=> {
