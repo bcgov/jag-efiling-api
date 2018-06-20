@@ -6,7 +6,7 @@ let morgan = require('morgan');
 function Server() {    
     this.restAdaptor = new RestAdaptor();
     this.app = express();
-};
+}
 
 Server.prototype.start = function (port, ip, done) {
     this.app.use((request, response, next)=>{
