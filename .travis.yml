@@ -3,6 +3,10 @@ node_js:
   - "6.14.0"
 addons:
   postgresql: "9.5"
+  sonarcloud:
+    organization: "bcgov-github"
+    token:
+      secure: $SONAR_TOKEN
 services:
   - postgresql
 before_script:
@@ -11,4 +15,6 @@ before_script:
   - export PGDATABASE=ci
   - export PGUSER=postgres
   - export PGPASSWORD=
-script: npm run test:coverage
+script: 
+  - npm run test:coverage
+  - sonar-scanner
