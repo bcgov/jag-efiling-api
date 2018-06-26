@@ -40,10 +40,16 @@
             {selectedRespondentCity}, {selectedRespondentProvince}, {selectedRespondentPostalCode}
             <br/>
             Canada
-            <br/><br/>
+        </td>
+    </tr>
+    {if useServiceEmail}
+    <tr><td><strong>I aggreed to accept documents that are served to the following email address:</strong></td></tr>
+    <tr>
+        <td>
             {selectedRespondentEmail}
         </td>
-    </tr>    
+    </tr>
+    {endif useServiceEmail}
     </tbody></table>                    
 
     <p style="text-align:right">
