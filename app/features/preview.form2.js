@@ -22,8 +22,13 @@ PreviewForm2.prototype.now = function(id, callback) {
                 .replace('{selectedRespondentProvince}', this.extract('province', data))
                 .replace('{selectedRespondentPostalCode}', this.extract('postalCode', data))
                 .replace('{selectedRespondentPhone}', data.phone)
-                .replace('{selectedRespondentEmail}', data.email)
+                .replace('{selectedRespondentEmail}', data.useServiceEmail ? data.email : '')
                 ;
+            if (!data.useServiceEmail) {
+                html = this.removeIfBlock('useServiceEmail', html);
+            } else {
+                html = this.removeIfCondition('useServiceEmail', html);                
+            }
             callback(html);
         }
     })
@@ -40,5 +45,18 @@ PreviewForm2.prototype.address = function(data) {
 };
 PreviewForm2.prototype.extract = function(field, data) {
     return  this.address(data) && this.address(data)[field] ? this.address(data)[field] : '';
+};
+PreviewForm2.prototype.removeIfBlock = function(name, html) {
+    let startIndex = html.indexOf('{if ' + name + '}');
+    let endIndex = html.indexOf('{endif ' + name + '}');
+
+    return html.substring(0, startIndex).trim() + html.substring(endIndex + ('{endif ' + name + '}').length);
+};
+PreviewForm2.prototype.removeIfCondition = function(name, html) {
+    let startIndex = html.indexOf('{if ' + name + '}');    
+    let tmp = html.substring(0, startIndex).trim() + html.substring(startIndex + ('{if ' + name + '}').length);
+    let endIndex = tmp.indexOf('{endif ' + name + '}');
+
+    return tmp.substring(0, endIndex).trim() + tmp.substring(endIndex + ('{endif ' + name + '}').length);
 };
 module.exports = PreviewForm2;

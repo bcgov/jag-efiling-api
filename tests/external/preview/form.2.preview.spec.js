@@ -79,4 +79,29 @@ describe('Form 2 preview', function() {
             });
         });
     });
+    it('includes email when specified', (done)=>{
+        var data = fs.readFileSync('./tests/external/preview/form2.json').toString();
+        data = data.replace('"useServiceEmail": false,', '"useServiceEmail": true,')        
+        var background = [
+            'alter sequence person_id_seq restart',
+            'alter sequence forms_id_seq restart',
+            { sql: 'insert into person(login) values ($1)', params:['max'] },
+            { sql: 'insert into forms(person_id, type, status, data) values($1, $2, $3, $4);', params:[1, 'crazy-max', 'new', data] },
+        ];
+        execute(background, (rows, error)=> {
+            var options = {
+                url: home + '/api/forms/1/preview',
+                headers: {
+                    'X-USER': 'max'
+                }
+            };
+            request.get(options, function(err, response, body) {
+                expect(err).to.equal(null);
+                expect(response.statusCode).to.equal(200);
+                expect(response.headers['content-type']).to.equal('text/html');
+                expect(body).to.equal(fs.readFileSync('./tests/external/preview/expected.preview.with.email.html').toString());
+                done();
+            });
+        });
+    });
 });
