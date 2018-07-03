@@ -94,14 +94,6 @@ describe('When database is not responding', function() {
         });
     });
 
-    it('returns 503 when reading person info', (done)=> {
-        request.get(home + '/api/persons/max', function(err, response, body) {
-            expect(response.statusCode).to.equal(503);
-            expect(JSON.parse(body)).to.deep.equal({message:'service unavailable'});
-            done();
-        });
-    });
-
     it('returns 503 when saving new person info', (done)=> {
         request.post(home + '/api/persons', {form:{ data: 'joe' }}, function(err, response, body) {
             expect(response.statusCode).to.equal(503);

@@ -13,6 +13,13 @@ describe('Person info endpoint', function() {
     var ip = 'localhost';
     var home = 'http://' + ip + ':' + port;
     var database;
+    var options = {
+        url: home + '/api/persons/connected',
+        headers: {
+            'SMGOV_USERGUID': 'max',
+            'SMGOV_USERDISPLAYNAME': 'Free Max'
+        }
+    };
 
     beforeEach(function(done) {
         server = new Server();
@@ -32,17 +39,16 @@ describe('Person info endpoint', function() {
     });
 
     it('is a rest service', (done)=> {
-        execute('insert into person(login) values($1);', ['max'], function() {
-            get(home + '/api/persons/max', function(err, response, body) {
-                expect(response.statusCode).to.equal(200);
-                expect(JSON.parse(body).login).to.equal('max');
-                done();
-            });
+        get(options, function(err, response, body) {
+            expect(response.statusCode).to.equal(200);
+            expect(JSON.parse(body).login).to.equal('max');
+            expect(JSON.parse(body).name).to.equal('Free Max');
+            done();
         });
     });
 
     it('resists unknown user', (done)=> {
-        get(home + '/api/persons/max', function(err, response, body) {
+        get(home + '/api/persons/connected', function(err, response, body) {
             expect(response.statusCode).to.equal(404);
             expect(JSON.parse(body)).to.deep.equal({message:'not found'});
             done();

@@ -63,11 +63,14 @@ RestAdaptor.prototype.route = function(app) {
             savePersonResponse(data, response);
         });
     });
-    app.get('/api/persons/:login', (request, response, next)=> {
-        let login = request.params.login;
-        this.personInfo.now(login, (data)=> {
-            personInfoResponse(data, response);
-        });
+    app.get('/api/persons/connected', (request, response, next)=> {
+        let login = request.headers['smgov_userguid'];
+        let name = request.headers['smgov_userdisplayname'];
+        if (login === undefined) {
+            personInfoResponse( { error:{ code:404 }}, response);
+        } else {
+            personInfoResponse({ login:login, name:name }, response);
+        }
     });
     app.post('/api/cases/archive', (request, response)=> {
         let params = request.body;
