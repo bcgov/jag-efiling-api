@@ -45,7 +45,7 @@ describe('My cases endpoint', function() {
             var options = {
                 url: home + '/api/cases',
                 headers: {
-                    'X-USER': 'max'
+                    'SMGOV_USERGUID': 'max'
                 }
             };
             get(options, (err, response, body)=> {

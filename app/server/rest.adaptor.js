@@ -29,7 +29,7 @@ RestAdaptor.prototype.route = function(app) {
         });
     });
     app.post('/api/forms', (request, response)=> {
-        let login = request.headers['x-user'];
+        let login = request.headers['smgov_userguid'];
         this.savePerson.now(login, (data)=> {
             if (data.error) {
                 createFormTwoResponse(data, response);
@@ -51,7 +51,7 @@ RestAdaptor.prototype.route = function(app) {
         });
     });
     app.get('/api/cases', (request, response)=> {
-        let login = request.headers['x-user'];
+        let login = request.headers['smgov_userguid'];
         this.myCases.now(login, (data)=> {                    
             myCasesResponse(data, response);
         });
