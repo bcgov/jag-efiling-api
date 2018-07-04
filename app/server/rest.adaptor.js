@@ -29,7 +29,7 @@ RestAdaptor.prototype.route = function(app) {
         });
     });
     app.post('/api/forms', (request, response)=> {
-        let login = request.headers['x-user'];
+        let login = request.headers['smgov_userguid'];
         this.savePerson.now(login, (data)=> {
             if (data.error) {
                 createFormTwoResponse(data, response);
@@ -51,7 +51,7 @@ RestAdaptor.prototype.route = function(app) {
         });
     });
     app.get('/api/cases', (request, response)=> {
-        let login = request.headers['x-user'];
+        let login = request.headers['smgov_userguid'];
         this.myCases.now(login, (data)=> {                    
             myCasesResponse(data, response);
         });
@@ -63,11 +63,14 @@ RestAdaptor.prototype.route = function(app) {
             savePersonResponse(data, response);
         });
     });
-    app.get('/api/persons/:login', (request, response, next)=> {
-        let login = request.params.login;
-        this.personInfo.now(login, (data)=> {
-            personInfoResponse(data, response);
-        });
+    app.get('/api/persons/connected', (request, response, next)=> {
+        let login = request.headers['smgov_userguid'];
+        let name = request.headers['smgov_userdisplayname'];
+        if (login === undefined) {
+            personInfoResponse( { error:{ code:404 }}, response);
+        } else {
+            personInfoResponse({ login:login, name:name }, response);
+        }
     });
     app.post('/api/cases/archive', (request, response)=> {
         let params = request.body;
