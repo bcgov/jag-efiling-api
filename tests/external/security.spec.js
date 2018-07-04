@@ -5,7 +5,7 @@ var Migrator = require('../../app/migrations/migrator');
 var Truncator = require('../support/truncator');
 var request = require('request');
 
-describe('Authentification', function() {
+describe('Authentication', function() {
 
     var server;
     var port = 5000;
