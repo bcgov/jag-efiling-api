@@ -8,6 +8,12 @@ describe('Ping', function() {
     var port = 5000;
     var ip = 'localhost';
     var home = 'http://' + ip + ':' + port;
+    var options = {
+        url: home + '/ping',
+        headers:{
+            'SMGOV_USERGUID':'max'
+        }
+    };
 
     beforeEach(function(done) {
         server = new Server();
@@ -19,14 +25,14 @@ describe('Ping', function() {
     });    
 
     it('works', function(done) {
-        request(home + '/ping', function(err, response, body) {
+        request(options, function(err, response, body) {
             expect(response.statusCode).to.equal(200);            
             done();
         });
     });  
 
     it('returns pong', function(done) {
-        request(home + '/ping', function(err, response, body) {
+        request(options, function(err, response, body) {
             expect(JSON.parse(response.body)).to.deep.equal({
                 message: 'pong'
             });            
@@ -35,7 +41,13 @@ describe('Ping', function() {
     });
 
     it('is default answer', function(done) {
-        request(home + '/anything-unknown', function(err, response, body) {
+        options = {
+            url: home + '/anything-unknown',
+            headers:{
+                'SMGOV_USERGUID':'max'
+            }
+        };
+        request(options, function(err, response, body) {
             expect(response.statusCode).to.equal(200);            
             done();
         });

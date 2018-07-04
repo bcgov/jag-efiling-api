@@ -67,16 +67,6 @@ Database.prototype.savePerson = function(person, callback) {
         }
     }));    
 };
-Database.prototype.findPersonByLogin = function(login, callback) {
-    this.persons.findByLogin(login, ifError({notify:callback}).otherwise((rows)=> {
-        if (rows.length === 0) {
-            callback({ error: {code:404} });
-        }
-        else {
-            callback(rows[0]);
-        }
-    }));
-};
 Database.prototype.archiveCases = function(ids, callback) {        
     this.forms.archive(ids, ifError({notify:callback}).otherwise((rows)=> {
         callback(rows);

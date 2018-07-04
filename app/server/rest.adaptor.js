@@ -1,4 +1,4 @@
-let { SearchFormSeven, MyCases, CreateFormTwo, SavePerson, PersonInfo, UpdateFormTwo, 
+let { SearchFormSeven, MyCases, CreateFormTwo, SavePerson, UpdateFormTwo, 
       ArchiveCases, PreviewForm2 } = require('../features');
 let { searchFormSevenResponse, myCasesResponse, createFormTwoResponse,
       updateFormTwoResponse, savePersonResponse, personInfoResponse,
@@ -17,8 +17,7 @@ RestAdaptor.prototype.useDatabase = function(database) {
     this.myCases = new MyCases(database);
     this.createFormTwo = new  CreateFormTwo(database);
     this.updateFormTwo = new UpdateFormTwo(database);
-    this.savePerson = new SavePerson(database); 
-    this.personInfo = new PersonInfo(database);
+    this.savePerson = new SavePerson(database);     
     this.archiveCases = new ArchiveCases(database);
     this.previewForm2 = new PreviewForm2(database);
 };
@@ -66,11 +65,7 @@ RestAdaptor.prototype.route = function(app) {
     app.get('/api/persons/connected', (request, response, next)=> {
         let login = request.headers['smgov_userguid'];
         let name = request.headers['smgov_userdisplayname'];
-        if (login === undefined) {
-            personInfoResponse( { error:{ code:404 }}, response);
-        } else {
-            personInfoResponse({ login:login, name:name }, response);
-        }
+        personInfoResponse({ login:login, name:name }, response);
     });
     app.post('/api/cases/archive', (request, response)=> {
         let params = request.body;

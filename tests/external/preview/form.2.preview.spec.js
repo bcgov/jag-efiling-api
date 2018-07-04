@@ -44,7 +44,7 @@ describe('Form 2 preview', function() {
             var options = {
                 url: home + '/api/forms/1/preview',
                 headers: {
-                    'X-USER': 'max'
+                    'SMGOV_USERGUID': 'max'
                 }
             };
             request.get(options, function(err, response, body) {
@@ -68,7 +68,7 @@ describe('Form 2 preview', function() {
             var options = {
                 url: home + '/api/forms/2/preview',
                 headers: {
-                    'X-USER': 'max'
+                    'SMGOV_USERGUID': 'max'
                 }
             };
             request.get(options, function(err, response, body) {
@@ -92,7 +92,7 @@ describe('Form 2 preview', function() {
             var options = {
                 url: home + '/api/forms/1/preview',
                 headers: {
-                    'X-USER': 'max'
+                    'SMGOV_USERGUID': 'max'
                 }
             };
             request.get(options, function(err, response, body) {

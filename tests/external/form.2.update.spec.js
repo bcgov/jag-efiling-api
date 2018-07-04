@@ -45,7 +45,7 @@ describe('Form 2 update', function() {
                     data: JSON.stringify({ field:'new value' })
                 },
                 headers: {
-                    'X-USER': 'max'
+                    'SMGOV_USERGUID': 'max'
                 }
             };
             request.put(options, function(err, response, body) {
@@ -88,7 +88,7 @@ describe('Form 2 update', function() {
                     data: JSON.stringify({field: 'new value'})
                 },
                 headers: {
-                    'X-USER': 'max'
+                    'SMGOV_USERGUID': 'max'
                 }
             };
             request.put(options, function (err, response, body) {

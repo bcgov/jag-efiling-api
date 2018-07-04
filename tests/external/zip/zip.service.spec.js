@@ -53,7 +53,7 @@ describe('ZIP service', function() {
         var options = {
             url: home + '/api/zip?id=1&id=2',
             headers: {
-                'X-USER': 'max'
+                'SMGOV_USERGUID': 'max'
             }
         };
         var files = [];
@@ -79,7 +79,7 @@ describe('ZIP service', function() {
         var options = {
             url: home + '/api/zip?id=1',
             headers: {
-                'X-USER': 'max'
+                'SMGOV_USERGUID': 'max'
             }
         };
         request.get(options)
@@ -109,7 +109,7 @@ describe('ZIP service', function() {
         var options = {
             url: home + '/api/zip?id=1&id=666',
             headers: {
-                'X-USER': 'max'
+                'SMGOV_USERGUID': 'max'
             }
         };
         request.get(options, (err, response, body)=>{

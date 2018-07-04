@@ -47,7 +47,7 @@ describe('Form 2 archive', function() {
                     ids: JSON.stringify([2, 3])
                 },
                 headers: {
-                    'X-USER': 'max'
+                    'SMGOV_USERGUID': 'max'
                 }
             };
             request.post(options, function(err, response, body) {

@@ -9,6 +9,12 @@ describe('Hub service', function() {
     var port = 5000;
     var ip = 'localhost';
     var home = 'http://' + ip + ':' + port;
+    var options = {
+        url: home + '/api/forms?file=CA42',
+        headers: {
+            'SMGOV_USERGUID': 'max'
+        }
+    };
 
     var hub;
     var answer;
@@ -28,7 +34,7 @@ describe('Hub service', function() {
 
     it('propagates unable to connect as 503', function(done) {
         server.useService(new Hub('http://not-running'));
-        get(home + '/api/forms?file=CA42', function(err, response, body) {   
+        get(options, function(err, response, body) {   
             expect(response.statusCode).to.equal(503);
             expect(JSON.parse(body)).to.deep.deep.equal({message:'service unavailable'});
             done();
@@ -41,7 +47,7 @@ describe('Hub service', function() {
             res.end();
         };
         server.useService(new Hub('http://localhost:5001'));
-        get(home + '/api/forms?file=CA42', function(err, response, body) {   
+        get(options, function(err, response, body) {   
             expect(response.statusCode).to.equal(503);
             expect(JSON.parse(body)).to.deep.deep.equal({message:'service unavailable'});
             done();
@@ -57,7 +63,7 @@ describe('Hub service', function() {
             }, timeout * 10);            
         };
         server.useService(new Hub('http://localhost:5001', timeout));
-        get(home + '/api/forms?file=CA42', function(err, response, body) {   
+        get(options, function(err, response, body) {   
             expect(response.statusCode).to.equal(503);
             expect(JSON.parse(body)).to.deep.deep.equal({message:'service unavailable'});
             done();

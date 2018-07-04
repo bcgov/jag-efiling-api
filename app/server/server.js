@@ -16,6 +16,14 @@ Server.prototype.start = function (port, ip, done) {
         response.setHeader('Content-Type', 'application/json');
         next();
     });
+    this.app.use((request, response, next)=>{
+        if (request.method !== 'OPTIONS' && request.headers['smgov_userguid'] === undefined) {
+            response.statusCode = 401;
+            response.end(JSON.stringify({ message:'unauthorized' }));
+        } else {
+            next();
+        }
+    });
     this.app.use(morgan(':method :url :req[smgov_userguid]', { immediate:true }));
     this.app.use(bodyParser.urlencoded({ extended: false }));    
     this.restAdaptor.route(this.app);
