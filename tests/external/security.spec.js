@@ -3,23 +3,15 @@ var Server = require('../../app/server/server');
 var Database = require('../../app/store/database');
 var Migrator = require('../../app/migrations/migrator');
 var Truncator = require('../support/truncator');
-var { execute } = require('yop-postgresql');
-var get = require('request');
+var request = require('request');
 
-describe('Person info endpoint', function() {
+describe('Authentification', function() {
 
     var server;
     var port = 5000;
     var ip = 'localhost';
     var home = 'http://' + ip + ':' + port;
     var database;
-    var options = {
-        url: home + '/api/persons/connected',
-        headers: {
-            'SMGOV_USERGUID': 'max',
-            'SMGOV_USERDISPLAYNAME': 'Free Max'
-        }
-    };
 
     beforeEach(function(done) {
         server = new Server();
@@ -38,20 +30,30 @@ describe('Person info endpoint', function() {
         server.stop(done);
     });
 
-    it('is a rest service', (done)=> {
-        get(options, function(err, response, body) {
+    it('is needed', function(done) {
+        var options = {
+            url: home + '/ping',
+            headers: {
+                'SMGOV_USERGUID': 'max'
+            }
+        };
+        request.get(options, function(err, response, body) {
             expect(response.statusCode).to.equal(200);
-            expect(JSON.parse(body).login).to.equal('max');
-            expect(JSON.parse(body).name).to.equal('Free Max');
+            expect(body).to.deep.equal(JSON.stringify({ message:'pong' }));
             done();
-        });
+        });       
     });
-
-    it('resists unknown user', (done)=> {
-        get(home + '/api/persons/connected', function(err, response, body) {
+    it('returns 401 otherwise', function(done) {
+        var options = {
+            url: home + '/ping',
+            headers: {
+                'MISSING': 'max'
+            }
+        };
+        request.get(options, function(err, response, body) {
             expect(response.statusCode).to.equal(401);
-            expect(JSON.parse(body)).to.deep.equal({message:'unauthorized'});
+            expect(body).to.deep.equal(JSON.stringify({ message:'unauthorized' }));
             done();
-        });
+        });       
     });
 });

@@ -24,8 +24,13 @@ describe('start script', function() {
         });      
     });
 
-    it('starts http ping server', function(done) {
-        var ping = 'http://' + server.ip + ':' + server.port + '/ping';
+    it('starts http ping server', function(done) {        
+        var ping = {
+            url: 'http://' + server.ip + ':' + server.port + '/ping',
+            headers: {
+                'SMGOV_USERGUID':'max'
+            }
+        };
         get(ping, function(err, response, body) {
             expect(err).to.equal(null);
             expect(response.statusCode).to.equal(200);

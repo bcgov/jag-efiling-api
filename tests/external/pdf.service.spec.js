@@ -41,7 +41,7 @@ describe('PDF service', function() {
                 html: '<html><body></body></html>'
             },
             headers: {
-                'X-USER': 'max'
+                'SMGOV_USERGUID': 'max'
             }
         };
         request.post(options, function(err, response, body) {
@@ -106,7 +106,7 @@ describe('PDF service', function() {
                     </html>`
                 },
                 headers: {
-                    'X-USER': 'max'
+                    'SMGOV_USERGUID': 'max'
                 },
                 encoding: null
             };
