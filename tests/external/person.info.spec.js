@@ -38,12 +38,31 @@ describe('Person info endpoint', function() {
         server.stop(done);
     });
 
-    it('is a rest service', (done)=> {
+    it('returns name', (done)=> {
         get(options, function(err, response, body) {
             expect(response.statusCode).to.equal(200);
-            expect(JSON.parse(body).login).to.equal('max');
-            expect(JSON.parse(body).name).to.equal('Free Max');
+            let person = JSON.parse(body);
+            expect(person.login).to.equal('max');
+            expect(person.name).to.equal('Free Max');
             done();
+        });
+    });
+
+    it('returns customization', (done)=> {
+        var background = [
+            'alter sequence person_id_seq restart',
+            { sql:'insert into person(login, customization) values ($1, $2)', params:['max', JSON.stringify({ thisApp:true })] }
+        ];
+        execute(background, function(rows, error) {
+            expect(error).to.equal(null);
+            get(options, function(err, response, body) {
+                expect(response.statusCode).to.equal(200);
+                let person = JSON.parse(body);
+                expect(person.login).to.equal('max');
+                expect(person.name).to.equal('Free Max');
+                expect(person.customization).to.deep.equal({ thisApp:true });
+                done();
+            });
         });
     });
 
