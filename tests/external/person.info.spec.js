@@ -54,7 +54,7 @@ describe('Person info endpoint', function() {
             { sql:'insert into person(login, customization) values ($1, $2)', params:['max', JSON.stringify({ thisApp:true })] }
         ];
         execute(background, function(rows, error) {
-            expect(error).to.equal(null);
+            expect(error).to.equal(undefined);
             get(options, function(err, response, body) {
                 expect(response.statusCode).to.equal(200);
                 let person = JSON.parse(body);
@@ -70,6 +70,17 @@ describe('Person info endpoint', function() {
         get(home + '/api/persons/connected', function(err, response, body) {
             expect(response.statusCode).to.equal(401);
             expect(JSON.parse(body)).to.deep.equal({message:'unauthorized'});
+            done();
+        });
+    });
+
+    it('resists unregistered user', (done)=>{
+        get(options, function(err, response, body) {
+            expect(response.statusCode).to.equal(200);
+            let person = JSON.parse(body);
+            expect(person.login).to.equal('max');
+            expect(person.name).to.equal('Free Max');
+            expect(person.customization).to.equal(undefined);
             done();
         });
     });

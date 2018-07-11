@@ -10,7 +10,7 @@ Persons.prototype.create = function(options, callback) {
         });
 };
 Persons.prototype.findByLogin = function(login, callback) {
-    execute('select id, login from person where login=$1', [login], callback);
+    execute('select id, login, customization from person where login=$1', [login], callback);
 };
 
 module.exports = {

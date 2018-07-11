@@ -82,5 +82,16 @@ Database.prototype.formData = function(id, callback) {
         }
     }));
 };
+Database.prototype.personInfo = function(login, callback) {
+    this.persons.findByLogin(login, ifError({notify:callback}).otherwise((rows)=> {
+        if (rows.length ==0) {
+            callback({ error: {code:404} });
+        }
+        else {
+            let person = rows[0];
+            callback({ login:person.login, name:person.name, customization:JSON.parse(person.customization) });
+        }
+    }));
+};
 
 module.exports = Database;
