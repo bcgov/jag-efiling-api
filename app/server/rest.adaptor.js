@@ -1,5 +1,5 @@
 let { SearchFormSeven, MyCases, CreateFormTwo, SavePerson, UpdateFormTwo, 
-      ArchiveCases, PreviewForm2, PersonInfo } = require('../features');
+      ArchiveCases, PreviewForm2, PersonInfo, SaveCustomization } = require('../features');
 let { searchFormSevenResponse, myCasesResponse, createFormTwoResponse,
       updateFormTwoResponse, savePersonResponse, personInfoResponse,
       archiveCasesResponse, previewForm2Response } = require('./responses');
@@ -21,6 +21,7 @@ RestAdaptor.prototype.useDatabase = function(database) {
     this.archiveCases = new ArchiveCases(database);
     this.previewForm2 = new PreviewForm2(database);
     this.getPersonInfo = new PersonInfo(database);
+    this.saveCustomization = new SaveCustomization(database);
 };
 RestAdaptor.prototype.route = function(app) {
     app.get('/api/forms', (request, response)=> {
@@ -68,6 +69,14 @@ RestAdaptor.prototype.route = function(app) {
         let name = request.headers['smgov_userdisplayname'];
         this.getPersonInfo.now(login, (user)=>{
             personInfoResponse({ login:login, name:name, customization:user.customization }, response);
+        });        
+    });
+    app.post('/api/persons/customization', (request, response)=> {
+        let login = request.headers['smgov_userguid'];
+        let params = request.body;
+        let customization = params.customization;
+        this.saveCustomization.now(login, customization, (data)=>{
+            personInfoResponse(data, response);
         });        
     });
     app.post('/api/cases/archive', (request, response)=> {
