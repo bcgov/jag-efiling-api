@@ -68,9 +68,11 @@ Database.prototype.savePerson = function(person, callback) {
     }));    
 };
 Database.prototype.saveCustomization = function(person, callback) {
-    this.persons.saveCustomization(person, ifError({notify:callback}).otherwise((rows, error)=> {
-        callback(person);        
-    }));    
+    this.savePerson(person, ()=>{
+        this.persons.saveCustomization(person, ifError({notify:callback}).otherwise((rows, error)=> {
+            callback(person);        
+        }));        
+    });
 };
 Database.prototype.archiveCases = function(ids, callback) {        
     this.forms.archive(ids, ifError({notify:callback}).otherwise((rows)=> {
