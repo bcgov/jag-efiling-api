@@ -67,6 +67,13 @@ Database.prototype.savePerson = function(person, callback) {
         }
     }));    
 };
+Database.prototype.saveCustomization = function(person, callback) {
+    this.savePerson(person, ()=>{
+        this.persons.saveCustomization(person, ifError({notify:callback}).otherwise((rows, error)=> {
+            callback(person);        
+        }));        
+    });
+};
 Database.prototype.archiveCases = function(ids, callback) {        
     this.forms.archive(ids, ifError({notify:callback}).otherwise((rows)=> {
         callback(rows);
@@ -79,6 +86,17 @@ Database.prototype.formData = function(id, callback) {
         }
         else {
             callback(JSON.parse(rows[0].data));
+        }
+    }));
+};
+Database.prototype.personInfo = function(login, callback) {
+    this.persons.findByLogin(login, ifError({notify:callback}).otherwise((rows)=> {
+        if (rows.length ==0) {
+            callback({ error: {code:404} });
+        }
+        else {
+            let person = rows[0];
+            callback({ login:person.login, name:person.name, customization:JSON.parse(person.customization) });
         }
     }));
 };
