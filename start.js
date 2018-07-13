@@ -1,6 +1,5 @@
 var port = process.env.OPENSHIFT_NODEJS_PORT || 8080;
 var ip = process.env.OPENSHIFT_NODEJS_IP || '0.0.0.0';
-var home = 'http://' + ip + ':' + port;
 
 var Database = require('./app/store/database');
 var database = new Database();
