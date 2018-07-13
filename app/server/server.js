@@ -12,10 +12,15 @@ function Server() {
         { name:'Access-Control-Allow-Methods', value:'GET, PUT, POST, OPTIONS' },
         { name:'Content-Type', value:'application/json' },
     ];
+    this.requestheaders = [];
 }
 
 Server.prototype.start = function (port, ip, done) {
     this.app.use((request, response, next)=>{
+        for (let i=0; i<this.requestheaders.length; i++) {
+            let header = this.requestheaders[i];
+            request.headers[header.name] = header.value;
+        }
         for (let i=0; i<this.headers.length; i++) {
             let header = this.headers[i];
             response.setHeader(header.name, header.value);
