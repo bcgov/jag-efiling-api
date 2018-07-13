@@ -6,14 +6,20 @@ let morgan = require('morgan');
 function Server() {    
     this.restAdaptor = new RestAdaptor();
     this.app = express();
+    this.headers = [
+        { name:'Access-Control-Allow-Origin', value:'*' },
+        { name:'Access-Control-Allow-Headers', value:'smgov_userguid,smgov_userdisplayname,Content-Type, Authorization, Content-Length, X-Requested-With' },
+        { name:'Access-Control-Allow-Methods', value:'GET, PUT, POST, OPTIONS' },
+        { name:'Content-Type', value:'application/json' },
+    ];
 }
 
 Server.prototype.start = function (port, ip, done) {
     this.app.use((request, response, next)=>{
-        response.setHeader('Access-Control-Allow-Origin', '*');
-        response.setHeader('Access-Control-Allow-Headers', 'smgov_userguid,smgov_userdisplayname,Content-Type, Authorization, Content-Length, X-Requested-With');
-        response.setHeader('Access-Control-Allow-Methods', 'GET, PUT, POST, OPTIONS');
-        response.setHeader('Content-Type', 'application/json');
+        for (let i=0; i<this.headers.length; i++) {
+            let header = this.headers[i];
+            response.setHeader(header.name, header.value);
+        }
         next();
     });
     this.app.use((request, response, next)=>{
