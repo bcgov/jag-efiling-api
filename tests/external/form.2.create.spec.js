@@ -44,12 +44,12 @@ describe('Form 2 create', function() {
                     data: JSON.stringify({ any:'field' })
                 },
                 headers: {
-                    'X-USER': 'max'
+                    'SMGOV_USERGUID': 'max'
                 }
             };
             request.post(options, function(err, response, body) {
                 expect(response.statusCode).to.equal(201);
-                expect(JSON.parse(body)).to.deep.equal({});
+                expect(body).to.deep.equal(JSON.stringify({id:1}));
                 expect(response.headers.location).to.equal('/forms/1');
                 var location = response.headers.location;
                 var id = parseInt(location.substring(location.lastIndexOf('/')+1));

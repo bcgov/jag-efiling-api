@@ -30,6 +30,7 @@ describe('Local development', ()=>{
                                 document.getElementById('message').innerHTML = JSON.parse(xhr.responseText).message;
                             };
                             xhr.open('GET', 'http://localhost:5000/ping');
+                            xhr.setRequestHeader('SMGOV_USERGUID', 'max');
                             xhr.send(null);
                         }
                     </script>

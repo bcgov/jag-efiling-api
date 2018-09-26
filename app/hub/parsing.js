@@ -8,7 +8,7 @@ var buildPartyInfo = function(party) {
     let info = {};
     if (party['FirstName']) { 
         info.name = name(party)        
-    };
+    }
     if (party['Organization']) {
         info.organization = party['Organization'];
     }
@@ -17,7 +17,7 @@ var buildPartyInfo = function(party) {
             name: name(lawyer(party)),
             address: lawyerFirmAddress(party)
         }
-    };
+    }
     return info;
 };
 var rawAppellants = function(parties) {

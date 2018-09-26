@@ -13,6 +13,15 @@ describe('Person save', function() {
     var ip = 'localhost';
     var home = 'http://' + ip + ':' + port;
     var database;
+    var options = {
+        url: home + '/api/persons',
+        form:{
+            data: 'joe'
+        },
+        headers:{
+            'SMGOV_USERGUID':'max'
+        }
+    };
 
     beforeEach(function(done) {
         server = new Server();
@@ -31,10 +40,8 @@ describe('Person save', function() {
         server.stop(done);
     });
 
-    it('is a rest service', function(done) {
-        request.post(home + '/api/persons', {form:{
-            data: 'joe'
-        }}, function(err, response, body) {
+    it('is a rest service', function(done) {        
+        request.post(options, function(err, response, body) {
             expect(response.statusCode).to.equal(201);
             var location = response.headers.location;
             expect(location).to.contain('/persons/');
@@ -51,18 +58,14 @@ describe('Person save', function() {
     });
 
     it('does not duplicate entries', function(done) {
-        request.post(home + '/api/persons', {form:{
-            data: 'joe'
-        }}, function(err, response, body) {
+        request.post(options, function(err, response, body) {
             
             expect(response.statusCode).to.equal(201);
             var location = response.headers.location;
             expect(location).to.contain('/persons/');
             var id = parseInt(location.substring(location.lastIndexOf('/')+1));
 
-            request.post(home + '/api/persons', {form:{
-                data: 'joe'
-            }}, function(err, response, body) {
+            request.post(options, function(err, response, body) {
                 
                 expect(response.statusCode).to.equal(201);
                 var location = response.headers.location;

@@ -3,3 +3,4 @@ coverage
 .idea
 *.log
 *-actual.pdf
+.scannerwork

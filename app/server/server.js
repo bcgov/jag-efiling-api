@@ -6,17 +6,36 @@ let morgan = require('morgan');
 function Server() {    
     this.restAdaptor = new RestAdaptor();
     this.app = express();
-};
+    this.headers = [
+        { name:'Access-Control-Allow-Origin', value:'*' },
+        { name:'Access-Control-Allow-Headers', value:'smgov_userguid,smgov_userdisplayname,Content-Type, Authorization, Content-Length, X-Requested-With' },
+        { name:'Access-Control-Allow-Methods', value:'GET, PUT, POST, OPTIONS' },
+        { name:'Content-Type', value:'application/json' },
+    ];
+    this.requestheaders = [];
+}
 
 Server.prototype.start = function (port, ip, done) {
     this.app.use((request, response, next)=>{
-        response.setHeader('Access-Control-Allow-Origin', '*');
-        response.setHeader('Access-Control-Allow-Headers', 'x-user,Content-Type, Authorization, Content-Length, X-Requested-With');
-        response.setHeader('Access-Control-Allow-Methods', 'GET, PUT, POST, OPTIONS');
-        response.setHeader('Content-Type', 'application/json');
+        for (let i=0; i<this.requestheaders.length; i++) {
+            let header = this.requestheaders[i];
+            request.headers[header.name] = header.value;
+        }
+        for (let i=0; i<this.headers.length; i++) {
+            let header = this.headers[i];
+            response.setHeader(header.name, header.value);
+        }
         next();
     });
-    this.app.use(morgan(':method :url :req[x-user]', { immediate:true }));
+    this.app.use((request, response, next)=>{
+        if (request.method !== 'OPTIONS' && request.headers['smgov_userguid'] === undefined) {
+            response.statusCode = 401;
+            response.end(JSON.stringify({ message:'unauthorized' }));
+        } else {
+            next();
+        }
+    });
+    this.app.use(morgan(':method :url :req[smgov_userguid]', { immediate:true }));
     this.app.use(bodyParser.urlencoded({ extended: false }));    
     this.restAdaptor.route(this.app);
     this.server = this.app.listen(port, ip, done);

@@ -4,7 +4,7 @@ var { extractParties, buildPartyInfo, rawAppellants, rawRespondents } = require(
 function Hub(url, timeout) {
     this.url = url;
     this.timeout = timeout;
-};
+}
 Hub.prototype.searchForm7 = function(file, callback) {    
     var target = this.url + '/form7s?caseNumber='+file;
 

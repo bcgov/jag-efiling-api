@@ -33,7 +33,7 @@ describe('When database is not responding', function() {
         var options = {
             url: home + '/api/cases',
             headers: {
-                'X-USER': 'max'
+                'SMGOV_USERGUID': 'max'
             }
         };
         request.get(options, (err, response, body)=> {
@@ -50,7 +50,7 @@ describe('When database is not responding', function() {
                 data: JSON.stringify({ any:'field' })
             },
             headers: {
-                'X-USER': 'max'
+                'SMGOV_USERGUID': 'max'
             }
         };
         request.post(options, (err, response, body)=> {
@@ -67,7 +67,7 @@ describe('When database is not responding', function() {
                 data: JSON.stringify({ field:'new value' })
             },
             headers: {
-                'X-USER': 'max'
+                'SMGOV_USERGUID': 'max'
             }
         };
         request.put(options, function(err, response, body) {
@@ -84,7 +84,7 @@ describe('When database is not responding', function() {
                 ids: JSON.stringify([2, 3])
             },
             headers: {
-                'X-USER': 'max'
+                'SMGOV_USERGUID': 'max'
             }
         };
         request.post(options, function(err, response, body) {
@@ -94,16 +94,45 @@ describe('When database is not responding', function() {
         });
     });
 
-    it('returns 503 when reading person info', (done)=> {
-        request.get(home + '/api/persons/max', function(err, response, body) {
+    it('returns 503 when saving new person info', (done)=> {
+        var options = {
+            url: home + '/api/persons',
+            form:{
+                data: 'joe'
+            },
+            headers: {
+                'SMGOV_USERGUID': 'max'
+            }
+        };
+        request.post(options, function(err, response, body) {
             expect(response.statusCode).to.equal(503);
             expect(JSON.parse(body)).to.deep.equal({message:'service unavailable'});
             done();
         });
     });
 
-    it('returns 503 when saving new person info', (done)=> {
-        request.post(home + '/api/persons', {form:{ data: 'joe' }}, function(err, response, body) {
+    it('returns 503 when previewing a form', (done)=> {
+        var options = {
+            url: home + '/api/forms/1/preview',
+            headers: {
+                'SMGOV_USERGUID': 'max'
+            }
+        };
+        request.get(options, function(err, response, body) {
+            expect(response.statusCode).to.equal(503);
+            expect(JSON.parse(body)).to.deep.equal({message:'service unavailable'});
+            done();
+        });
+    });
+
+    it('returns 503 when downloading a zip', (done)=> {
+        var options = {
+            url: home + '/api/zip?id=666',
+            headers: {
+                'SMGOV_USERGUID': 'max'
+            }
+        };
+        request.get(options, function(err, response, body) {
             expect(response.statusCode).to.equal(503);
             expect(JSON.parse(body)).to.deep.equal({message:'service unavailable'});
             done();

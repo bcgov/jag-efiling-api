@@ -1,8 +1,12 @@
-let { SearchFormSeven, MyCases, CreateFormTwo, SavePerson, PersonInfo, UpdateFormTwo, 
-      ArchiveCases } = require('../features');
+let { SearchFormSeven, MyCases, CreateFormTwo, SavePerson, UpdateFormTwo, 
+      ArchiveCases, PreviewForm2, PersonInfo, SaveCustomization } = require('../features');
 let { searchFormSevenResponse, myCasesResponse, createFormTwoResponse,
       updateFormTwoResponse, savePersonResponse, personInfoResponse,
-      archiveCasesResponse } = require('./responses');
+      archiveCasesResponse, previewForm2Response } = require('./responses');
+let ifNoError = require('./errors.handling');
+let pdf = require('html-pdf');
+let archiver = require('archiver');
+let { Promise, Promises } = require('yop-promises');
 
 let RestAdaptor = function() {};
 
@@ -13,9 +17,11 @@ RestAdaptor.prototype.useDatabase = function(database) {
     this.myCases = new MyCases(database);
     this.createFormTwo = new  CreateFormTwo(database);
     this.updateFormTwo = new UpdateFormTwo(database);
-    this.savePerson = new SavePerson(database); 
-    this.personInfo = new PersonInfo(database);
+    this.savePerson = new SavePerson(database);     
     this.archiveCases = new ArchiveCases(database);
+    this.previewForm2 = new PreviewForm2(database);
+    this.getPersonInfo = new PersonInfo(database);
+    this.saveCustomization = new SaveCustomization(database);
 };
 RestAdaptor.prototype.route = function(app) {
     app.get('/api/forms', (request, response)=> {
@@ -24,7 +30,7 @@ RestAdaptor.prototype.route = function(app) {
         });
     });
     app.post('/api/forms', (request, response)=> {
-        let login = request.headers['x-user'];
+        let login = request.headers['smgov_userguid'];
         this.savePerson.now(login, (data)=> {
             if (data.error) {
                 createFormTwoResponse(data, response);
@@ -46,7 +52,7 @@ RestAdaptor.prototype.route = function(app) {
         });
     });
     app.get('/api/cases', (request, response)=> {
-        let login = request.headers['x-user'];
+        let login = request.headers['smgov_userguid'];
         this.myCases.now(login, (data)=> {                    
             myCasesResponse(data, response);
         });
@@ -58,11 +64,20 @@ RestAdaptor.prototype.route = function(app) {
             savePersonResponse(data, response);
         });
     });
-    app.get('/api/persons/:login', (request, response, next)=> {
-        let login = request.params.login;
-        this.personInfo.now(login, (data)=> {
+    app.get('/api/persons/connected', (request, response, next)=> {
+        let login = request.headers['smgov_userguid'];
+        let name = request.headers['smgov_userdisplayname'];
+        this.getPersonInfo.now(login, (user)=>{
+            personInfoResponse({ login:login, name:name, customization:user.customization }, response);
+        });        
+    });
+    app.post('/api/persons/customization', (request, response)=> {
+        let login = request.headers['smgov_userguid'];
+        let params = request.body;
+        let customization = params.customization;
+        this.saveCustomization.now(login, customization, (data)=>{
             personInfoResponse(data, response);
-        });
+        });        
     });
     app.post('/api/cases/archive', (request, response)=> {
         let params = request.body;
@@ -74,10 +89,52 @@ RestAdaptor.prototype.route = function(app) {
     app.post('/api/pdf', (request, response) => {
         response.writeHead(200, {'Content-type': 'application/pdf'});
         let params = request.body;
-        let html = params.html;
-        var pdf = require('html-pdf');
+        let html = params.html;        
         pdf.create(html).toStream(function(err, stream){            
             stream.pipe(response);
+        });
+    });
+    app.get('/api/forms/:id/preview', (request, response) => {
+        let id = request.params.id;
+        this.previewForm2.now(id, (html)=> {
+            previewForm2Response(html, response);            
+        })        
+    });
+    
+    app.get('/api/zip', (request, response)=>{
+        let error;
+        var self = this;
+        let ids = Array.from(request.query.id);        
+        var archive = archiver('zip');                
+        var ps = new Promises();
+        var doItForEach = (id) => {
+            const p = new Promise();
+            ps.waitFor(p);
+            self.previewForm2.now(id, (html)=> {   
+                if (html.error) {
+                    error = html.error;
+                    p.reject();
+                }
+                else {
+                    pdf.create(html).toStream(function(err, stream) {
+                        const name = 'form2-' + id + '.pdf';
+                        archive.append(stream, { name: name });
+                        p.resolve();
+                    });
+                }
+            }); 
+        };
+        for (var index=0; index<ids.length; index++) {
+            var id = ids[index]; 
+            doItForEach(id);
+        }        
+        ps.done(function() { 
+            ifNoError({error:error}, response).then(()=> {
+                archive.finalize(); 
+                response.setHeader('Content-type', 'application/zip');
+                response.attachment('forms.zip');
+                archive.pipe(response);
+            });
         });
     });
     app.get('/*', function (req, res) { res.send( JSON.stringify({ message: 'pong' }) ); });

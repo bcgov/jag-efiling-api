@@ -1,0 +1,33 @@
+{
+    "formSevenNumber": "CA222",
+    "appellants": [
+        {
+            "name": "One TEST",
+            "address": {
+                "addressLine1": "1800 - 510 West Georgia Street",
+                "addressLine2": null,
+                "city": "Vancouver",
+                "postalCode": "V6B 0M3",
+                "province": "British Columbia"
+            }
+        }
+    ],
+    "respondents": [
+        {
+            "name": "Two TEST",
+            "address": {
+                "addressLine1": "One Address",
+                "addressLine2": "Suite 102",
+                "city": "One City",
+                "postalCode": "A1A 1A1",
+                "province": "British Columbia"
+            }
+        }
+    ],
+    "phone": "",
+    "email": "me@galaxy.universe",
+    "useServiceEmail": false,
+    "sendNotifications": false,
+    "serviceFiler": "",
+    "selectedRespondentIndex": 0
+}

@@ -8,6 +8,12 @@ describe('Form 7 search', function() {
     var port = 5000;
     var ip = 'localhost';
     var home = 'http://' + ip + ':' + port;
+    var options = {
+        url: home + '/api/forms?file=CA42',
+        headers: {
+            'SMGOV_USERGUID':'max'
+        }
+    }
 
     beforeEach(function(done) {
         server = new Server();
@@ -24,7 +30,7 @@ describe('Form 7 search', function() {
     });    
 
     it('is a rest service', function(done) {
-        get(home + '/api/forms?file=CA42', function(err, response, body) {
+        get(options, function(err, response, body) {
             expect(response.statusCode).to.equal(200);
             expect(JSON.parse(body)).to.deep.equal({ parties: { fileNumber:'CA42'} });
             done();
@@ -37,7 +43,7 @@ describe('Form 7 search', function() {
                 callback({ error: {code:404} });
             }
         });
-        get(home + '/api/forms?file=CA42', function(err, response, body) {
+        get(options, function(err, response, body) {
             expect(response.statusCode).to.equal(404);
             expect(JSON.parse(body)).to.deep.equal({message:'not found'});
             done();

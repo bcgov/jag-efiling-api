@@ -13,6 +13,13 @@ describe('Person info endpoint', function() {
     var ip = 'localhost';
     var home = 'http://' + ip + ':' + port;
     var database;
+    var options = {
+        url: home + '/api/persons/connected',
+        headers: {
+            'SMGOV_USERGUID': 'max',
+            'SMGOV_USERDISPLAYNAME': 'Free Max'
+        }
+    };
 
     beforeEach(function(done) {
         server = new Server();
@@ -31,20 +38,49 @@ describe('Person info endpoint', function() {
         server.stop(done);
     });
 
-    it('is a rest service', (done)=> {
-        execute('insert into person(login) values($1);', ['max'], function() {
-            get(home + '/api/persons/max', function(err, response, body) {
+    it('returns name', (done)=> {
+        get(options, function(err, response, body) {
+            expect(response.statusCode).to.equal(200);
+            let person = JSON.parse(body);
+            expect(person.login).to.equal('max');
+            expect(person.name).to.equal('Free Max');
+            done();
+        });
+    });
+
+    it('returns customization', (done)=> {
+        var background = [
+            'alter sequence person_id_seq restart',
+            { sql:'insert into person(login, customization) values ($1, $2)', params:['max', JSON.stringify({ thisApp:true })] }
+        ];
+        execute(background, function(rows, error) {
+            expect(error).to.equal(undefined);
+            get(options, function(err, response, body) {
                 expect(response.statusCode).to.equal(200);
-                expect(JSON.parse(body).login).to.equal('max');
+                let person = JSON.parse(body);
+                expect(person.login).to.equal('max');
+                expect(person.name).to.equal('Free Max');
+                expect(person.customization).to.deep.equal({ thisApp:true });
                 done();
             });
         });
     });
 
     it('resists unknown user', (done)=> {
-        get(home + '/api/persons/max', function(err, response, body) {
-            expect(response.statusCode).to.equal(404);
-            expect(JSON.parse(body)).to.deep.equal({message:'not found'});
+        get(home + '/api/persons/connected', function(err, response, body) {
+            expect(response.statusCode).to.equal(401);
+            expect(JSON.parse(body)).to.deep.equal({message:'unauthorized'});
+            done();
+        });
+    });
+
+    it('resists unregistered user', (done)=>{
+        get(options, function(err, response, body) {
+            expect(response.statusCode).to.equal(200);
+            let person = JSON.parse(body);
+            expect(person.login).to.equal('max');
+            expect(person.name).to.equal('Free Max');
+            expect(person.customization).to.equal(undefined);
             done();
         });
     });
