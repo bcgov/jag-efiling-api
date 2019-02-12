@@ -29,5 +29,5 @@
     "useServiceEmail": false,
     "sendNotifications": false,
     "serviceFiler": "",
-    "selectedRespondentIndex": 0
+    "selectedContactIndex": 0
 }
