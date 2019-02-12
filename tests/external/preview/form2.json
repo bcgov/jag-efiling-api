@@ -21,7 +21,8 @@
                 "city": "Dark city",
                 "postalCode": "V6Z 2K8",
                 "province": "notBC"
-            }
+            },
+            "selected": true
         },
         {
             "name": "Angel Face",
@@ -31,7 +32,8 @@
                 "city": "Dark city",
                 "postalCode": "V6Z 2K8",
                 "province": "notBC"
-            }
+            },
+            "selected": true
         }
     ],
     "phone": "111-222-4444",
@@ -39,5 +41,5 @@
     "useServiceEmail": false,
     "sendNotifications": false,
     "serviceFiler": "",
-    "selectedRespondentIndex": 0
+    "selectedContactIndex": 0
 }
