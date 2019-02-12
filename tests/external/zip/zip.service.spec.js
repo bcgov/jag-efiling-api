@@ -119,4 +119,20 @@ describe('ZIP service', function() {
             done();
         });
     });
+
+    it('resists long id', function(done) {
+        execute('update forms set id=11111 where id=1', (rows, error)=> {
+            expect(error).to.equal(undefined);
+            var options = {
+                url: home + '/api/zip?id=11111',
+                headers: {
+                    'SMGOV_USERGUID': 'max'
+                }
+            };
+            request.get(options, (err, response, body)=>{
+                expect(response.statusCode).to.equal(200);
+                done();
+            });
+        });
+    });
 });

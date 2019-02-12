@@ -89,28 +89,28 @@ RestAdaptor.prototype.route = function(app) {
     app.post('/api/pdf', (request, response) => {
         response.writeHead(200, {'Content-type': 'application/pdf'});
         let params = request.body;
-        let html = params.html;        
-        pdf.create(html).toStream(function(err, stream){            
+        let html = params.html;
+        pdf.create(html).toStream(function(err, stream){
             stream.pipe(response);
         });
     });
     app.get('/api/forms/:id/preview', (request, response) => {
         let id = request.params.id;
         this.previewForm2.now(id, (html)=> {
-            previewForm2Response(html, response);            
-        })        
+            previewForm2Response(html, response);
+        })
     });
-    
+
     app.get('/api/zip', (request, response)=>{
         let error;
         var self = this;
-        let ids = Array.from(request.query.id);        
-        var archive = archiver('zip');                
+        let ids = typeof request.query.id == 'string' ? [request.query.id] : request.query.id;    
+        var archive = archiver('zip');
         var ps = new Promises();
         var doItForEach = (id) => {
             const p = new Promise();
             ps.waitFor(p);
-            self.previewForm2.now(id, (html)=> {   
+            self.previewForm2.now(id, (html)=> {
                 if (html.error) {
                     error = html.error;
                     p.reject();
