@@ -15,7 +15,7 @@ describe('Hub search-form-7', ()=> {
     var received;
 
     beforeEach((done)=> {
-        hub = new Hub(far);        
+        hub = new Hub(far);
         server = http.createServer((request, response)=>{
             received = request.url;
             response.setHeader('content-type', 'application/json');
@@ -25,7 +25,7 @@ describe('Hub search-form-7', ()=> {
     });
 
     afterEach(function(done) {
-        if (server.listening) { 
+        if (server.listening) {
             server.close(done);
         }
         else {
@@ -119,7 +119,7 @@ describe('Hub search-form-7', ()=> {
                 hub.searchForm7('any', (data)=> {
                     expect(data).to.deep.equal({ error:{code:404} });
                     done();
-                });    
+                });
             });
         })
     });
@@ -145,7 +145,7 @@ describe('Hub search-form-7', ()=> {
                     },
                     {
                         name:'Max FREE',
-                        organization:'FREE Inc.'                        
+                        organization:'FREE Inc.'
                     }
                 ],
                 respondents: [
@@ -165,10 +165,10 @@ describe('Hub search-form-7', ()=> {
             expect(data).to.deep.equal({
                 appellants: [
                     {
-                        name:'Max FREE'                  
+                        name:'Max FREE'
                     }
                 ],
-                respondents: [                    
+                respondents: [
                 ]
             });
             exit();
@@ -181,10 +181,10 @@ describe('Hub search-form-7', ()=> {
             expect(data).to.deep.equal({
                 appellants: [
                     {
-                        organization:'Freedom Inc.'                  
+                        organization:'Freedom Inc.'
                     }
                 ],
-                respondents: [                    
+                respondents: [
                 ]
             });
             exit();
@@ -205,6 +205,14 @@ describe('Hub search-form-7', ()=> {
                 expect(data).to.deep.equal({ error:{code:503} });
                 done();
             });
+        });
+    });
+
+    it('doe not serve a criminal case', (done)=>{
+        body = fs.readFileSync(path.join(__dirname, 'sample.criminal.case.json')).toString();
+        hub.searchForm7('any', (data)=> {
+            expect(data).to.deep.equal({ error:{code:404} });
+            done();
         });
     });
 });
