@@ -4,17 +4,18 @@
         "@xmlns:xsi": "any",
         "@xmlns:xsd": "any",
         "soap:Body": {
-            "SearchByCaseNumberResponse": {
+            "ViewCaseBasicsResponse": {
                 "@xmlns": "any",
-                "SearchByCaseNumberResult": {
+                "ViewCaseBasicsResult": {
                     "CaseId": "67890",
                     "CaseNumber": "CA12345",
                     "CaseStatus": "Active",
-                    "CaseType": "Criminal",
+                    "CaseType": "Civil",
                     "FilingDate": "2011-05-13T09:00:00",
                     "StyleOfCauseA": "E-Filing Deployment",
                     "StyleOfCauseAppellantA": "true",
-                    "StyleOfCauseB": "Test Case"                    
+                    "StyleOfCauseB": "Test Case",
+                    "HighLevelCategory":"Family Law"
                 }
             }
         }

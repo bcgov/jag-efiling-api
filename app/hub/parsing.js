@@ -1,5 +1,7 @@
 var extractCaseType = function(data) {
-    return data['soap:Envelope']['soap:Body']['ViewCasePartyResponse'] ?
+    return data['soap:Envelope']['soap:Body']['SearchByCaseNumberResponse'] ?
+           data['soap:Envelope']['soap:Body']['SearchByCaseNumberResponse']['SearchByCaseNumberResult']['CaseType'] :
+           data['soap:Envelope']['soap:Body']['ViewCasePartyResponse'] ?
            data['soap:Envelope']['soap:Body']['ViewCasePartyResponse']['ViewCasePartyResult']['CaseType'] :
            undefined;
 };

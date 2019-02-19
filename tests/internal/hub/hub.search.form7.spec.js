@@ -211,6 +211,14 @@ describe('Hub search-form-7', ()=> {
     it('doe not serve a criminal case', (done)=>{
         body = fs.readFileSync(path.join(__dirname, 'sample.criminal.case.json')).toString();
         hub.searchForm7('any', (data)=> {
+            expect(data).to.deep.equal({ error:{code:404, message:'criminal'} });
+            done();
+        });
+    });
+
+    it('doe not serve a familly law case', (done)=>{
+        body = fs.readFileSync(path.join(__dirname, 'sample.familly.law.json')).toString();
+        hub.searchForm7('any', (data)=> {
             expect(data).to.deep.equal({ error:{code:404} });
             done();
         });

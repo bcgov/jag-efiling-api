@@ -24,7 +24,7 @@ Hub.prototype.searchForm7 = function(file, callback) {
                 var data = JSON.parse(body);
                 var caseType = extractCaseType(data)
                 if (caseType == 'Criminal') {
-                    callback({ error: {code:404} });
+                    callback({ error: {code:404, message:'criminal'} });
                 }
                 else {
                     var parties = extractParties(data);
