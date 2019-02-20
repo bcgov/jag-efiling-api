@@ -1,13 +1,21 @@
+var extractCaseType = function(data) {
+    return data['soap:Envelope']['soap:Body']['SearchByCaseNumberResponse'] ?
+           data['soap:Envelope']['soap:Body']['SearchByCaseNumberResponse']['SearchByCaseNumberResult']['CaseType'] :
+           data['soap:Envelope']['soap:Body']['ViewCasePartyResponse'] ?
+           data['soap:Envelope']['soap:Body']['ViewCasePartyResponse']['ViewCasePartyResult']['CaseType'] :
+           undefined;
+};
+
 var extractParties = function(data) {
-    if (data['soap:Envelope']['soap:Body']['ViewCasePartyResponse']) {
-        return data['soap:Envelope']['soap:Body']['ViewCasePartyResponse']['ViewCasePartyResult']['Parties']['Party'];
-    }    
+    return data['soap:Envelope']['soap:Body']['ViewCasePartyResponse'] ?
+           data['soap:Envelope']['soap:Body']['ViewCasePartyResponse']['ViewCasePartyResult']['Parties']['Party'] :
+           undefined;
 };
 
 var buildPartyInfo = function(party) {
     let info = {};
-    if (party['FirstName']) { 
-        info.name = name(party)        
+    if (party['FirstName']) {
+        info.name = name(party)
     }
     if (party['Organization']) {
         info.organization = party['Organization'];
@@ -22,14 +30,14 @@ var buildPartyInfo = function(party) {
 };
 var rawAppellants = function(parties) {
     var found = [];
-    parties.forEach((party)=>{        
+    parties.forEach((party)=>{
         if (party['PartyRole'] == 'Appellant') { found.push(party); }
     });
     return found;
 };
 var rawRespondents = function(parties) {
     var found = [];
-    parties.forEach((party)=>{        
+    parties.forEach((party)=>{
         if (party['PartyRole'] == 'Respondent') { found.push(party); }
     });
     return found;
@@ -63,5 +71,6 @@ module.exports = {
     name:name,
     lawyer:lawyer,
     lawyerFirm:lawyerFirm,
-    lawyerFirmAddress:lawyerFirmAddress
+    lawyerFirmAddress:lawyerFirmAddress,
+    extractCaseType:extractCaseType
 }

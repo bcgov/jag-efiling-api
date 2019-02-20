@@ -1,0 +1,23 @@
+{
+    "soap:Envelope": {
+        "@xmlns:soap": "any",
+        "@xmlns:xsi": "any",
+        "@xmlns:xsd": "any",
+        "soap:Body": {
+            "ViewCaseBasicsResponse": {
+                "@xmlns": "any",
+                "ViewCaseBasicsResult": {
+                    "CaseId": "67890",
+                    "CaseNumber": "CA12345",
+                    "CaseStatus": "Active",
+                    "CaseType": "Civil",
+                    "FilingDate": "2011-05-13T09:00:00",
+                    "StyleOfCauseA": "E-Filing Deployment",
+                    "StyleOfCauseAppellantA": "true",
+                    "StyleOfCauseB": "Test Case",
+                    "HighLevelCategory":"Family Law"
+                }
+            }
+        }
+    }
+}
