@@ -14,9 +14,9 @@ PreviewForm2.prototype.now = function(id, callback) {
                 .replace('{formSevenNumber}', data.formSevenNumber)
                 .replace('{appellants}', this.reduce(data.appellants))
                 .replace('{appellantsLabel}', 'Appellant' + this.label(data.appellants))
-                .replace('{respondents}', this.reduce(selected))
+                .replace('{respondents}', this.reduce(data.respondents))
                 .replace('{respondentsLabel}', 'Respondent' + this.label(selected))
-                .replace('{selectedContactName}', data.respondents[data.selectedContactIndex].name)
+                .replace('{selectedRespondents}', this.reduce(selected))
                 .replace('{selectedContactAddress1}', this.extract('addressLine1', data))
                 .replace('{selectedContactAddress2}', this.extract('addressLine2', data))
                 .replace('{selectedContactCity}', this.extract('city', data))
@@ -36,7 +36,9 @@ PreviewForm2.prototype.now = function(id, callback) {
 };
 
 PreviewForm2.prototype.reduce = function(array) {
-    return array.reduce((result, item, index)=> result + (index > 0 ? ', ': '') + item.name, '');
+    let result = array.reduce((result, item, index)=> result + (index > 0 ? ', ': '') + item.name, '');
+    console.log("  RESULT ", result)
+    return result
 };
 
 PreviewForm2.prototype.filterSelected = function(array) {
