@@ -17,7 +17,7 @@
             "name": "Bruce Wayne",
             "address": {
                 "addressLine1": "Bat street",
-                "addressLine2": null,
+                "addressLine2": "alley",
                 "city": "Dark city",
                 "postalCode": "V6Z 2K8",
                 "province": "notBC"
@@ -28,7 +28,7 @@
             "name": "Angel Face",
             "address": {
                 "addressLine1": "Justice street",
-                "addressLine2": null,
+                "addressLine2": "alley",
                 "city": "Dark city",
                 "postalCode": "V6Z 2K8",
                 "province": "notBC"
