@@ -81,7 +81,7 @@ describe('Form 2 preview', function() {
     });
     it('includes email when specified', (done)=>{
         var data = fs.readFileSync('./tests/external/preview/form2.json').toString();
-        data = data.replace('"useServiceEmail": false,', '"useServiceEmail": true,')        
+        data = data.replace('"useServiceEmail": false,', '"useServiceEmail": true,')
         var background = [
             'alter sequence person_id_seq restart',
             'alter sequence forms_id_seq restart',
