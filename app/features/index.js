@@ -7,6 +7,8 @@ let ArchiveCases = require('./archive.cases');
 let PreviewForm2 = require('./preview.form2');
 let PersonInfo = require('./person.info');
 let SaveCustomization = require('./save.customization');
+let CreateJourney = require('./create.journey');
+
 
 module.exports = {
     SearchFormSeven:SearchFormSeven,
@@ -17,5 +19,6 @@ module.exports = {
     ArchiveCases:ArchiveCases,
     PreviewForm2:PreviewForm2,
     PersonInfo:PersonInfo,
-    SaveCustomization:SaveCustomization
+    SaveCustomization:SaveCustomization,
+    CreateJourney:CreateJourney,
 }

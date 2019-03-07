@@ -36,9 +36,7 @@ PreviewForm2.prototype.now = function(id, callback) {
 };
 
 PreviewForm2.prototype.reduce = function(array) {
-    let result = array.reduce((result, item, index)=> result + (index > 0 ? ', ': '') + item.name, '');
-    console.log("  RESULT ", result)
-    return result
+    return array.reduce((result, item, index)=> result + (index > 0 ? ', ': '') + item.name, '');
 };
 
 PreviewForm2.prototype.filterSelected = function(array) {
