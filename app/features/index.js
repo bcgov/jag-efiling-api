@@ -8,6 +8,7 @@ let PreviewForm2 = require('./preview.form2');
 let PersonInfo = require('./person.info');
 let SaveCustomization = require('./save.customization');
 let CreateJourney = require('./create.journey');
+let CreateStep = require('./create.step');
 
 
 module.exports = {
@@ -21,4 +22,5 @@ module.exports = {
     PersonInfo:PersonInfo,
     SaveCustomization:SaveCustomization,
     CreateJourney:CreateJourney,
+    CreateStep:CreateStep,
 }

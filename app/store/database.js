@@ -1,6 +1,7 @@
 let { Forms } = require('./forms');
 let { Persons } = require('./persons');
 let { Journey } = require('./journey');
+let { Step } = require('./step');
 
 let ifError = function(please) {
     return {
@@ -21,6 +22,7 @@ let Database = function() {
     this.forms = new Forms();
     this.persons = new Persons();
     this.journeys = new Journey();
+    this.steps = new Step();
 };
 
 Database.prototype.createJourney = function(journey, callback) {
@@ -31,6 +33,23 @@ Database.prototype.createJourney = function(journey, callback) {
 
 Database.prototype.journey = function(journey, callback) {
     this.journeys.selectOne(id, ifError({notify:callback}).otherwise((rows)=> {
+        if (rows.length === 0) {
+            callback({ error: {code:404} });
+        }
+        else {
+            callback(JSON.parse(rows[0].data));
+        }
+    }));
+};
+
+Database.prototype.createStep = function(step, callback) {
+    this.steps.create(step, ifError({notify:callback}).otherwise((rows)=> {
+        callback(rows[0].last_value);
+    }));
+};
+
+Database.prototype.step = function(step, callback) {
+    this.steps.selectOne(id, ifError({notify:callback}).otherwise((rows)=> {
         if (rows.length === 0) {
             callback({ error: {code:404} });
         }
