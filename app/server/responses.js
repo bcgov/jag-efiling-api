@@ -46,7 +46,7 @@ module.exports = {
             response.writeHead(200, {'Content-type': 'text/html'});
             response.end(html);
         });
-    }
+    },
     createJourneyResponse: (id, response)=> {
         ifNoError(id, response).then(()=> {
             response.statusCode = 201;
