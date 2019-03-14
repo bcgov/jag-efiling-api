@@ -47,4 +47,11 @@ module.exports = {
             response.end(html);
         });
     }
+    createJourneyResponse: (id, response)=> {
+        ifNoError(id, response).then(()=> {
+            response.statusCode = 201;
+            response.setHeader('Location', '/journey/' + id );
+            response.json({id:parseInt(id)});
+        });
+    },
 };
