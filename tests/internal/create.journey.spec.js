@@ -39,9 +39,9 @@ describe('Create journey', function() {
             createJourney.now(journey, function(journey_id) {
                 expect(journey_id).not.to.equal(undefined);
                 journeys.selectOne(journey_id, function(rows) {
-                    expect(rows[0].id).to.equal(journey_id);
+                    expect(rows[0].id).to.equal(Number(journey_id));
                     expect(rows[0].type).to.equal('respondtoleavetoappeal');
-                    expect(rows[0].userid).to.equal((newUserId));
+                    expect(rows[0].userid).to.equal(Number(newUserId));
                     expect(rows[0].state).to.equal('started');
                     expect(rows[0].ca_number).to.equal('CA1234');
                     done()
