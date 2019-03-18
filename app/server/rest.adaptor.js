@@ -1,8 +1,10 @@
 let { SearchFormSeven, MyCases, CreateFormTwo, SavePerson, UpdateFormTwo, 
-      ArchiveCases, PreviewForm2, PersonInfo, SaveCustomization } = require('../features');
+      ArchiveCases, PreviewForm2, PersonInfo, SaveCustomization, CreateJourney, 
+    CreateStep } = require('../features');
 let { searchFormSevenResponse, myCasesResponse, createFormTwoResponse,
       updateFormTwoResponse, savePersonResponse, personInfoResponse,
-      archiveCasesResponse, previewForm2Response } = require('./responses');
+      archiveCasesResponse, previewForm2Response, createJourneyResponse,
+      createStepResponse } = require('./responses');
 let ifNoError = require('./errors.handling');
 let pdf = require('html-pdf');
 let archiver = require('archiver');
@@ -22,6 +24,8 @@ RestAdaptor.prototype.useDatabase = function(database) {
     this.previewForm2 = new PreviewForm2(database);
     this.getPersonInfo = new PersonInfo(database);
     this.saveCustomization = new SaveCustomization(database);
+    this.createJourney = new CreateJourney(database);
+    this.createStep = new CreateStep(database);
 };
 RestAdaptor.prototype.route = function(app) {
     app.get('/api/forms', (request, response)=> {
@@ -135,6 +139,39 @@ RestAdaptor.prototype.route = function(app) {
                 response.attachment('forms.zip');
                 archive.pipe(response);
             });
+        });
+    });
+    app.post('/api/journey', (request, response)=> {
+        let login = request.headers['smgov_userguid'];
+        this.savePerson.now(login, (data)=> {
+            if (data.error) {
+                createJourneyResponse(data, response);
+            }
+            else {
+                let params = request.body;
+                params.userid = data;
+                this.createJourney.now(params, (data)=> {
+                    createJourneyResponse(data, response);
+
+                });
+            }
+        });
+    });
+    app.post('/api/step', (request, response)=> {
+        let login = request.headers['smgov_userguid'];
+        let journeyid = request.body.journeyid;
+        this.savePerson.now(login, (data)=> {
+            if (data.error) {
+                console.log("error", data.error)
+            }
+            else {
+                let params = request.body;
+                params.userid = data;
+                params.journeyid = journeyid;
+                this.createStep.now(params, (data)=> {
+                    createStepResponse(data, response);
+                });
+            }
         });
     });
     app.get('/*', function (req, res) { res.send( JSON.stringify({ message: 'pong' }) ); });

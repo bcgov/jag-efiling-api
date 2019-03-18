@@ -46,5 +46,19 @@ module.exports = {
             response.writeHead(200, {'Content-type': 'text/html'});
             response.end(html);
         });
-    }
+    },
+    createJourneyResponse: (id, response)=> {
+        ifNoError(id, response).then(()=> {
+            response.statusCode = 201;
+            response.setHeader('Location', '/journey/' + id );
+            response.json({id:parseInt(id)});
+        });
+    },
+    createStepResponse: (id, response)=> {
+        ifNoError(id, response).then(()=> {
+            response.statusCode = 201;
+            response.setHeader('Location', '/step/' + id );
+            response.json({id:parseInt(id)});
+        });
+    },
 };

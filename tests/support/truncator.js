@@ -1,15 +1,19 @@
 var { Promise, Promises } = require('yop-promises');
 var { execute } = require('yop-postgresql');
+var { expect } = require('chai')
 
 var Truncator = function() {
 };
 
 Truncator.prototype.truncateTablesNow = function(success) {
-    let calls = [ 
+    let calls = [
+        'TRUNCATE TABLE step;',
+        'TRUNCATE TABLE journey cascade;',
+        'TRUNCATE TABLE person cascade;',
         'TRUNCATE TABLE forms;',
-        'TRUNCATE TABLE person;'
     ];
     execute(calls, function(rows, error) {
+        expect(error).to.equal(undefined)
         success(error);
     });
 };
