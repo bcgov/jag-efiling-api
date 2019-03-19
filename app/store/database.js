@@ -31,6 +31,18 @@ Database.prototype.createJourney = function(journey, callback) {
     }));
 };
 
+Database.prototype.updateJourney = function(journey, callback) {
+    if (journey.id) {
+        this.journeys.update(journey, ifError({notify:callback}).otherwise((rows)=> {
+            callback(rows[0].last_value);
+        }));
+    } else {
+        this.journeys.create(journey, ifError({notify: callback}).otherwise((rows) => {
+            callback(rows[0].last_value);
+        }));
+    }
+};
+
 Database.prototype.journey = function(journey, callback) {
     this.journeys.selectOne(id, ifError({notify:callback}).otherwise((rows)=> {
         if (rows.length === 0) {
@@ -39,6 +51,20 @@ Database.prototype.journey = function(journey, callback) {
         else {
             callback(JSON.parse(rows[0].data));
         }
+    }));
+};
+Database.prototype.myJourneys = function(login, callback) {
+    this.journeys.selectByLogin(login, ifError({notify:callback}).otherwise((rows)=> {
+        callback(rows.map(function(row) {
+            return {
+                id: row.id,
+                userid: row.userid,
+                type: row.type,
+                state: row.state,
+                ca_number: row.ca_number,
+                steps: row.steps
+            };
+        }));
     }));
 };
 

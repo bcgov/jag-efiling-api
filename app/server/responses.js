@@ -61,4 +61,9 @@ module.exports = {
             response.json({id:parseInt(id)});
         });
     },
+    myJourneysResponse: (journeys, response)=> {
+        ifNoError(journeys, response).then(()=> {
+            response.json({ journeys: journeys });
+        });
+    },
 };

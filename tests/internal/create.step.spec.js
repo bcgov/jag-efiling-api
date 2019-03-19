@@ -58,7 +58,7 @@ describe('Create step', function() {
                         expect(rows[0].steptype).to.equal('form2');
                         expect(rows[0].state).to.equal('started');
                         expect(rows[0].journeyid).to.equal(Number(journey_id))
-                    })
+                    });
                     done();
                 })
             });

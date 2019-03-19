@@ -1,10 +1,10 @@
 let { SearchFormSeven, MyCases, CreateFormTwo, SavePerson, UpdateFormTwo, 
       ArchiveCases, PreviewForm2, PersonInfo, SaveCustomization, CreateJourney, 
-    CreateStep } = require('../features');
+    CreateStep, MyJourneys, UpdateJourney } = require('../features');
 let { searchFormSevenResponse, myCasesResponse, createFormTwoResponse,
       updateFormTwoResponse, savePersonResponse, personInfoResponse,
       archiveCasesResponse, previewForm2Response, createJourneyResponse,
-      createStepResponse } = require('./responses');
+      createStepResponse, myJourneysResponse } = require('./responses');
 let ifNoError = require('./errors.handling');
 let pdf = require('html-pdf');
 let archiver = require('archiver');
@@ -17,6 +17,7 @@ RestAdaptor.prototype.useHub = function(hub) {
 };
 RestAdaptor.prototype.useDatabase = function(database) {
     this.myCases = new MyCases(database);
+    this.myJourneys = new MyJourneys(database);
     this.createFormTwo = new  CreateFormTwo(database);
     this.updateFormTwo = new UpdateFormTwo(database);
     this.savePerson = new SavePerson(database);     
@@ -25,6 +26,7 @@ RestAdaptor.prototype.useDatabase = function(database) {
     this.getPersonInfo = new PersonInfo(database);
     this.saveCustomization = new SaveCustomization(database);
     this.createJourney = new CreateJourney(database);
+    this.updateJourney = new UpdateJourney(database);
     this.createStep = new CreateStep(database);
 };
 RestAdaptor.prototype.route = function(app) {
@@ -157,6 +159,11 @@ RestAdaptor.prototype.route = function(app) {
             }
         });
     });
+    app.put('/api/journey/:id', (request, response)=> {
+        this.updateJourney.now(request.params.id, request.body, (data)=> {
+            createJourneyResponse(data, response);
+        });
+    });
     app.post('/api/step', (request, response)=> {
         let login = request.headers['smgov_userguid'];
         let journeyid = request.body.journeyid;
@@ -172,6 +179,12 @@ RestAdaptor.prototype.route = function(app) {
                     createStepResponse(data, response);
                 });
             }
+        });
+    });
+    app.get('/api/journeys', (request, response)=> {
+        let login = request.headers['smgov_userguid'];
+        this.myJourneys.now(login, (data)=> {
+            myJourneysResponse(data, response);
         });
     });
     app.get('/*', function (req, res) { res.send( JSON.stringify({ message: 'pong' }) ); });
