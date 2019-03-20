@@ -43,7 +43,8 @@ describe('Journey create', function() {
                 form: {
                         type: 'maxjourney',
                         state: 'started',
-                        ca_number: 'CA123'
+                        ca_number: 'CA123',
+                        steps: JSON.stringify([{type: 'best', state: 'max'}])
                 },
                 headers: {
                     'SMGOV_USERGUID': 'max'
@@ -61,6 +62,7 @@ describe('Journey create', function() {
                             journey.type,
                             journey.state,
                             journey.ca_number,
+                            journey.steps,
                             person.login as login
                     FROM journey, person
                     WHERE journey.id=$1
@@ -68,10 +70,11 @@ describe('Journey create', function() {
                 `;
                 execute(sql, [id], function(rows) {
                     expect(rows.length).to.equal(1);
-                    const { type, state, ca_number, login } = rows[0];
+                    const {type, state, ca_number, steps, login } = rows[0];
                     expect(type).to.equal('maxjourney');
                     expect(state).to.equal('started');
                     expect(ca_number).to.equal('CA123');
+                    expect(steps).to.equal(JSON.stringify([{type: 'best', state: 'max'}]))
                     expect(login).to.equal('max');
                     done();
                 });

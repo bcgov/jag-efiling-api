@@ -14,9 +14,10 @@ Migrator.prototype.migrateNow = function(done) {
         this.file('/6.alter.table.persons.add.column.customization.sql'),
         this.file('/7.create.table.journey.sql'),
         this.file('/8.create.table.step.sql'),
+        this.file('/9.alter.table.journeys.add.column.step.sql'),
         
         'truncate table versions',
-        { sql:'insert into versions(id) values($1)', params:[8] }
+        { sql:'insert into versions(id) values($1)', params:[9] }
     ];
     execute(calls, function(rows, error) {
         done(error);

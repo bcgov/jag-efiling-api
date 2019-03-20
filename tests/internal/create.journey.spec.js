@@ -34,7 +34,8 @@ describe('Create journey', function() {
                 type: 'respondtoleavetoappeal',
                 state: 'started',
                 ca_number: 'CA1234',
-                userid: newUserId
+                userid: newUserId,
+                steps: "unimportant"
             };
             createJourney.now(journey, function(journey_id) {
                 expect(journey_id).not.to.equal(undefined);
@@ -43,6 +44,7 @@ describe('Create journey', function() {
                     expect(rows[0].type).to.equal('respondtoleavetoappeal');
                     expect(rows[0].userid).to.equal(Number(newUserId));
                     expect(rows[0].state).to.equal('started');
+                    expect(rows[0].steps).to.equal('unimportant');
                     expect(rows[0].ca_number).to.equal('CA1234');
                     done()
                 });

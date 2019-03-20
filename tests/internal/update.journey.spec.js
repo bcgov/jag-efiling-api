@@ -7,7 +7,7 @@ var CreateJourney = require('../../app/features/create.journey');
 let UpdateJourney = require('../../app/features/update.journey');
 var SavePerson = require('../../app/features/save.person');
 
-describe('Create journey', function() {
+describe('Update journey', function() {
 
     var database;
     var journeys;
@@ -30,7 +30,7 @@ describe('Create journey', function() {
         });
     });
 
-    it('creates a journey', function(done) {
+    it('updates a journey', function(done) {
 
         savePerson.now('jane', function(newUserId) {
             const journey = {
