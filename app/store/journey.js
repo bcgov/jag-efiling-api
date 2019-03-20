@@ -11,8 +11,8 @@ Journey.prototype.create = function(options, callback) {
 };
 
 Journey.prototype.update = function(options, callback) {
-    execute('update journey set userid = $2, type = $3, state = $4, ca_number = $5, steps = $6 where id = $1;',
-        [options.id, options.userid, options.type, options.state, options.ca_number, options.steps], ()=> {
+    execute('update journey set type = $2, state = $3, ca_number = $4, steps = $5 where id = $1;',
+        [options.id, options.type, options.state, options.ca_number, options.steps], ()=> {
             execute('SELECT last_value FROM journey_id_seq;', [], callback);
     });
 };

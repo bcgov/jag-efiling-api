@@ -32,15 +32,9 @@ Database.prototype.createJourney = function(journey, callback) {
 };
 
 Database.prototype.updateJourney = function(journey, callback) {
-    if (journey.id) {
-        this.journeys.update(journey, ifError({notify:callback}).otherwise((rows)=> {
-            callback(rows[0].last_value);
-        }));
-    } else {
-        this.journeys.create(journey, ifError({notify: callback}).otherwise((rows) => {
-            callback(rows[0].last_value);
-        }));
-    }
+    this.journeys.update(journey, ifError({notify:callback}).otherwise((rows)=> {
+        callback(rows[0].last_value);
+    }));
 };
 
 Database.prototype.journey = function(journey, callback) {
@@ -67,6 +61,15 @@ Database.prototype.myJourneys = function(login, callback) {
         }));
     }));
 };
+
+Database.prototype.myJourney = function(login, callback) {
+    this.journeys.selectByLogin(login, ifError({notify:callback}).otherwise((rows)=> {
+        if (rows.length !== 0) {
+            callback(rows[0]);
+        }
+    }));
+};
+
 
 Database.prototype.createStep = function(step, callback) {
     this.steps.create(step, ifError({notify:callback}).otherwise((rows)=> {

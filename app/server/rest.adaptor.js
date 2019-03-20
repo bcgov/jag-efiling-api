@@ -1,6 +1,6 @@
 let { SearchFormSeven, MyCases, CreateFormTwo, SavePerson, UpdateFormTwo, 
       ArchiveCases, PreviewForm2, PersonInfo, SaveCustomization, CreateJourney, 
-    CreateStep, MyJourneys, UpdateJourney } = require('../features');
+    CreateStep, MyJourneys, MyJourney, UpdateJourney } = require('../features');
 let { searchFormSevenResponse, myCasesResponse, createFormTwoResponse,
       updateFormTwoResponse, savePersonResponse, personInfoResponse,
       archiveCasesResponse, previewForm2Response, createJourneyResponse,
@@ -18,6 +18,7 @@ RestAdaptor.prototype.useHub = function(hub) {
 RestAdaptor.prototype.useDatabase = function(database) {
     this.myCases = new MyCases(database);
     this.myJourneys = new MyJourneys(database);
+    this.myJourney = new MyJourney(database);
     this.createFormTwo = new  CreateFormTwo(database);
     this.updateFormTwo = new UpdateFormTwo(database);
     this.savePerson = new SavePerson(database);     
@@ -184,6 +185,12 @@ RestAdaptor.prototype.route = function(app) {
     app.get('/api/journeys', (request, response)=> {
         let login = request.headers['smgov_userguid'];
         this.myJourneys.now(login, (data)=> {
+            myJourneysResponse(data, response);
+        });
+    });
+    app.get('/api/journey', (request, response)=> {
+        let login = request.headers['smgov_userguid'];
+        this.myJourney.now(login, (data)=> {
             myJourneysResponse(data, response);
         });
     });
