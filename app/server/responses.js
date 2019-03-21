@@ -54,13 +54,6 @@ module.exports = {
             response.json({id:parseInt(id)});
         });
     },
-    createStepResponse: (id, response)=> {
-        ifNoError(id, response).then(()=> {
-            response.statusCode = 201;
-            response.setHeader('Location', '/step/' + id );
-            response.json({id:parseInt(id)});
-        });
-    },
     myJourneysResponse: (journeys, response)=> {
         ifNoError(journeys, response).then(()=> {
             response.json({ journeys: journeys });

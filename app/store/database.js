@@ -1,7 +1,6 @@
 let { Forms } = require('./forms');
 let { Persons } = require('./persons');
 let { Journey } = require('./journey');
-let { Step } = require('./step');
 
 let ifError = function(please) {
     return {
@@ -22,7 +21,6 @@ let Database = function() {
     this.forms = new Forms();
     this.persons = new Persons();
     this.journeys = new Journey();
-    this.steps = new Step();
 };
 
 Database.prototype.createJourney = function(journey, callback) {
@@ -47,43 +45,10 @@ Database.prototype.journey = function(journey, callback) {
         }
     }));
 };
-Database.prototype.myJourneys = function(login, callback) {
-    this.journeys.selectByLogin(login, ifError({notify:callback}).otherwise((rows)=> {
-        callback(rows.map(function(row) {
-            return {
-                id: row.id,
-                userid: row.userid,
-                type: row.type,
-                state: row.state,
-                ca_number: row.ca_number,
-                steps: row.steps
-            };
-        }));
-    }));
-};
-
 Database.prototype.myJourney = function(login, callback) {
     this.journeys.selectByLogin(login, ifError({notify:callback}).otherwise((rows)=> {
         if (rows.length !== 0) {
             callback(rows[0]);
-        }
-    }));
-};
-
-
-Database.prototype.createStep = function(step, callback) {
-    this.steps.create(step, ifError({notify:callback}).otherwise((rows)=> {
-        callback(rows[0].last_value);
-    }));
-};
-
-Database.prototype.step = function(step, callback) {
-    this.steps.selectOne(id, ifError({notify:callback}).otherwise((rows)=> {
-        if (rows.length === 0) {
-            callback({ error: {code:404} });
-        }
-        else {
-            callback(JSON.parse(rows[0].data));
         }
     }));
 };

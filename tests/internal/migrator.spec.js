@@ -16,7 +16,7 @@ describe('Migrator', function() {
         migrator.migrateNow(function() {
             versions.selectAll(function(rows) {
                 expect(rows.length).to.equal(1);
-                expect(rows[0].id).to.equal(9);
+                expect(rows[0].id).to.equal(10);
                 success();
             });
         });
