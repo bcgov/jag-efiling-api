@@ -33,7 +33,7 @@ describe('Update journey', function() {
     it('updates a journey', function(done) {
 
         savePerson.now('jane', function(newUserId) {
-            const journey = {
+            const testJourney = {
                 type: 'respondtoleavetoappeal',
                 state: 'started',
                 ca_number: 'CA1234',
@@ -47,7 +47,7 @@ describe('Update journey', function() {
                 userid: newUserId,
                 steps: '{some other steps}'
             };
-            createJourney.now(journey, function(journey_id) {
+            createJourney.now(testJourney, function(journey_id) {
                 expect(journey_id).not.to.equal(undefined);
                 updatedJourney.id = journey_id;
 

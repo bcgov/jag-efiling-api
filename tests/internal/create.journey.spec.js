@@ -30,14 +30,14 @@ describe('Create journey', function() {
     it('creates a journey', function(done) {
         
         savePerson.now('jane', function(newUserId) {
-            var journey = {
+            var testJourney = {
                 type: 'respondtoleavetoappeal',
                 state: 'started',
                 ca_number: 'CA1234',
                 userid: newUserId,
                 steps: "unimportant"
             };
-            createJourney.now(journey, function(journey_id) {
+            createJourney.now(testJourney, function(journey_id) {
                 expect(journey_id).not.to.equal(undefined);
                 journey.selectOne(journey_id, function(rows) {
                     expect(rows[0].id).to.equal(Number(journey_id));
