@@ -1,10 +1,10 @@
 let { SearchFormSeven, MyCases, CreateFormTwo, SavePerson, UpdateFormTwo, 
       ArchiveCases, PreviewForm2, PersonInfo, SaveCustomization, CreateJourney, 
-    CreateStep } = require('../features');
+     MyJourney, UpdateJourney } = require('../features');
 let { searchFormSevenResponse, myCasesResponse, createFormTwoResponse,
       updateFormTwoResponse, savePersonResponse, personInfoResponse,
       archiveCasesResponse, previewForm2Response, createJourneyResponse,
-      createStepResponse } = require('./responses');
+      myJourneyResponse } = require('./responses');
 let ifNoError = require('./errors.handling');
 let pdf = require('html-pdf');
 let archiver = require('archiver');
@@ -17,6 +17,7 @@ RestAdaptor.prototype.useHub = function(hub) {
 };
 RestAdaptor.prototype.useDatabase = function(database) {
     this.myCases = new MyCases(database);
+    this.myJourney = new MyJourney(database);
     this.createFormTwo = new  CreateFormTwo(database);
     this.updateFormTwo = new UpdateFormTwo(database);
     this.savePerson = new SavePerson(database);     
@@ -25,7 +26,7 @@ RestAdaptor.prototype.useDatabase = function(database) {
     this.getPersonInfo = new PersonInfo(database);
     this.saveCustomization = new SaveCustomization(database);
     this.createJourney = new CreateJourney(database);
-    this.createStep = new CreateStep(database);
+    this.updateJourney = new UpdateJourney(database);
 };
 RestAdaptor.prototype.route = function(app) {
     app.get('/api/forms', (request, response)=> {
@@ -157,21 +158,15 @@ RestAdaptor.prototype.route = function(app) {
             }
         });
     });
-    app.post('/api/step', (request, response)=> {
+    app.put('/api/journey/:id', (request, response)=> {
+        this.updateJourney.now(request.params.id, request.body, (data)=> {
+            createJourneyResponse(data, response);
+        });
+    });
+    app.get('/api/journey', (request, response)=> {
         let login = request.headers['smgov_userguid'];
-        let journeyid = request.body.journeyid;
-        this.savePerson.now(login, (data)=> {
-            if (data.error) {
-                console.log("error", data.error)
-            }
-            else {
-                let params = request.body;
-                params.userid = data;
-                params.journeyid = journeyid;
-                this.createStep.now(params, (data)=> {
-                    createStepResponse(data, response);
-                });
-            }
+        this.myJourney.now(login, (data)=> {
+            myJourneyResponse(data, response);
         });
     });
     app.get('/*', function (req, res) { res.send( JSON.stringify({ message: 'pong' }) ); });

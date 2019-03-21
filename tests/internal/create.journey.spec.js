@@ -9,7 +9,7 @@ var SavePerson = require('../../app/features/save.person');
 describe('Create journey', function() {
 
     var database;
-    var journeys;
+    var journey;
     var createJourney;
     var savePerson;
 
@@ -17,7 +17,7 @@ describe('Create journey', function() {
         database = new Database();
         createJourney = new CreateJourney(database);
         savePerson = new SavePerson(database);
-        journeys = new Journey();
+        journey = new Journey();
         var migrator = new Migrator();
         migrator.migrateNow(function() {
             var truncator = new Truncator();
@@ -30,19 +30,21 @@ describe('Create journey', function() {
     it('creates a journey', function(done) {
         
         savePerson.now('jane', function(newUserId) {
-            var journey = {
+            var testJourney = {
                 type: 'respondtoleavetoappeal',
                 state: 'started',
                 ca_number: 'CA1234',
-                userid: newUserId
+                userid: newUserId,
+                steps: "unimportant"
             };
-            createJourney.now(journey, function(journey_id) {
+            createJourney.now(testJourney, function(journey_id) {
                 expect(journey_id).not.to.equal(undefined);
-                journeys.selectOne(journey_id, function(rows) {
+                journey.selectOne(journey_id, function(rows) {
                     expect(rows[0].id).to.equal(Number(journey_id));
                     expect(rows[0].type).to.equal('respondtoleavetoappeal');
                     expect(rows[0].userid).to.equal(Number(newUserId));
                     expect(rows[0].state).to.equal('started');
+                    expect(rows[0].steps).to.equal('unimportant');
                     expect(rows[0].ca_number).to.equal('CA1234');
                     done()
                 });

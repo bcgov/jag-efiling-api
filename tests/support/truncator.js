@@ -7,7 +7,6 @@ var Truncator = function() {
 
 Truncator.prototype.truncateTablesNow = function(success) {
     let calls = [
-        'TRUNCATE TABLE step;',
         'TRUNCATE TABLE journey cascade;',
         'TRUNCATE TABLE person cascade;',
         'TRUNCATE TABLE forms;',
