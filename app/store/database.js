@@ -20,23 +20,23 @@ let ifError = function(please) {
 let Database = function() {
     this.forms = new Forms();
     this.persons = new Persons();
-    this.journeys = new Journey();
+    this.journey = new Journey();
 };
 
 Database.prototype.createJourney = function(journey, callback) {
-    this.journeys.create(journey, ifError({notify:callback}).otherwise((rows)=> {
+    this.journey.create(journey, ifError({notify:callback}).otherwise((rows)=> {
         callback(rows[0].last_value);
     }));
 };
 
 Database.prototype.updateJourney = function(journey, callback) {
-    this.journeys.update(journey, ifError({notify:callback}).otherwise((rows)=> {
+    this.journey.update(journey, ifError({notify:callback}).otherwise((rows)=> {
         callback(rows[0].last_value);
     }));
 };
 
 Database.prototype.journey = function(journey, callback) {
-    this.journeys.selectOne(id, ifError({notify:callback}).otherwise((rows)=> {
+    this.journey.selectOne(id, ifError({notify:callback}).otherwise((rows)=> {
         if (rows.length === 0) {
             callback({ error: {code:404} });
         }
@@ -46,7 +46,7 @@ Database.prototype.journey = function(journey, callback) {
     }));
 };
 Database.prototype.myJourney = function(login, callback) {
-    this.journeys.selectByLogin(login, ifError({notify:callback}).otherwise((rows)=> {
+    this.journey.selectByLogin(login, ifError({notify:callback}).otherwise((rows)=> {
         if (rows.length !== 0) {
             callback(rows[0]);
         }

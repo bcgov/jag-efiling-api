@@ -9,7 +9,7 @@ var SavePerson = require('../../app/features/save.person');
 describe('Create journey', function() {
 
     var database;
-    var journeys;
+    var journey;
     var createJourney;
     var savePerson;
 
@@ -17,7 +17,7 @@ describe('Create journey', function() {
         database = new Database();
         createJourney = new CreateJourney(database);
         savePerson = new SavePerson(database);
-        journeys = new Journey();
+        journey = new Journey();
         var migrator = new Migrator();
         migrator.migrateNow(function() {
             var truncator = new Truncator();
@@ -39,7 +39,7 @@ describe('Create journey', function() {
             };
             createJourney.now(journey, function(journey_id) {
                 expect(journey_id).not.to.equal(undefined);
-                journeys.selectOne(journey_id, function(rows) {
+                journey.selectOne(journey_id, function(rows) {
                     expect(rows[0].id).to.equal(Number(journey_id));
                     expect(rows[0].type).to.equal('respondtoleavetoappeal');
                     expect(rows[0].userid).to.equal(Number(newUserId));

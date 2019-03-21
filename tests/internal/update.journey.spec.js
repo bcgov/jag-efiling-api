@@ -10,7 +10,7 @@ var SavePerson = require('../../app/features/save.person');
 describe('Update journey', function() {
 
     var database;
-    var journeys;
+    var journey;
     var createJourney;
     var savePerson;
     let updateJourney;
@@ -20,7 +20,7 @@ describe('Update journey', function() {
         createJourney = new CreateJourney(database);
         savePerson = new SavePerson(database);
         updateJourney = new UpdateJourney(database);
-        journeys = new Journey();
+        journey = new Journey();
         var migrator = new Migrator();
         migrator.migrateNow(function() {
             var truncator = new Truncator();
@@ -53,7 +53,7 @@ describe('Update journey', function() {
 
                 updateJourney.now( journey_id, updatedJourney, function(updated_journey_id) {
                     expect(updated_journey_id).not.to.equal(undefined);
-                    journeys.selectOne(journey_id, function(rows) {
+                    journey.selectOne(journey_id, function(rows) {
                         expect(rows[0].id).to.equal(Number(journey_id));
                         expect(rows[0].type).to.equal('respondtoaappeal');
                         expect(rows[0].userid).to.equal(Number(newUserId));

@@ -4,7 +4,7 @@ let { SearchFormSeven, MyCases, CreateFormTwo, SavePerson, UpdateFormTwo,
 let { searchFormSevenResponse, myCasesResponse, createFormTwoResponse,
       updateFormTwoResponse, savePersonResponse, personInfoResponse,
       archiveCasesResponse, previewForm2Response, createJourneyResponse,
-      myJourneysResponse } = require('./responses');
+      myJourneyResponse } = require('./responses');
 let ifNoError = require('./errors.handling');
 let pdf = require('html-pdf');
 let archiver = require('archiver');
@@ -166,7 +166,7 @@ RestAdaptor.prototype.route = function(app) {
     app.get('/api/journey', (request, response)=> {
         let login = request.headers['smgov_userguid'];
         this.myJourney.now(login, (data)=> {
-            myJourneysResponse(data, response);
+            myJourneyResponse(data, response);
         });
     });
     app.get('/*', function (req, res) { res.send( JSON.stringify({ message: 'pong' }) ); });
