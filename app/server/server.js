@@ -3,7 +3,7 @@ let express = require('express');
 let bodyParser = require("body-parser");
 let morgan = require('morgan');
 
-function Server() {    
+function Server() {
     this.restAdaptor = new RestAdaptor();
     this.app = express();
     this.headers = [
@@ -36,7 +36,8 @@ Server.prototype.start = function (port, ip, done) {
         }
     });
     this.app.use(morgan(':method :url :req[smgov_userguid]', { immediate:true }));
-    this.app.use(bodyParser.urlencoded({ extended: false }));    
+    this.app.use(bodyParser.json());
+    this.app.use(bodyParser.urlencoded({ extended: false }));
     this.restAdaptor.route(this.app);
     this.server = this.app.listen(port, ip, done);
 };

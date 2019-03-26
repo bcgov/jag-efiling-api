@@ -1,23 +1,17 @@
 var expect = require('chai').expect;
 var Server = require('../../app/server/server');
-var get = require('request');
+var { request, localhost5000json } = require('../support/request');
 
 describe('Form 7 search', function() {
 
     var server;
-    var port = 5000;
-    var ip = 'localhost';
-    var home = 'http://' + ip + ':' + port;
-    var options = {
-        url: home + '/api/forms?file=CA42',
-        headers: {
-            'SMGOV_USERGUID':'max'
-        }
-    }
+    var search = localhost5000json({
+        path: '/api/forms?file=CA42'
+    })
 
     beforeEach(function(done) {
         server = new Server();
-        server.start(port, ip, done);
+        server.start(5000, 'localhost', done);
         server.useService({
             searchForm7: function(fileNumber, callback) {
                 callback({fileNumber:fileNumber});
@@ -27,10 +21,10 @@ describe('Form 7 search', function() {
 
     afterEach(function(done) {
         server.stop(done);
-    });    
+    });
 
     it('is a rest service', function(done) {
-        get(options, function(err, response, body) {
+        request(search, (err, response, body)=> {
             expect(response.statusCode).to.equal(200);
             expect(JSON.parse(body)).to.deep.equal({ parties: { fileNumber:'CA42'} });
             done();
@@ -43,7 +37,7 @@ describe('Form 7 search', function() {
                 callback({ error: {code:404} });
             }
         });
-        get(options, function(err, response, body) {
+        request(search, (err, response, body)=> {
             expect(response.statusCode).to.equal(404);
             expect(JSON.parse(body)).to.deep.equal({message:'not found'});
             done();

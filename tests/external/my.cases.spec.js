@@ -4,15 +4,15 @@ var Database = require('../../app/store/database');
 var Migrator = require('../../app/migrations/migrator');
 var Truncator = require('../support/truncator');
 var { execute } = require('yop-postgresql');
-var get = require('request');
+var { request, localhost5000json } = require('../support/request');
 
 describe('My cases endpoint', function() {
 
     var server;
-    var port = 5000;
-    var ip = 'localhost';
-    var home = 'http://' + ip + ':' + port;
     var database;
+    var mycases = localhost5000json({
+        path: '/api/cases',
+    });
 
     beforeEach(function(done) {
         server = new Server();
@@ -22,7 +22,7 @@ describe('My cases endpoint', function() {
         migrator.migrateNow(function() {
             var truncator = new Truncator();
             truncator.truncateTablesNow(function() {
-                server.start(port, ip, done);
+                server.start(5000, 'localhost', done);
             });
         });
     });
@@ -42,13 +42,7 @@ describe('My cases endpoint', function() {
         ];
         execute(background, function(rows) {
             var newId = parseInt(rows[0].last_value);
-            var options = {
-                url: home + '/api/cases',
-                headers: {
-                    'SMGOV_USERGUID': 'max'
-                }
-            };
-            get(options, (err, response, body)=> {
+            request(mycases, (err, response, body)=> {
                 expect(response.statusCode).to.equal(200);
                 let theCase = JSON.parse(body).cases[0];
 
@@ -71,16 +65,10 @@ describe('My cases endpoint', function() {
         ];
         execute(background, function(rows) {
             var newId = parseInt(rows[0].last_value);
-            var options = {
-                url: home + '/api/cases',
-                headers: {
-                    'SMGOV_USERGUID': 'max'
-                }
-            };
-            get(options, (err, response, body)=> {
-                expect(response.statusCode).to.equal(200);                
+            request(mycases, (err, response, body)=> {
+                expect(response.statusCode).to.equal(200);
                 let cases = JSON.parse(body).cases;
-                
+
                 expect(cases.length).to.equal(0);
                 done();
             });

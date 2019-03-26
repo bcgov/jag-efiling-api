@@ -1,6 +1,6 @@
 var expect = require('chai').expect;
-var get = require('request');
 var { execute } = require('yop-postgresql');
+var { request, localhost5000json } = require('../support/request');
 
 describe('start script', function() {
 
@@ -21,18 +21,19 @@ describe('start script', function() {
             expect(rows.length).to.equal(1);
             expect(rows[0].id).to.equal(10);
             done();
-        });      
+        });
     });
 
-    it('starts http ping server', function(done) {        
+    it('starts http ping server', function(done) {
         var ping = {
-            url: 'http://' + server.ip + ':' + server.port + '/ping',
+            host: server.ip,
+            port: server.port,
+            path: '/ping',
             headers: {
                 'SMGOV_USERGUID':'max'
             }
         };
-        get(ping, function(err, response, body) {
-            expect(err).to.equal(null);
+        request(ping, (err, response, body)=> {
             expect(response.statusCode).to.equal(200);
             expect(body).to.equal(JSON.stringify({ message:'pong' }));
             done();

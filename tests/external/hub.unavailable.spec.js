@@ -1,28 +1,22 @@
 var expect = require('chai').expect;
 var Hub = require('../../app/hub/hub');
 var Server = require('../../app/server/server');
-var get = require('request');
+var { request, localhost5000json } = require('../support/request');
 
 describe('Hub service', function() {
 
     var server;
-    var port = 5000;
-    var ip = 'localhost';
-    var home = 'http://' + ip + ':' + port;
-    var options = {
-        url: home + '/api/forms?file=CA42',
-        headers: {
-            'SMGOV_USERGUID': 'max'
-        }
-    };
+    var search = localhost5000json({
+        path: '/api/forms?file=CA42'
+    })
 
     var hub;
     var answer;
 
-    beforeEach(function(done) {        
+    beforeEach(function(done) {
         hub = require('http').createServer((req,res)=>{answer(req,res);}).listen(5001, ()=>{
-            server = new Server();        
-            server.start(port, ip, done);        
+            server = new Server();
+            server.start(5000, 'localhost', done);
         });
     });
 
@@ -30,11 +24,11 @@ describe('Hub service', function() {
         server.stop(()=>{
             hub.close(done);
         });
-    });  
+    });
 
     it('propagates unable to connect as 503', function(done) {
         server.useService(new Hub('http://not-running'));
-        get(options, function(err, response, body) {   
+        request(search, (err, response, body)=> {
             expect(response.statusCode).to.equal(503);
             expect(JSON.parse(body)).to.deep.deep.equal({message:'service unavailable'});
             done();
@@ -47,7 +41,7 @@ describe('Hub service', function() {
             res.end();
         };
         server.useService(new Hub('http://localhost:5001'));
-        get(options, function(err, response, body) {   
+        request(search, (err, response, body)=> {
             expect(response.statusCode).to.equal(503);
             expect(JSON.parse(body)).to.deep.deep.equal({message:'service unavailable'});
             done();
@@ -60,10 +54,10 @@ describe('Hub service', function() {
             setTimeout(()=>{
                 res.statusCode = 200;
                 res.end();
-            }, timeout * 10);            
+            }, timeout * 10);
         };
         server.useService(new Hub('http://localhost:5001', timeout));
-        get(options, function(err, response, body) {   
+        request(search, (err, response, body)=> {
             expect(response.statusCode).to.equal(503);
             expect(JSON.parse(body)).to.deep.deep.equal({message:'service unavailable'});
             done();

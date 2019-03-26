@@ -4,24 +4,19 @@ var Database = require('../../app/store/database');
 var Migrator = require('../../app/migrations/migrator');
 var Truncator = require('../support/truncator');
 var { execute } = require('yop-postgresql');
-var request = require('request');
+var { request, localhost5000json } = require('../support/request');
 
 describe('Person save', function() {
 
     var server;
-    var port = 5000;
-    var ip = 'localhost';
-    var home = 'http://' + ip + ':' + port;
     var database;
-    var options = {
-        url: home + '/api/persons',
-        form:{
+    var options = localhost5000json({
+        method: 'POST',
+        path: '/api/persons',
+        body:{
             data: 'joe'
-        },
-        headers:{
-            'SMGOV_USERGUID':'max'
         }
-    };
+    })
 
     beforeEach(function(done) {
         server = new Server();
@@ -31,7 +26,7 @@ describe('Person save', function() {
         migrator.migrateNow(function() {
             var truncator = new Truncator();
             truncator.truncateTablesNow(function() {
-                server.start(port, ip, done);
+                server.start(5000, 'localhost', done);
             });
         });
     });
@@ -40,8 +35,8 @@ describe('Person save', function() {
         server.stop(done);
     });
 
-    it('is a rest service', function(done) {        
-        request.post(options, function(err, response, body) {
+    it('is a rest service', function(done) {
+        request(options, (err, response, body)=> {
             expect(response.statusCode).to.equal(201);
             var location = response.headers.location;
             expect(location).to.contain('/persons/');
@@ -58,19 +53,19 @@ describe('Person save', function() {
     });
 
     it('does not duplicate entries', function(done) {
-        request.post(options, function(err, response, body) {
-            
+        request(options, (err, response, body)=> {
+
             expect(response.statusCode).to.equal(201);
             var location = response.headers.location;
             expect(location).to.contain('/persons/');
             var id = parseInt(location.substring(location.lastIndexOf('/')+1));
 
-            request.post(options, function(err, response, body) {
-                
+            request(options, function(err, response, body) {
+
                 expect(response.statusCode).to.equal(201);
                 var location = response.headers.location;
                 expect(location).to.equal('/persons/' + id);
-    
+
                 execute('SELECT id, login FROM person where login=$1', ['joe'], function(rows) {
                     expect(rows.length).to.equal(1);
                     done();

@@ -4,15 +4,17 @@ var Database = require('../../app/store/database');
 var Migrator = require('../../app/migrations/migrator');
 var Truncator = require('../support/truncator');
 var { execute } = require('yop-postgresql');
-var request = require('request');
+var { request, localhost5000json } = require('../support/request');
 
 describe('Form 2 update', function() {
 
     var server;
-    var port = 5000;
-    var ip = 'localhost';
-    var home = 'http://' + ip + ':' + port;
     var database;
+    var update = localhost5000json({
+        method: 'PUT',
+        path: '/api/forms/1',
+        body: { data: { field:'new value' } }
+    });
 
     beforeEach(function(done) {
         server = new Server();
@@ -22,7 +24,7 @@ describe('Form 2 update', function() {
         migrator.migrateNow(function() {
             var truncator = new Truncator();
             truncator.truncateTablesNow(function() {
-                server.start(port, ip, done);
+                server.start(5000, 'localhost', done);
             });
         });
     });
@@ -39,18 +41,9 @@ describe('Form 2 update', function() {
             { sql: 'insert into forms(person_id, type, status, data) values($1, $2, $3, $4);', params:[1, 'crazy-max', 'new', JSON.stringify({field:'old value'})] },
         ];
         execute(background, (rows, error)=> {
-            var options = {
-                url: home + '/api/forms/1',
-                form:{
-                    data: JSON.stringify({ field:'new value' })
-                },
-                headers: {
-                    'SMGOV_USERGUID': 'max'
-                }
-            };
-            request.put(options, function(err, response, body) {
+            request(update, (err, response, body)=> {
                 expect(response.statusCode).to.equal(200);
-                expect(JSON.parse(body)).to.deep.equal({});
+                expect(body).to.deep.equal(JSON.stringify({}));
                 expect(response.headers.location).to.equal('/forms/1');
 
                 let sql = `
@@ -65,7 +58,7 @@ describe('Form 2 update', function() {
                     expect(data).to.equal(JSON.stringify({ field:'new value' }));
                     done();
                 });
-            });
+            })
         });
     });
 
@@ -82,16 +75,7 @@ describe('Form 2 update', function() {
             },
         ];
         execute(background, (rows, error) => {
-            let options = {
-                url: home + '/api/forms/1',
-                form: {
-                    data: JSON.stringify({field: 'new value'})
-                },
-                headers: {
-                    'SMGOV_USERGUID': 'max'
-                }
-            };
-            request.put(options, function (err, response, body) {
+            request(update, (err, response, body)=> {
                 expect(response.statusCode).to.equal(200);
 
                 let sql = `
@@ -107,7 +91,7 @@ describe('Form 2 update', function() {
                     expect(timeUpdated).not.to.equal(yesterday);
                     done();
                 });
-            });
+            })
         });
     });
 });

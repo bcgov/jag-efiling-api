@@ -4,7 +4,7 @@ var Database = require('../../app/store/database');
 var Migrator = require('../../app/migrations/migrator');
 var Truncator = require('../support/truncator');
 var { execute } = require('yop-postgresql');
-var request = require('request');
+var { request, requestbinary, localhost5000json } = require('../support/request');
 var fs = require('fs');
 const PDFParser = require("pdf2json");
 var deepEqual = require('deep-equal');
@@ -12,10 +12,14 @@ var deepEqual = require('deep-equal');
 describe('PDF service', function() {
 
     var server;
-    var port = 5000;
-    var ip = 'localhost';
-    var home = 'http://' + ip + ':' + port;
     var database;
+    var pdf = localhost5000json({
+        method: 'POST',
+        path: '/api/pdf',
+        body:{
+            html: '<html><body></body></html>'
+        }
+    })
 
     beforeEach(function(done) {
         server = new Server();
@@ -25,7 +29,7 @@ describe('PDF service', function() {
         migrator.migrateNow(function() {
             var truncator = new Truncator();
             truncator.truncateTablesNow(function() {
-                server.start(port, ip, done);
+                server.start(5000, 'localhost', done);
             });
         });
     });
@@ -35,18 +39,9 @@ describe('PDF service', function() {
     });
 
     it('is available', function(done) {
-        var options = {
-            url: home + '/api/pdf',
-            form:{
-                html: '<html><body></body></html>'
-            },
-            headers: {
-                'SMGOV_USERGUID': 'max'
-            }
-        };
-        request.post(options, function(err, response, body) {
+        request(pdf, (err, response, body)=> {
             expect(response.statusCode).to.equal(200);
-            expect(response.headers['content-type']).to.equal('application/pdf');            
+            expect(response.headers['content-type']).to.equal('application/pdf');
             done();
         });
     });
@@ -54,7 +49,7 @@ describe('PDF service', function() {
     let parser = function(callback) {
         let pdfParser = new PDFParser();
         pdfParser.on("pdfParser_dataError", errData => callback(errData.parserError));
-        pdfParser.on("pdfParser_dataReady", pdfData => {            
+        pdfParser.on("pdfParser_dataReady", pdfData => {
             callback(pdfData);
         });
         return pdfParser;
@@ -66,7 +61,7 @@ describe('PDF service', function() {
         parser(callback).parseBuffer(buffer);
     };
     let xy = function(data) {
-        return { 
+        return {
             x:data.formImage.Pages[0].Texts[0].x,
             y:data.formImage.Pages[0].Texts[0].y
         }
@@ -86,31 +81,23 @@ describe('PDF service', function() {
 
     it('uses html', function(done) {
         readExpectedPdf('./tests/external/files/hello.world.pdf', (expected)=>{
-            var options = {
-                url: home + '/api/pdf',
-                form:{
-                    html: `
-                    <html>
-                        <head>
-                            <style>
-                                .align-right {
-                                    text-align: right;
-                                    font-family: sans-serif;
-                                    font-size: 10px;
-                                }
-                            </style>
-                        </head>
-                        <body>
-                            <div class="align-right">A</div>
-                        </body>
-                    </html>`
-                },
-                headers: {
-                    'SMGOV_USERGUID': 'max'
-                },
-                encoding: null
-            };
-            request.post(options, function(err, response, body) {
+            pdf.body = { html: `
+                <html>
+                    <head>
+                        <style>
+                            .align-right {
+                                text-align: right;
+                                font-family: sans-serif;
+                                font-size: 10px;
+                            }
+                        </style>
+                    </head>
+                    <body>
+                        <div class="align-right">A</div>
+                    </body>
+                </html>`
+            }
+            requestbinary(pdf, (err, response, body)=> {
                 parsePdf(body, (actual)=>{
                     if (!deepEqual(expected, actual)) {
                         fs.writeFileSync('./tests/external/files/hello.world-actual.pdf', body);

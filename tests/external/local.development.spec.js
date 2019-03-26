@@ -6,18 +6,15 @@ const { JSDOM } = jsdom;
 describe('Local development', ()=>{
 
     var server;
-    var port = 5000;
-    var ip = 'localhost';
-    
 
     beforeEach(function(done) {
         server = new Server();
-        server.start(port, ip, done);
+        server.start(5000, 'localhost', done);
     });
 
     afterEach(function(done) {
         server.stop(done);
-    });   
+    });
 
     it('requires cors to be overriden', (done)=>{
         var index = `
@@ -39,17 +36,17 @@ describe('Local development', ()=>{
                     <label id="message">waiting...</label>
                     <button id="go" onclick="fetch();">fetch</button>
                 </body>
-            </html>        
+            </html>
         `;
         const dom = new JSDOM(index, { runScripts: 'dangerously' });
         let button = dom.window.document.getElementById('go');
         var click = dom.window.document.createEvent('Event');
         click.initEvent('click', true, true);
         button.dispatchEvent(click);
-        
+
         setTimeout(function() {
-            expect(dom.window.document.getElementById('message').innerHTML).to.equal('pong');   
+            expect(dom.window.document.getElementById('message').innerHTML).to.equal('pong');
             done();
-        }, 200);  
+        }, 200);
     });
 });

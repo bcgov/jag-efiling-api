@@ -3,14 +3,11 @@ var Server = require('../../app/server/server');
 var Database = require('../../app/store/database');
 var Migrator = require('../../app/migrations/migrator');
 var Truncator = require('../support/truncator');
-var request = require('request');
+var { request, localhost5000json } = require('../support/request');
 
 describe('Authentication', function() {
 
     var server;
-    var port = 5000;
-    var ip = 'localhost';
-    var home = 'http://' + ip + ':' + port;
     var database;
 
     beforeEach(function(done) {
@@ -21,7 +18,7 @@ describe('Authentication', function() {
         migrator.migrateNow(function() {
             var truncator = new Truncator();
             truncator.truncateTablesNow(function() {
-                server.start(port, ip, done);
+                server.start(5000, 'localhost', done);
             });
         });
     });
@@ -31,29 +28,32 @@ describe('Authentication', function() {
     });
 
     it('is needed', function(done) {
-        var options = {
-            url: home + '/ping',
+        var ping = localhost5000json({
+            path: '/ping',
             headers: {
                 'SMGOV_USERGUID': 'max'
             }
-        };
-        request.get(options, function(err, response, body) {
+        })
+        request(ping, (err, response, body)=> {
             expect(response.statusCode).to.equal(200);
             expect(body).to.deep.equal(JSON.stringify({ message:'pong' }));
             done();
-        });       
+        });
     });
     it('returns 401 otherwise', function(done) {
-        var options = {
-            url: home + '/ping',
+        var ping = {
+            method: 'GET',
+            host: 'localhost',
+            port: 5000,
+            path: '/ping',
             headers: {
                 'MISSING': 'max'
             }
         };
-        request.get(options, function(err, response, body) {
+        request(ping, (err, response, body)=> {
             expect(response.statusCode).to.equal(401);
             expect(body).to.deep.equal(JSON.stringify({ message:'unauthorized' }));
             done();
-        });       
+        });
     });
 });
