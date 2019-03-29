@@ -27,7 +27,7 @@ describe('Create form', function() {
     it('defaults status to draft', function(done) {
         var form = {
             type: 'form-2',
-            data: { value:42 }
+            data: JSON.stringify({ value:42 })
         };
         createFormTwo.now(form, function(newId) {
             expect(newId).not.to.equal(undefined);
@@ -45,13 +45,13 @@ describe('Create form', function() {
     it('creates only one form 2 per user per case', function(done) {
         const first_form = {
             type: 'form-2',
-            data: { value:42, formSevenNumber: "crazy-max"},
+            data: JSON.stringify({ value:42, formSevenNumber: "crazy-max"}),
             person_id: 1
         };
         const second_form = {
             type: 'form-2',
             status: 'Accepted',
-            data: { value:1984, formSevenNumber: "crazy-max", address: "yadayada badabing"},
+            data: JSON.stringify({ value:1984, formSevenNumber: "crazy-max", address: "yadayada badabing"}),
             person_id: 1
         };
         createFormTwo.now(first_form, function(formId) {

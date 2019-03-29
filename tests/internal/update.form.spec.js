@@ -28,7 +28,7 @@ describe('Update existing form', function() {
         const s2 = "Hey Siri. Tea, Earl Grey, hot.";
         testform2 = {
             type: 'form-2',
-            data: { value: s1 }
+            data: JSON.stringify({ value: s1 })
         };
 
         database.createForm(testform2, function(newId) {
@@ -37,7 +37,7 @@ describe('Update existing form', function() {
             let updatingData = {
                 id: newId,
                 type: 'form-2',
-                data: { value: s2 }
+                data: JSON.stringify({ value: s2 })
             };
 
             database.updateForm(updatingData, function(updatedId) {
