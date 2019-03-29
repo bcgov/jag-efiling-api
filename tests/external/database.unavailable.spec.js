@@ -60,7 +60,7 @@ describe('When database is not responding', function() {
         check(localhost5000json({
             method: 'POST',
             path: '/api/cases/archive',
-            body: { ids:[2, 3] }
+            body: { ids:JSON.stringify([2, 3]) }
         }), withSuccess)
     });
 

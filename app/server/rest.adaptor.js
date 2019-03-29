@@ -84,7 +84,7 @@ RestAdaptor.prototype.route = function(app) {
         });
     });
     app.post('/api/cases/archive', (request, response)=> {
-        let ids = request.body.ids;
+        let ids = JSON.parse(request.body.ids);
         this.archiveCases.now(ids, (data)=> {
             archiveCasesResponse(data, response);
         });

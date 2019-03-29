@@ -13,7 +13,7 @@ describe('Form 2 archive', function() {
     var archiving = localhost5000json({
         method: 'POST',
         path: '/api/cases/archive',
-        body: { ids:[2, 3] }
+        body: { ids:JSON.stringify([2, 3]) }
     });
 
     beforeEach(function(done) {
