@@ -66,9 +66,28 @@ Database.prototype.myJourney = function(login, callback) {
 };
 
 Database.prototype.createForm = function(form, callback) {
-    this.forms.create(form, ifError({notify:callback}).otherwise((rows)=> {
-        callback(rows[0].last_value);
-    }));
+    
+    this.forms.selectByFormTypeUseridAndCaseNumber(form.person_id, form.type, form.data.formSevenNumber, (rows) => {
+        if (!rows || rows.length < 1 ) {
+            console.log("Creating new form  and case", form.type, form.data.formSevenNumber, "for user", form.person_id);
+            this.forms.create(form, ifError({notify:callback}).otherwise((rows)=> {
+                callback(rows[0].last_value);
+            }));
+        } else {
+            let existingForm = rows[0];
+            this.forms.update({
+                    id:existingForm.id,
+                    type:existingForm.type,
+                    status:form.status,
+                    data:JSON.stringify(form.data)
+                },
+                ifError({notify:callback}).otherwise((rows)=>{
+                    callback(rows[0].last_value);
+                })
+            );
+        }
+    })
+    
 };
 
 Database.prototype.updateForm = function(form, callback) {
