@@ -4,15 +4,17 @@ var Database = require('../../app/store/database');
 var Migrator = require('../../app/migrations/migrator');
 var Truncator = require('../support/truncator');
 var { execute } = require('yop-postgresql');
-var request = require('request');
+var { request, localhost5000json } = require('../support/request');
 
 describe('Form 2 archive', function() {
 
     var server;
-    var port = 5000;
-    var ip = 'localhost';
-    var home = 'http://' + ip + ':' + port;
     var database;
+    var archiving = localhost5000json({
+        method: 'POST',
+        path: '/api/cases/archive',
+        body: { ids:JSON.stringify([2, 3]) }
+    });
 
     beforeEach(function(done) {
         server = new Server();
@@ -22,7 +24,7 @@ describe('Form 2 archive', function() {
         migrator.migrateNow(function() {
             var truncator = new Truncator();
             truncator.truncateTablesNow(function() {
-                server.start(port, ip, done);
+                server.start(5000, 'localhost', done);
             });
         });
     });
@@ -41,18 +43,9 @@ describe('Form 2 archive', function() {
             { sql: 'insert into forms(person_id, type, status, data) values($1, $2, $3, $4);', params:[1, 'crazy-max', 'any-status', 'any-data'] },
         ];
         execute(background, (rows, error)=> {
-            var options = {
-                url: home + '/api/cases/archive',
-                form:{
-                    ids: JSON.stringify([2, 3])
-                },
-                headers: {
-                    'SMGOV_USERGUID': 'max'
-                }
-            };
-            request.post(options, function(err, response, body) {
+            request(archiving, (err, response, body)=> {
                 expect(response.statusCode).to.equal(200);
-                expect(JSON.parse(body)).to.deep.equal({});
+                expect(body).to.deep.equal(JSON.stringify({}));
 
                 let sql = `
                    SELECT id, status
@@ -67,7 +60,7 @@ describe('Form 2 archive', function() {
                     expect(rows[2].status).to.equal('archived');
                     done();
                 });
-            });
+            })
         });
     });
 });

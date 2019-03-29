@@ -4,16 +4,16 @@ var Database = require('../../../app/store/database');
 var Migrator = require('../../../app/migrations/migrator');
 var Truncator = require('../../support/truncator');
 var { execute } = require('yop-postgresql');
-var request = require('request');
+var { request, localhost5000json } = require('../../support/request');
 var fs = require('fs');
 
 describe('Form 2 preview', function() {
 
     var server;
-    var port = 5000;
-    var ip = 'localhost';
-    var home = 'http://' + ip + ':' + port;
     var database;
+    var preview = localhost5000json({
+        path: '/api/forms/1/preview',
+    });
 
     beforeEach(function(done) {
         server = new Server();
@@ -23,7 +23,7 @@ describe('Form 2 preview', function() {
         migrator.migrateNow(function() {
             var truncator = new Truncator();
             truncator.truncateTablesNow(function() {
-                server.start(port, ip, done);
+                server.start(5000, 'localhost', done);
             });
         });
     });
@@ -41,13 +41,7 @@ describe('Form 2 preview', function() {
             { sql: 'insert into forms(person_id, type, status, data) values($1, $2, $3, $4);', params:[1, 'crazy-max', 'new', data] },
         ];
         execute(background, (rows, error)=> {
-            var options = {
-                url: home + '/api/forms/1/preview',
-                headers: {
-                    'SMGOV_USERGUID': 'max'
-                }
-            };
-            request.get(options, function(err, response, body) {
+            request(preview, (err, response, body)=> {
                 expect(err).to.equal(null);
                 expect(response.statusCode).to.equal(200);
                 expect(response.headers['content-type']).to.equal('text/html');
@@ -65,13 +59,10 @@ describe('Form 2 preview', function() {
             { sql: 'insert into forms(person_id, type, status, data) values($1, $2, $3, $4);', params:[1, 'crazy-max', 'new', data] },
         ];
         execute(background, (rows, error)=> {
-            var options = {
-                url: home + '/api/forms/2/preview',
-                headers: {
-                    'SMGOV_USERGUID': 'max'
-                }
-            };
-            request.get(options, function(err, response, body) {
+            var preview = localhost5000json({
+                path: '/api/forms/2/preview',
+            });
+            request(preview, (err, response, body)=> {
                 expect(response.statusCode).to.equal(404);
                 expect(response.headers['content-type']).to.equal('application/json');
                 expect(body).to.deep.equal(JSON.stringify({message:'not found'}));
@@ -89,13 +80,10 @@ describe('Form 2 preview', function() {
             { sql: 'insert into forms(person_id, type, status, data) values($1, $2, $3, $4);', params:[1, 'crazy-max', 'new', data] },
         ];
         execute(background, (rows, error)=> {
-            var options = {
-                url: home + '/api/forms/1/preview',
-                headers: {
-                    'SMGOV_USERGUID': 'max'
-                }
-            };
-            request.get(options, function(err, response, body) {
+            var preview = localhost5000json({
+                path: '/api/forms/1/preview',
+            });
+            request(preview, (err, response, body)=> {
                 expect(err).to.equal(null);
                 expect(response.statusCode).to.equal(200);
                 expect(response.headers['content-type']).to.equal('text/html');

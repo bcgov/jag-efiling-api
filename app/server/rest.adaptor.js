@@ -1,5 +1,5 @@
-let { SearchFormSeven, MyCases, CreateFormTwo, SavePerson, UpdateFormTwo, 
-      ArchiveCases, PreviewForm2, PersonInfo, SaveCustomization, CreateJourney, 
+let { SearchFormSeven, MyCases, CreateFormTwo, SavePerson, UpdateFormTwo,
+      ArchiveCases, PreviewForm2, PersonInfo, SaveCustomization, CreateJourney,
      MyJourney, UpdateJourney } = require('../features');
 let { searchFormSevenResponse, myCasesResponse, createFormTwoResponse,
       updateFormTwoResponse, savePersonResponse, personInfoResponse,
@@ -20,7 +20,7 @@ RestAdaptor.prototype.useDatabase = function(database) {
     this.myJourney = new MyJourney(database);
     this.createFormTwo = new  CreateFormTwo(database);
     this.updateFormTwo = new UpdateFormTwo(database);
-    this.savePerson = new SavePerson(database);     
+    this.savePerson = new SavePerson(database);
     this.archiveCases = new ArchiveCases(database);
     this.previewForm2 = new PreviewForm2(database);
     this.getPersonInfo = new PersonInfo(database);
@@ -36,29 +36,28 @@ RestAdaptor.prototype.route = function(app) {
     });
     app.post('/api/forms', (request, response)=> {
         let login = request.headers['smgov_userguid'];
-        this.savePerson.now(login, (data)=> {
-            if (data.error) {
-                createFormTwoResponse(data, response);
+        this.savePerson.now(login, (id)=> {
+            if (id.error) {
+                createFormTwoResponse(id, response);
             }
             else {
                 let params = request.body;
-                params.data = JSON.parse(params.data);
-                params.person_id = data;
+                params.person_id = id;
                 this.createFormTwo.now(params, (data)=> {
                     createFormTwoResponse(data, response);
-                });   
-            }        
+                });
+            }
         });
     });
     app.put('/api/forms/:id', (request, response)=> {
-        let data = JSON.parse(request.body.data);
+        let data = request.body.data;
         this.updateFormTwo.now(request.params.id, data, (data)=> {
             updateFormTwoResponse(data, response);
         });
     });
     app.get('/api/cases', (request, response)=> {
         let login = request.headers['smgov_userguid'];
-        this.myCases.now(login, (data)=> {                    
+        this.myCases.now(login, (data)=> {
             myCasesResponse(data, response);
         });
     });
@@ -74,7 +73,7 @@ RestAdaptor.prototype.route = function(app) {
         let name = request.headers['smgov_userdisplayname'];
         this.getPersonInfo.now(login, (user)=>{
             personInfoResponse({ login:login, name:name, customization:user.customization }, response);
-        });        
+        });
     });
     app.post('/api/persons/customization', (request, response)=> {
         let login = request.headers['smgov_userguid'];
@@ -82,11 +81,10 @@ RestAdaptor.prototype.route = function(app) {
         let customization = params.customization;
         this.saveCustomization.now(login, customization, (data)=>{
             personInfoResponse(data, response);
-        });        
+        });
     });
     app.post('/api/cases/archive', (request, response)=> {
-        let params = request.body;
-        let ids = JSON.parse(params.ids);
+        let ids = JSON.parse(request.body.ids);
         this.archiveCases.now(ids, (data)=> {
             archiveCasesResponse(data, response);
         });
@@ -109,7 +107,7 @@ RestAdaptor.prototype.route = function(app) {
     app.get('/api/zip', (request, response)=>{
         let error;
         var self = this;
-        let ids = typeof request.query.id == 'string' ? [request.query.id] : request.query.id;    
+        let ids = typeof request.query.id == 'string' ? [request.query.id] : request.query.id;
         var archive = archiver('zip');
         var ps = new Promises();
         var doItForEach = (id) => {
@@ -127,15 +125,15 @@ RestAdaptor.prototype.route = function(app) {
                         p.resolve();
                     });
                 }
-            }); 
+            });
         };
         for (var index=0; index<ids.length; index++) {
-            var id = ids[index]; 
+            var id = ids[index];
             doItForEach(id);
-        }        
-        ps.done(function() { 
+        }
+        ps.done(function() {
             ifNoError({error:error}, response).then(()=> {
-                archive.finalize(); 
+                archive.finalize();
                 response.setHeader('Content-type', 'application/zip');
                 response.attachment('forms.zip');
                 archive.pipe(response);

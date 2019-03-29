@@ -1,6 +1,6 @@
 var expect = require('chai').expect;
-var get = require('request');
 var { execute } = require('yop-postgresql');
+var { request } = require('../support/request');
 
 describe('start script with fake credentials', function() {
 
@@ -16,12 +16,13 @@ describe('start script with fake credentials', function() {
         server.stop(done);
     });
 
-    it('starts http ping server', function(done) {        
+    it('starts http ping server', function(done) {
         var ping = {
-            url: 'http://' + server.ip + ':' + server.port + '/ping',            
+            host: server.ip,
+            port: server.port,
+            path: '/ping',
         };
-        get(ping, function(err, response, body) {
-            expect(err).to.equal(null);
+        request(ping, (err, response, body)=> {
             expect(response.statusCode).to.equal(200);
             expect(body).to.equal(JSON.stringify({ message:'pong' }));
             done();

@@ -56,7 +56,10 @@ Database.prototype.journey = function(journey, callback) {
 };
 Database.prototype.myJourney = function(login, callback) {
     this.journey.selectByLogin(login, ifError({notify:callback}).otherwise((rows)=> {
-        if (rows.length !== 0) {
+        if (rows.length === 0) {
+            callback({ error: {code:404} });
+        }
+        else {
             callback(rows[0]);
         }
     }));
@@ -74,7 +77,7 @@ Database.prototype.updateForm = function(form, callback) {
             type:form.type,
             status:'Draft',
             data:JSON.stringify(form.data)
-        }, 
+        },
         ifError({notify:callback}).otherwise((rows)=>{
             callback(rows[0].last_value);
         })
@@ -100,23 +103,23 @@ Database.prototype.myCases = function(login, callback) {
 Database.prototype.savePerson = function(person, callback) {
     this.persons.findByLogin(person.login, ifError({notify:callback}).otherwise((rows)=> {
         if (rows.length ==0) {
-            this.persons.create(person, ifError(callback).otherwise((rows)=>{ 
-                callback(rows[0].last_value); 
+            this.persons.create(person, ifError(callback).otherwise((rows)=>{
+                callback(rows[0].last_value);
             }));
         }
         else {
             callback(rows[0].id);
         }
-    }));    
+    }));
 };
 Database.prototype.saveCustomization = function(person, callback) {
     this.savePerson(person, ()=>{
         this.persons.saveCustomization(person, ifError({notify:callback}).otherwise((rows, error)=> {
-            callback(person);        
-        }));        
+            callback(person);
+        }));
     });
 };
-Database.prototype.archiveCases = function(ids, callback) {        
+Database.prototype.archiveCases = function(ids, callback) {
     this.forms.archive(ids, ifError({notify:callback}).otherwise((rows)=> {
         callback(rows);
     }));

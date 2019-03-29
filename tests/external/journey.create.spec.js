@@ -4,15 +4,22 @@ var Database = require('../../app/store/database');
 var Migrator = require('../../app/migrations/migrator');
 var Truncator = require('../support/truncator');
 var { execute } = require('yop-postgresql');
-var request = require('request');
+var { request, localhost5000json } = require('../support/request');
 
 describe('Journey create', function() {
 
     var server;
-    var port = 5000;
-    var ip = 'localhost';
-    var home = 'http://' + ip + ':' + port;
     var database;
+    var creation = localhost5000json({
+        method: 'POST',
+        path: '/api/journey',
+        body: {
+            type: 'maxjourney',
+            state: 'started',
+            ca_number: 'CA123',
+            steps: JSON.stringify([{type: 'best', state: 'max'}])
+        }
+    });
 
     beforeEach(function(done) {
         server = new Server();
@@ -22,7 +29,7 @@ describe('Journey create', function() {
         migrator.migrateNow(function() {
             var truncator = new Truncator();
             truncator.truncateTablesNow(function() {
-                server.start(port, ip, done);
+                server.start(5000, 'localhost', done);
             });
         });
     });
@@ -38,25 +45,13 @@ describe('Journey create', function() {
             { sql: 'insert into person(login) values ($1)', params:['max'] }
         ];
         execute(background, (rows, error)=> {
-            var options = {
-                url: home + '/api/journey',
-                form: {
-                        type: 'maxjourney',
-                        state: 'started',
-                        ca_number: 'CA123',
-                        steps: JSON.stringify([{type: 'best', state: 'max'}])
-                },
-                headers: {
-                    'SMGOV_USERGUID': 'max'
-                }
-            };
-            request.post(options, function(err, response, body) {
+            request(creation, (err, response, body)=> {
                 expect(response.statusCode).to.equal(201);
                 expect(body).to.deep.equal(JSON.stringify({id:1}));
                 expect(response.headers.location).to.equal('/journey/1');
                 const location = response.headers.location;
                 const id = parseInt(location.substring(location.lastIndexOf('/')+1));
-    
+
                 const sql = `
                     SELECT  journey.id,
                             journey.type,
@@ -79,6 +74,6 @@ describe('Journey create', function() {
                     done();
                 });
             });
-        });        
+        });
     });
 });

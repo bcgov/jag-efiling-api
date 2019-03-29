@@ -4,22 +4,15 @@ var Database = require('../../app/store/database');
 var Migrator = require('../../app/migrations/migrator');
 var Truncator = require('../support/truncator');
 var { execute } = require('yop-postgresql');
-var get = require('request');
+var { request, localhost5000json } = require('../support/request');
 
 describe('Person info endpoint', function() {
 
     var server;
-    var port = 5000;
-    var ip = 'localhost';
-    var home = 'http://' + ip + ':' + port;
     var database;
-    var options = {
-        url: home + '/api/persons/connected',
-        headers: {
-            'SMGOV_USERGUID': 'max',
-            'SMGOV_USERDISPLAYNAME': 'Free Max'
-        }
-    };
+    var info = localhost5000json({
+        path: '/api/persons/connected',
+    })
 
     beforeEach(function(done) {
         server = new Server();
@@ -29,7 +22,7 @@ describe('Person info endpoint', function() {
         migrator.migrateNow(function() {
             var truncator = new Truncator();
             truncator.truncateTablesNow(function() {
-                server.start(port, ip, done);
+                server.start(5000, 'localhost', done);
             });
         });
     });
@@ -39,7 +32,7 @@ describe('Person info endpoint', function() {
     });
 
     it('returns name', (done)=> {
-        get(options, function(err, response, body) {
+        request(info, (err, response, body)=> {
             expect(response.statusCode).to.equal(200);
             let person = JSON.parse(body);
             expect(person.login).to.equal('max');
@@ -55,7 +48,7 @@ describe('Person info endpoint', function() {
         ];
         execute(background, function(rows, error) {
             expect(error).to.equal(undefined);
-            get(options, function(err, response, body) {
+            request(info, (err, response, body)=> {
                 expect(response.statusCode).to.equal(200);
                 let person = JSON.parse(body);
                 expect(person.login).to.equal('max');
@@ -67,7 +60,12 @@ describe('Person info endpoint', function() {
     });
 
     it('resists unknown user', (done)=> {
-        get(home + '/api/persons/connected', function(err, response, body) {
+        var info = {
+            host: 'localhost',
+            port: 5000,
+            path: '/api/persons/connected'
+        }
+        request(info, (err, response, body)=> {
             expect(response.statusCode).to.equal(401);
             expect(JSON.parse(body)).to.deep.equal({message:'unauthorized'});
             done();
@@ -75,7 +73,7 @@ describe('Person info endpoint', function() {
     });
 
     it('resists unregistered user', (done)=>{
-        get(options, function(err, response, body) {
+        request(info, (err, response, body)=> {
             expect(response.statusCode).to.equal(200);
             let person = JSON.parse(body);
             expect(person.login).to.equal('max');
