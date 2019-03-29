@@ -24,9 +24,18 @@ let Database = function() {
 };
 
 Database.prototype.createJourney = function(journey, callback) {
-    this.journey.create(journey, ifError({notify:callback}).otherwise((rows)=> {
-        callback(rows[0].last_value);
-    }));
+    this.journey.selectByUserId(journey.userid, ifError({notify:callback}).otherwise((rows)=> {
+        if (!rows || rows.length === 0) {
+            this.journey.create(journey, ifError({notify:callback}).otherwise((rows)=> {
+                callback(rows[0].last_value);
+            }));
+        } else {
+            journey.id = rows[0].id;
+            this.journey.update(journey, ifError({notify:callback}).otherwise((rows)=> {
+                callback(rows[0].last_value);
+            }));
+        }
+    }))
 };
 
 Database.prototype.updateJourney = function(journey, callback) {

@@ -21,11 +21,15 @@ Journey.prototype.selectOne = function(id, callback) {
     execute('select * from journey where id=$1', [id], callback);
 };
 
+Journey.prototype.selectAll = function(callback) {
+    execute('select * from journey', callback);
+};
+
 Journey.prototype.selectByLogin = function(login, callback) {
     const select = `
-        SELECT  journey.id, 
-                type, 
-                state, 
+        SELECT  journey.id,
+                type,
+                state,
                 userid,
                 ca_number,
                 steps
@@ -35,6 +39,21 @@ Journey.prototype.selectByLogin = function(login, callback) {
     `;
     execute(select, [login], callback);
 };
+
+Journey.prototype.selectByUserId = function(userid, callback) {
+    const select = `
+        SELECT  journey.id,
+                type,
+                state,
+                userid,
+                ca_number,
+                steps
+        FROM journey
+        WHERE userid = $1
+    `;
+    execute(select, [userid], callback);
+};
+
 
 module.exports = {
     Journey:Journey
