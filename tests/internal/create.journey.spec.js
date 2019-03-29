@@ -1,24 +1,24 @@
-var expect = require('chai').expect;
-var Database = require('../../app/store/database');
-var Migrator = require('../../app/migrations/migrator');
-var Truncator = require('../support/truncator');
-var { Journey } = require('../../app/store/journey');
-var CreateJourney = require('../../app/features/create.journey');
-var SavePerson = require('../../app/features/save.person');
+const expect = require('chai').expect;
+const Database = require('../../app/store/database');
+const Migrator = require('../../app/migrations/migrator');
+const Truncator = require('../support/truncator');
+const { Journey } = require('../../app/store/journey');
+const CreateJourney = require('../../app/features/create.journey');
+const SavePerson = require('../../app/features/save.person');
 
 describe('Create journey', function() {
 
-    var database;
-    var journey;
-    var createJourney;
-    var savePerson;
+    let database;
+    let journey;
+    let createJourney;
+    let savePerson;
 
     beforeEach(function(success) {        
         database = new Database();
         createJourney = new CreateJourney(database);
         savePerson = new SavePerson(database);
         journey = new Journey();
-        var migrator = new Migrator();
+        let migrator = new Migrator();
         migrator.migrateNow(function() {
             var truncator = new Truncator();
             truncator.truncateTablesNow(function() {
@@ -30,7 +30,7 @@ describe('Create journey', function() {
     it('creates a journey', function(done) {
         
         savePerson.now('jane', function(newUserId) {
-            var testJourney = {
+            let testJourney = {
                 type: 'respondtoleavetoappeal',
                 state: 'started',
                 ca_number: 'CA1234',
@@ -55,27 +55,26 @@ describe('Create journey', function() {
     it('creates only one journey per user', function(done) {
 
         savePerson.now('jane', function(newUserId) {
-            var testJourney = {
+            let first_journey = {
                 type: 'respondtoleavetoappeal',
                 state: 'started',
                 ca_number: 'CA1234',
                 userid: newUserId,
                 steps: "unimportant"
             };
-            var modifiedJourney = {
+            let second_journey = {
                 type: 'appellantrighttoappeal',
                 state: 'completed',
                 ca_number: 'CA1234',
                 userid: newUserId,
                 steps: "blah blah blah"
             }
-            createJourney.now(testJourney, function(journey_id) {
-                console.log("Created first journey", journey_id)
+            createJourney.now(first_journey, function(journey_id) {
                 expect(journey_id).not.to.equal(undefined);
                 journey.selectAll(function(rows) {
                     expect(rows.length).to.equal(1);
                     expect(rows[0].id).to.equal(Number(journey_id));
-                    createJourney.now(modifiedJourney, function(next_journey_id) {
+                    createJourney.now(second_journey, function(next_journey_id) {
                         expect(next_journey_id).not.to.equal(undefined);
                         expect(next_journey_id).to.equal(journey_id);
                         journey.selectAll(function(rows) {

@@ -30,7 +30,7 @@ Database.prototype.createJourney = function(journey, callback) {
                 callback(rows[0].last_value);
             }));
         } else {
-            journey.id = rows[0].id
+            journey.id = rows[0].id;
             this.journey.update(journey, ifError({notify:callback}).otherwise((rows)=> {
                 callback(rows[0].last_value);
             }));
