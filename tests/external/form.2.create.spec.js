@@ -13,7 +13,7 @@ describe('Form 2 create', function() {
     var creation = localhost5000json({
         method: 'POST',
         path: '/api/forms',
-        body: { data: { any:'field' } }
+        body: { data: JSON.stringify({ any:'field' }) }
     });
 
     beforeEach(function(done) {

@@ -66,9 +66,27 @@ Database.prototype.myJourney = function(login, callback) {
 };
 
 Database.prototype.createForm = function(form, callback) {
-    this.forms.create(form, ifError({notify:callback}).otherwise((rows)=> {
-        callback(rows[0].last_value);
-    }));
+
+    this.forms.selectByFormTypeUseridAndCaseNumber(form.person_id, form.type, JSON.parse(form.data).formSevenNumber, (rows) => {
+        if (!rows || rows.length < 1 ) {
+            this.forms.create(form, ifError({notify:callback}).otherwise((rows)=> {
+                callback(rows[0].last_value);
+            }));
+        } else {
+            let existingForm = rows[0];
+            this.forms.update({
+                    id:existingForm.id,
+                    type:existingForm.type,
+                    status:form.status,
+                    data:(form.data)
+                },
+                ifError({notify:callback}).otherwise((rows)=>{
+                    callback(rows[0].last_value);
+                })
+            );
+        }
+    })
+    
 };
 
 Database.prototype.updateForm = function(form, callback) {
@@ -76,7 +94,7 @@ Database.prototype.updateForm = function(form, callback) {
             id:form.id,
             type:form.type,
             status:'Draft',
-            data:JSON.stringify(form.data)
+            data:form.data
         },
         ifError({notify:callback}).otherwise((rows)=>{
             callback(rows[0].last_value);

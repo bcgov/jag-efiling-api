@@ -4,7 +4,7 @@ let CreateFormTwo = function(database) {
 
 CreateFormTwo.prototype.now = function(params, callback) {
     params.type = 'form-2';
-    params.status = 'Draft';
+    params.status = params.status || 'Draft';
     this.database.createForm(params, callback);
 };
 
