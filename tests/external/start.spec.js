@@ -10,7 +10,7 @@ describe('start script', function() {
         server = require('../../start');
         setTimeout(function() {
             done();
-        }, 300);
+        }, 1000);
     });
     after(function(done) {
         server.stop(done);
