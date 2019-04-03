@@ -44,16 +44,6 @@ Database.prototype.updateJourney = function(journey, callback) {
     }));
 };
 
-Database.prototype.journey = function(journey, callback) {
-    this.journey.selectOne(id, ifError({notify:callback}).otherwise((rows)=> {
-        if (rows.length === 0) {
-            callback({ error: {code:404} });
-        }
-        else {
-            callback(JSON.parse(rows[0].data));
-        }
-    }));
-};
 Database.prototype.myJourney = function(login, callback) {
     this.journey.selectByLogin(login, ifError({notify:callback}).otherwise((rows)=> {
         if (rows.length === 0) {
@@ -86,7 +76,7 @@ Database.prototype.createForm = function(form, callback) {
             );
         }
     })
-    
+
 };
 
 Database.prototype.updateForm = function(form, callback) {

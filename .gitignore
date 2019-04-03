@@ -4,3 +4,4 @@ coverage
 *.log
 *-actual.pdf
 .scannerwork
+.nyc_output

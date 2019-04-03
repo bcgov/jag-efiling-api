@@ -83,4 +83,11 @@ describe('When database is not responding', function() {
             path: '/api/zip?id=666',
         }), withSuccess)
     });
+
+    it('returns 503 when creating a journey', (withSuccess)=> {
+        check(localhost5000json({
+            method: 'POST',
+            path: '/api/journey'
+        }), withSuccess)
+    });
 });
