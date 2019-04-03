@@ -2888,10 +2888,6 @@ yop-postgresql@^1.2.0:
   dependencies:
     pg "^7.9.0"
 
-yop-promises@^1.1.0:
-  version "1.4.0"
-  resolved "https://registry.yarnpkg.com/yop-promises/-/yop-promises-1.4.0.tgz#622323c8391a11ae8df9104617524f2f085eaca5"
-
 zip-stream@^1.2.0:
   version "1.2.0"
   resolved "https://registry.yarnpkg.com/zip-stream/-/zip-stream-1.2.0.tgz#a8bc45f4c1b49699c6b90198baacaacdbcd4ba04"

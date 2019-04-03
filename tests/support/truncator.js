@@ -1,4 +1,3 @@
-var { Promise, Promises } = require('yop-promises');
 var { execute } = require('yop-postgresql');
 var { expect } = require('chai')
 

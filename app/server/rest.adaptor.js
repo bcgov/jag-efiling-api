@@ -8,7 +8,6 @@ let { searchFormSevenResponse, myCasesResponse, createFormTwoResponse,
 let ifNoError = require('./errors.handling');
 let pdf = require('html-pdf');
 let archiver = require('archiver');
-let { Promise, Promises } = require('yop-promises');
 
 let RestAdaptor = function() {};
 
@@ -104,41 +103,44 @@ RestAdaptor.prototype.route = function(app) {
         })
     });
 
-    app.get('/api/zip', (request, response)=>{
+    app.get('/api/zip', async (request, response)=>{
         let error;
         var self = this;
         let ids = typeof request.query.id == 'string' ? [request.query.id] : request.query.id;
         var archive = archiver('zip');
-        var ps = new Promises();
         var doItForEach = (id) => {
-            const p = new Promise();
-            ps.waitFor(p);
-            self.previewForm2.now(id, (html)=> {
-                if (html.error) {
-                    error = html.error;
-                    p.reject();
-                }
-                else {
-                    pdf.create(html).toStream(function(err, stream) {
-                        const name = 'form2-' + id + '.pdf';
-                        archive.append(stream, { name: name });
-                        p.resolve();
-                    });
-                }
+            var p = new Promise((resolve, reject)=>{
+                self.previewForm2.now(id, (html)=> {
+                    if (html.error) {
+                        error = html.error;
+                        reject(error);
+                    }
+                    else {
+                        pdf.create(html).toStream(function(err, stream) {
+                            const name = 'form2-' + id + '.pdf';
+                            archive.append(stream, { name: name });
+                            resolve();
+                        });
+                    }
+                });
             });
+            return p
         };
-        for (var index=0; index<ids.length; index++) {
-            var id = ids[index];
-            doItForEach(id);
+        try {
+            for (var index=0; index<ids.length; index++) {
+                var id = ids[index];
+                await doItForEach(id);
+            }
         }
-        ps.done(function() {
+        catch (ignored) {}
+        finally {
             ifNoError({error:error}, response).then(()=> {
                 archive.finalize();
                 response.setHeader('Content-type', 'application/zip');
                 response.attachment('forms.zip');
                 archive.pipe(response);
             });
-        });
+        }
     });
     app.post('/api/journey', (request, response)=> {
         let login = request.headers['smgov_userguid'];
