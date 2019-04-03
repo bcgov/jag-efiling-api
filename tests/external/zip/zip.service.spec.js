@@ -1,15 +1,13 @@
-var expect = require('chai').expect;
-var Server = require('../../../app/server/server');
-var Database = require('../../../app/store/database');
-var Migrator = require('../../../app/migrations/migrator');
-var Truncator = require('../../support/truncator');
-var { execute } = require('yop-postgresql');
-var { request, requestbinary, localhost5000json } = require('../../support/request');
-var fs = require('fs');
-const PDFParser = require("pdf2json");
-const { Transform } = require('stream');
-var unzip = require('unzip-stream');
+const { expect } = require('chai');
+const fs = require('fs');
+const Server = require('../../../app/server/server');
+const Database = require('../../../app/store/database');
+const Migrator = require('../../../app/migrations/migrator');
+const Truncator = require('../../support/truncator');
+const { execute } = require('yop-postgresql');
+const { request, requestbinary, localhost5000json } = require('../../support/request');
 const { Readable } = require('stream');
+const { unzipPdfsFromStream, extractFileNo } = require('../../support/file')
 
 describe('ZIP service', function() {
 
@@ -50,60 +48,24 @@ describe('ZIP service', function() {
         server.stop(done);
     });
 
-    it('is available', function(done) {
-        var files = [];
-        requestbinary(zip, (err, response, body)=>{
-            expect(response.statusCode).to.equal(200);
-            expect(response.headers['content-type']).to.equal('application/zip');
-            const stream = new Readable();
-            stream._read = () => {
-                stream.push(body)
-                stream.push(null)
-            }
-            stream
-                .pipe(unzip.Parse())
-                .on('entry', function (entry) {
-                    files.push(entry.path);
-                    entry.autodrain();
-                })
-                .on('end', ()=>{
-                    expect(files).to.include('form2-1.pdf');
-                    expect(files).to.include('form2-2.pdf');
-                    expect(files.length).to.equal(2);
-                    done();
-                });
+    it('is available', async ()=> {
+        var promise = new Promise((resolve, reject)=>{
+            requestbinary(zip, async (err, response, body)=>{
+                expect(response.statusCode).to.equal(200);
+                expect(response.headers['content-type']).to.equal('application/zip');
+                const stream = new Readable();
+                stream._read = () => {
+                    stream.push(body)
+                    stream.push(null)
+                }
+                var files = await unzipPdfsFromStream(stream, extractFileNo)
+                resolve(files)
+            })
         })
-    });
-
-    it('delivers', function(done) {
-        requestbinary(localhost5000json({path: '/api/zip?id=1'}), (err, response, body)=>{
-            const stream = new Readable();
-            stream._read = () => {
-                stream.push(body)
-                stream.push(null)
-            }
-            stream
-                .pipe(unzip.Parse())
-                .on('entry', function (entry) {
-                    var extractFileNo = function(page) {
-                        var start = 52;
-                        var fileNo = '';
-                        for (var i=start; i<start+3; i++) {
-                            fileNo += page.Texts[i].R[0].T;
-                        }
-                        return fileNo;
-                    }
-                    let json = new Transform();
-                    json._writableState.objectMode = true;
-                    json._transform = function(data) {
-                        let page = data.formImage.Pages[0];
-
-                        expect(extractFileNo(page)).to.equal('111');
-                        done();
-                    };
-                    entry.pipe(new PDFParser()).pipe(json);
-                });
-        })
+        var files = await promise
+        expect(files).to.deep.include({ path: 'form2-1.pdf', data: { fileno: '111' } })
+        expect(files).to.deep.include({ path: 'form2-2.pdf', data: { fileno: '222' } })
+        expect(files.length).to.equal(2)
     });
 
     it('resists unknow form', function(done) {
