@@ -8,20 +8,15 @@
         "express": "^4.16.3",
         "html-pdf": "^2.2.0",
         "morgan": "^1.9.0",
-        "pg": "^7.4.1",
-        "querystring": "^0.2.0",
-        "socket.io": "^2.0.4",
-        "url": "^0.11.0",
-        "yop-postgresql": "^1.1.0",
-        "yop-promises": "^1.1.0"
+        "yop-postgresql": "^1.2.0"
     },
     "devDependencies": {
         "chai": "latest",
         "deep-equal": "^1.0.1",
-        "istanbul": "latest",
         "jsdom": "latest",
         "log4js": "latest",
         "mocha": "latest",
+        "nyc": "^13.3.0",
         "pdf2json": "^1.1.7",
         "unzip-stream": "^0.3.0"
     },
@@ -35,7 +30,7 @@
         "start": "node start.js",
         "external-tests": "mocha tests/external --recursive --exit --timeout 0",
         "internal-tests": "mocha tests/internal/*.spec.js tests/support/*.spec.js tests/internal/hub/*.spec.js --recursive --exit --timeout 0",
-        "test:coverage": "istanbul cover --report lcovonly node_modules/mocha/bin/_mocha -- --recursive tests --timeout 0",
-        "coverage:report": "istanbul report"
+        "test:coverage": "nyc --cwd app --report-dir=../coverage --reporter=lcov node_modules/mocha/bin/_mocha -- --recursive tests --timeout 0",
+        "coverage:report": "nyc report --cwd app"
     }
 }
