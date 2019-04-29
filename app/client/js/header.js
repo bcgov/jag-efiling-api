@@ -9,6 +9,7 @@ headerTemplate.innerHTML = `
     }
     ul {
         margin: 0px;
+        padding: 0px;
         list-style: none;
     }
     li {

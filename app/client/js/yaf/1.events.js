@@ -20,3 +20,8 @@ class Events {
     }
 }
 var events = new Events()
+
+
+window.onpopstate = function(event) {
+  events.notify('navigation', window.location.pathname)
+};

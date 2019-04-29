@@ -16,7 +16,7 @@ class Route extends HTMLElement {
         if (name === 'then' && oldValue == null) { this.then = newValue }
     }
     connectedCallback() {
-        store.register(this, 'navigation')
+        events.register(this, 'navigation')
         this.update()
     }
     update() {
@@ -29,4 +29,4 @@ class Route extends HTMLElement {
         }
     }
 }
-customElements.define('yop-route', Route)
+customElements.define('efiling-route', Route)
