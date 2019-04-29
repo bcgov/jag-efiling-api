@@ -1,10 +1,12 @@
 let RestAdaptor = require('./rest.adaptor');
+let ClientAdaptor = require('./client.adaptor');
 let express = require('express');
 let bodyParser = require("body-parser");
 let morgan = require('morgan');
 
 function Server() {
     this.restAdaptor = new RestAdaptor();
+    this.clientAdaptor = new ClientAdaptor();
     this.app = express();
     this.headers = [
         { name:'Access-Control-Allow-Origin', value:'*' },
@@ -38,6 +40,7 @@ Server.prototype.start = function (port, ip, done) {
     this.app.use(morgan(':method :url :req[smgov_userguid]', { immediate:true }));
     this.app.use(bodyParser.json());
     this.app.use(bodyParser.urlencoded({ extended: false }));
+    this.clientAdaptor.route(this.app);
     this.restAdaptor.route(this.app);
     this.server = this.app.listen(port, ip, done);
 };
