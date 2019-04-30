@@ -2,22 +2,12 @@ const myDocumentsTemplate = document.createElement('template')
 
 myDocumentsTemplate.innerHTML = `
 <style>
-    .page {
-        padding: 30px 10% 10px 10%;
-    }
-    .section {
-        background-color: white;
-        padding: 10px;
-    }
-    .title {
-        font-size: 18px;
-        font-weight: 600;
-        color: #494949;
-    }
+    @import '/client/all.css';
 </style>
 <div class="page">
     <div class="section">
         <label class="title">My Documents</label>
+        <efiling-case-list></efiling-case-list>
     </div>
 </div>
 `

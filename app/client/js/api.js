@@ -9,5 +9,15 @@ class Api {
         })
         return p
     }
+    getCaseList() {
+        var p = new Promise((resolve, reject)=>{
+            fetch('/api/cases').then((response) => {
+                response.json().then((json) => {
+                    resolve(json.cases)
+                })
+            })
+        })
+        return p
+    }
 }
 var api = new Api()
