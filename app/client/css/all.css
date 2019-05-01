@@ -8,9 +8,15 @@ body {
     font-family: Myriad-Pro, sans-serif;
     background-color: #f1f1f1;
 }
-
+.centered {
+    padding-left: 10%;
+    padding-right: 10%;
+}
+.content {
+    padding: 10px;
+}
 .page {
-    padding: 30px 10% 10px 10%;
+    padding-top: 30px;
 }
 .section {
     background-color: white;

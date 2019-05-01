@@ -2,9 +2,12 @@ const headerTemplate = document.createElement('template')
 
 headerTemplate.innerHTML = `
 <style>
+    @import '/client/all.css';
+
     .header {
         background-color: #003366;
-        padding: 0px 10% 10px 10%;
+        padding-top: 0px;
+        padding-bottom: 0px;
         color: white;
     }
     ul {
@@ -29,18 +32,20 @@ headerTemplate.innerHTML = `
         margin-top: 35px;
     }
 </style>
-<div class="header">
-    <ul>
-        <li class="logo">
-            <a href="http://gov.bc.ca">
-                <img src='/client/images/gov3_bc_logo.png'}
-                    alt="Province of British Columbia"
-                    title="Province of British Columbia logo" />
-            </a>
-        </li>
-        <li class="bcgov-title">Court of Appeal</li>
-        <li class="section-user" id="greetings">Welcome</li>
-    </ul>
+<div class="centered header">
+    <div class="content">
+        <ul>
+            <li class="logo">
+                <a href="http://gov.bc.ca">
+                    <img src='/client/images/gov3_bc_logo.png'}
+                        alt="Province of British Columbia"
+                        title="Province of British Columbia logo" />
+                </a>
+            </li>
+            <li class="bcgov-title">Court of Appeal</li>
+            <li class="section-user" id="greetings">Welcome</li>
+        </ul>
+    </div>
 </div>
 `
 

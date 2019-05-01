@@ -2,10 +2,13 @@ const ribbonTemplate = document.createElement('template')
 
 ribbonTemplate.innerHTML = `
 <style>
+    @import '/client/all.css';
+
     .ribbon {
         border-top: 2px solid #fcba19;
         background-color: #38598a;
-        padding: 10px 10% 10px 10%;
+        padding-top: 0px;
+        padding-bottom: 0px;
         color: white;
     }
     ul {
@@ -28,12 +31,14 @@ ribbonTemplate.innerHTML = `
         padding-left: 25px;
     }
 </style>
-<div class="ribbon">
-    <ul>
-        <li class="menu" id="menu-home">HOME</li>
-        <li class="menu with-separator" id="menu-my-documents">MY DOCUMENTS</li>
-        <li class="menu with-separator" id="menu-all-documents">ALL DOCUMENTS</li>
-    </ul>
+<div class="centered ribbon">
+    <div class="content">
+        <ul>
+            <li class="menu" id="menu-home">HOME</li>
+            <li class="menu with-separator" id="menu-my-documents">MY DOCUMENTS</li>
+            <li class="menu with-separator" id="menu-all-documents">ALL DOCUMENTS</li>
+        </ul>
+    </div>
 </div>
 `
 

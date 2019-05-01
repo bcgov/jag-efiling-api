@@ -4,7 +4,7 @@ homeTemplate.innerHTML = `
 <style>
     @import '/client/all.css';
 </style>
-<div class="page">
+<div class="centered page">
     <div class="section">
         <label class="title">Document reminders</label>
         <efiling-case-list limit="5"></efiling-case-list>
