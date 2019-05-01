@@ -15,7 +15,7 @@ homeTemplate.innerHTML = `
 </div>
 `
 
-class Home extends YafElement {
+class Home extends YopElement {
 
     constructor() {
         super()

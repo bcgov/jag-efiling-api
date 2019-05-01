@@ -37,7 +37,7 @@ ribbonTemplate.innerHTML = `
 </div>
 `
 
-class Ribbon extends YafElement {
+class Ribbon extends YopElement {
 
     constructor() {
         super()

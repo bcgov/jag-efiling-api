@@ -1,4 +1,4 @@
-class YafElement extends HTMLElement {
+class YopElement extends HTMLElement {
 
     constructor() {
         super();

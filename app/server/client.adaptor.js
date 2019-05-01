@@ -9,9 +9,9 @@ ClientAdaptor.prototype.route = function(app) {
     app.get('/client/all.js', (request, response)=> {
         response.writeHead(200, { 'content-type':'application/javascript' })
         let js = ''
-        let files = fs.readdirSync(path.join(__dirname, '..', 'client', 'js', 'yaf'))
+        let files = fs.readdirSync(path.join(__dirname, '..', 'client', 'js', 'yop'))
         for (var i=0; i<files.length; i++) {
-            js += fs.readFileSync(path.join(__dirname, '..', 'client', 'js', 'yaf', files[i]))
+            js += fs.readFileSync(path.join(__dirname, '..', 'client', 'js', 'yop', files[i]))
         }
         files = fs.readdirSync(path.join(__dirname, '..', 'client', 'js'))
                     .filter((file)=> file.endsWith('.js'))

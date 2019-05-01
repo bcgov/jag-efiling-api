@@ -44,7 +44,7 @@ headerTemplate.innerHTML = `
 </div>
 `
 
-class Header extends YafElement {
+class Header extends YopElement {
 
     constructor() {
         super()

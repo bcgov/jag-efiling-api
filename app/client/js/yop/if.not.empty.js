@@ -1,4 +1,4 @@
-class IfNotEmpty extends YafElement {
+class IfNotEmpty extends YopElement {
 
     constructor () {
         super()

@@ -41,7 +41,7 @@ caseListTemplate.innerHTML = `
 </div>
 `
 
-class CaseList extends YafElement {
+class CaseList extends YopElement {
 
     constructor() {
         super()
@@ -49,8 +49,10 @@ class CaseList extends YafElement {
         this.list = this.tree.querySelector('tbody')
         this.template = this.tree.querySelector('tr#case-with-id').outerHTML
         this.mappings = [
-            { replace: 'with-id', with: 'id' },
-            { replace: 'case-status', with: 'status' },
+            { replace: 'with-id', with: (item)=>item.id },
+            { replace: 'case-status', with: (item)=>item.status },
+            { replace: 'case-parties', with: (item)=>this.parties(item.data) },
+            { replace: 'case-modified', with: (item)=>dateLabelFrom(item.modified) },
         ]
         this.limit = this.getAttribute('limit')
         events.register(this, 'caselist')
@@ -61,18 +63,7 @@ class CaseList extends YafElement {
         })
     }
     update(collection) {
-        var children = ''
-        for (var index = 0; index < collection.length; index++) {
-            var line = this.template.split('news').join(this.getAttribute('id-prefix'))
-            for (var i = 0; i < this.mappings.length; i++) {
-                var mapping = this.mappings[i]
-                line = line.split(mapping.replace).join(collection[index][mapping.with])
-                line = line.split('case-parties').join(this.parties(collection[index].data))
-                line = line.split('case-modified').join(moment(collection[index].modified).format('YYYY-MM-DD HH:mm'))
-            }
-            children += line
-        }
-        this.list.innerHTML = children
+        this.list.innerHTML = repeat(this.template, collection, this.mappings)
     }
     parties(data) {
         let appellantName = '?';

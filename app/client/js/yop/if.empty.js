@@ -1,4 +1,4 @@
-class IfEmpty extends YafElement {
+class IfEmpty extends YopElement {
     constructor () {
         super()
         this.emptyContent = this.innerHTML

@@ -12,7 +12,7 @@ myDocumentsTemplate.innerHTML = `
 </div>
 `
 
-class MyDocuments extends YafElement {
+class MyDocuments extends YopElement {
 
     constructor() {
         super()
