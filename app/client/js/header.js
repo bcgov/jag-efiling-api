@@ -2,7 +2,7 @@ const headerTemplate = document.createElement('template')
 
 headerTemplate.innerHTML = `
 <style>
-    @import '/client/all.css';
+    @import '/client/css/all.css';
 
     .header {
         background-color: #003366;

@@ -2,7 +2,7 @@ const caseListTemplate = document.createElement('template')
 
 caseListTemplate.innerHTML = `
 <style>
-    @import '/client/all.css';
+    @import '/client/css/all.css';
 
     table {
         margin-top: 15px;

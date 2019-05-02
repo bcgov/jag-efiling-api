@@ -12,7 +12,6 @@ function Server() {
         { name:'Access-Control-Allow-Origin', value:'*' },
         { name:'Access-Control-Allow-Headers', value:'smgov_userguid,smgov_userdisplayname,Content-Type, Authorization, Content-Length, X-Requested-With' },
         { name:'Access-Control-Allow-Methods', value:'GET, PUT, POST, OPTIONS' },
-        { name:'Content-Type', value:'application/json' },
     ];
     this.requestheaders = [];
 }

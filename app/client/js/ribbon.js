@@ -2,7 +2,7 @@ const ribbonTemplate = document.createElement('template')
 
 ribbonTemplate.innerHTML = `
 <style>
-    @import '/client/all.css';
+    @import '/client/css/all.css';
 
     .ribbon {
         border-top: 2px solid #fcba19;

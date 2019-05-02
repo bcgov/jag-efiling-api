@@ -71,7 +71,7 @@ describe('ZIP service', function() {
     it('resists unknow form', function(done) {
         request(localhost5000json({path: '/api/zip?id=1&id=666'}), (err, response, body)=>{
             expect(response.statusCode).to.equal(404);
-            expect(response.headers['content-type']).to.equal('application/json');
+            expect(response.headers['content-type']).to.equal('application/json; charset=utf-8');
             expect(body).to.deep.equal(JSON.stringify({message:'not found'}));
             done();
         });

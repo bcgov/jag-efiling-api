@@ -4,6 +4,7 @@ let express = require('express')
 let ClientAdaptor = function() {};
 
 ClientAdaptor.prototype.route = function(app) {
+    app.use('/client/css', express.static(path.join(__dirname, '..', 'client', 'css')));
     app.use('/client/images', express.static(path.join(__dirname, '..', 'client', 'images')));
     app.use('/client/fonts', express.static(path.join(__dirname, '..', 'client', 'fonts')));
     app.get('/client/all.js', (request, response)=> {
@@ -19,10 +20,6 @@ ClientAdaptor.prototype.route = function(app) {
             js += fs.readFileSync(path.join(__dirname, '..', 'client', 'js', files[i]))
         }
         response.end(js)
-    });
-    app.get('/client/all.css', (request, response)=> {
-        response.writeHead(200, { 'content-type':'text/css' })
-        response.end(require('fs').readFileSync(path.join(__dirname, '..', 'client', 'css', 'all.css')).toString())
     });
     app.get('/client*', (request, response)=> {
         let html = fs.readFileSync(path.join(__dirname, '..', 'client', 'index.html')).toString()

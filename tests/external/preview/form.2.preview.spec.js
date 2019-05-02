@@ -64,7 +64,7 @@ describe('Form 2 preview', function() {
             });
             request(preview, (err, response, body)=> {
                 expect(response.statusCode).to.equal(404);
-                expect(response.headers['content-type']).to.equal('application/json');
+                expect(response.headers['content-type']).to.equal('application/json; charset=utf-8');
                 expect(body).to.deep.equal(JSON.stringify({message:'not found'}));
                 done();
             });

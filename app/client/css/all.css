@@ -2,6 +2,10 @@
     font-family: 'Myriad-Pro';
     src: url('/client/fonts/MyriadWebPro.woff') format('woff');
 }
+@font-face {
+    font-family: 'Icons';
+    src: url('/client/fonts/open-iconic.woff') format('woff');
+}
 
 body {
     margin: 0px;

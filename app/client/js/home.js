@@ -2,7 +2,7 @@ const homeTemplate = document.createElement('template')
 
 homeTemplate.innerHTML = `
 <style>
-    @import '/client/all.css';
+    @import '/client/css/all.css';
 </style>
 <div class="centered page">
     <div class="section">
