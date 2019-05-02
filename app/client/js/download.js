@@ -32,11 +32,7 @@ class Download extends YopElement {
     connectedCallback() {
         this.tree.querySelector('#download-button').addEventListener('click', (e)=>{
             api.download(this.ids).then((data)=>{
-                var link = document.createElement('a')
-                link.href = URL.createObjectURL(data);
-                link.download = 'forms.zip'
-                var event = new MouseEvent("click");
-    			link.dispatchEvent(event);
+                save('forms.zip', data)                
             })
         })
     }
