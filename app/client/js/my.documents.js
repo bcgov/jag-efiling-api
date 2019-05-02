@@ -15,17 +15,6 @@ myDocumentsTemplate.innerHTML = `
     td.push-right {
         text-align: right;
     }
-    .action {
-        width: 30px;
-        height: 25px;
-        cursor: pointer;
-        padding: 10px 5px 5px 5px;
-        color: rgb(0, 51, 102);
-        border: 1px solid rgb(0, 51, 102);
-        border-radius: 5px;
-        text-align: center;
-        margin-left: 5px;
-    }
 </style>
 <div class="centered page">
     <div class="section">
@@ -33,13 +22,13 @@ myDocumentsTemplate.innerHTML = `
             <tr>
                 <td><label class="title">My Documents</label></td>
                 <td class="push-right">
-                    <div class="action oi oi-data-transfer-download"></div>
+                    <efiling-download></efiling-download>
                     <div class="action oi oi-box"></div>
                     <div class="action oi oi-plus"></div>
                 </td>
             </tr>
         </table>
-        <efiling-case-list></efiling-case-list>
+        <efiling-case-list-selectable></efiling-case-list-selectable>
     </div>
 </div>
 `

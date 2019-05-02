@@ -42,3 +42,14 @@ body {
     font-weight: normal;
     cursor: pointer;
 }
+.action {
+    width: 30px;
+    height: 25px;
+    cursor: pointer;
+    padding: 10px 5px 5px 5px;
+    color: rgb(0, 51, 102);
+    border: 1px solid rgb(0, 51, 102);
+    border-radius: 5px;
+    text-align: center;
+    margin-left: 5px;
+}

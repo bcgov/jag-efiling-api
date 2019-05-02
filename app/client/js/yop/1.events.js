@@ -7,7 +7,7 @@ class Events {
         if (listeners !== undefined) {
             for (var i=0; i<listeners.length; i++) {
                 var component = listeners[i]
-                component.update(value)
+                component.update(value, id)
             }
         }
     }

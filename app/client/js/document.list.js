@@ -12,6 +12,9 @@ caseListTemplate.innerHTML = `
     thead {
         border-bottom: 1px solid black;
     }
+    th {
+        text-align: left;
+    }
     td {
         padding: 5px 0px 5px 0px;
     }
@@ -26,11 +29,11 @@ caseListTemplate.innerHTML = `
 <div>
     <table>
         <thead>
-            <tr>
-                <td>File #</td>
-                <td>Parties</td>
-                <td>Status</td>
-                <td class="date">Recently Modified</td>
+            <tr id="case-list-header">
+                <th>File #</th>
+                <th>Parties</th>
+                <th>Status</th>
+                <th class="date">Recently Modified</th>
             </tr>
         </thead>
         <tbody>
