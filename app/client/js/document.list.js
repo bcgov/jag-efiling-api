@@ -19,6 +19,7 @@ caseListTemplate.innerHTML = `
         text-align: right;
     }
     .empty {
+        margin-top: 5px;
         font-style: italic;
     }
 </style>
@@ -41,6 +42,16 @@ caseListTemplate.innerHTML = `
             </tr>
         </tbody>
     </table>
+
+    <efiling-if-empty collection="caselist">
+        <style>
+            div {
+                font-style: italic;
+                margin-top: 15px;
+            }
+        </style>
+        <div>No open cases found</div>
+    </efiling-if-empty>
 </div>
 `
 
@@ -66,16 +77,7 @@ class CaseList extends YopElement {
         })
     }
     update(collection) {
-        if (collection.length == 0) {
-            this.list.innerHTML = `
-                <tr>
-                    <td class="empty" colspan="4">No open cases found</td>
-                </tr>
-            `
-        }
-        else {
-            this.list.innerHTML = repeat(this.template, collection, this.mappings)
-        }
+        this.list.innerHTML = repeat(this.template, collection, this.mappings)
     }
     parties(data) {
         let appellantName = '?';
