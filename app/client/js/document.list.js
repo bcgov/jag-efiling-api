@@ -18,6 +18,9 @@ caseListTemplate.innerHTML = `
     .date {
         text-align: right;
     }
+    .empty {
+        font-style: italic;
+    }
 </style>
 <div>
     <table>
@@ -63,7 +66,16 @@ class CaseList extends YopElement {
         })
     }
     update(collection) {
-        this.list.innerHTML = repeat(this.template, collection, this.mappings)
+        if (collection.length == 0) {
+            this.list.innerHTML = `
+                <tr>
+                    <td class="empty" colspan="4">No open cases found</td>
+                </tr>
+            `
+        }
+        else {
+            this.list.innerHTML = repeat(this.template, collection, this.mappings)
+        }
     }
     parties(data) {
         let appellantName = '?';

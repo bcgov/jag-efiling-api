@@ -16,4 +16,4 @@ class IfEmpty extends YopElement {
     }
 }
 
-customElements.define('yop-if-empty', IfEmpty)
+customElements.define('efiling-if-empty', IfEmpty)
