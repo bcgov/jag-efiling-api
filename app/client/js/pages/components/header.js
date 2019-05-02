@@ -10,15 +10,6 @@ headerTemplate.innerHTML = `
         padding-bottom: 0px;
         color: white;
     }
-    ul {
-        margin: 0px;
-        padding: 0px;
-        list-style: none;
-    }
-    li {
-        display: inline-block;
-        vertical-align: top;
-    }
     .logo {
         margin-right: 25px;
     }

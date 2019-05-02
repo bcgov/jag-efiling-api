@@ -12,6 +12,16 @@ body {
     font-family: Myriad-Pro, sans-serif;
     background-color: #f1f1f1;
 }
+ul {
+    margin: 0px;
+    padding: 0px;
+    list-style: none;
+}
+li {
+    display: inline-block;
+    vertical-align: top;
+}
+
 .centered {
     padding-left: 10%;
     padding-right: 10%;
