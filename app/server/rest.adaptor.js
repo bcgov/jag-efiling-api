@@ -4,7 +4,7 @@ let { SearchFormSeven, MyCases, CreateFormTwo, SavePerson, UpdateFormTwo,
 let { searchFormSevenResponse, myCasesResponse, createFormTwoResponse,
       updateFormTwoResponse, savePersonResponse, personInfoResponse,
       archiveCasesResponse, previewForm2Response, createJourneyResponse,
-      myJourneyResponse } = require('./responses');
+      myJourneyResponse, submitForm2Response } = require('./responses');
 let ifNoError = require('./errors.handling');
 let pdf = require('html-pdf');
 let archiver = require('archiver');
@@ -168,6 +168,12 @@ RestAdaptor.prototype.route = function(app) {
         this.myJourney.now(login, (data)=> {
             myJourneyResponse(data, response);
         });
+    });
+    app.post('/api/forms/:id/submit', (request, response) => {
+        let id = request.params.id;
+        setTimeout(()=>{
+            submitForm2Response(id, response);
+        }, 5000)
     });
     app.get('/*', function (req, res) { res.send( JSON.stringify({ message: 'pong' }) ); });
 };

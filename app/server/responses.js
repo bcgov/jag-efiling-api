@@ -59,4 +59,10 @@ module.exports = {
             response.json({ journey: journey });
         });
     },
+    submitForm2Response: (guid, response)=> {
+        ifNoError(guid, response).then(()=> {
+            response.statusCode = 201;
+            response.json({ guid: guid });
+        });
+    },
 };
