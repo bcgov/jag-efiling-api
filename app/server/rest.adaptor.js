@@ -1,6 +1,6 @@
 let { SearchFormSeven, MyCases, CreateFormTwo, SavePerson, UpdateFormTwo,
       ArchiveCases, PreviewForm2, PersonInfo, SaveCustomization, CreateJourney,
-     MyJourney, UpdateJourney } = require('../features');
+     MyJourney, UpdateJourney, SubmitForm } = require('../features');
 let { searchFormSevenResponse, myCasesResponse, createFormTwoResponse,
       updateFormTwoResponse, savePersonResponse, personInfoResponse,
       archiveCasesResponse, previewForm2Response, createJourneyResponse,
@@ -13,6 +13,7 @@ let RestAdaptor = function() {};
 
 RestAdaptor.prototype.useHub = function(hub) {
     this.searchFormSeven = new SearchFormSeven(hub);
+    this.submitForm = new SubmitForm(hub);
 };
 RestAdaptor.prototype.useDatabase = function(database) {
     this.myCases = new MyCases(database);
@@ -171,9 +172,21 @@ RestAdaptor.prototype.route = function(app) {
     });
     app.post('/api/forms/:id/submit', (request, response) => {
         let id = request.params.id;
-        setTimeout(()=>{
-            submitForm2Response(id, response);
-        }, 5000)
+        this.previewForm2.now(id, (html)=> {
+            console.log('preview error', html.error);
+            if (html.error) {
+                submitForm2Response(html, response);
+            }
+            else {
+                pdf.create(html).toBuffer((err, pdf)=> {
+                    console.log('pdf creation error', err);
+                    console.log('pdf length=', pdf.length);
+                    this.submitForm.now(pdf, (data)=>{
+                        submitForm2Response(data, response);
+                    })
+                });
+            }
+        });
     });
     app.get('/*', function (req, res) { res.send( JSON.stringify({ message: 'pong' }) ); });
 };

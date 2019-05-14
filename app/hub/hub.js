@@ -9,12 +9,75 @@ var {
 
 function Hub(url, timeout) {
     this.url = url;
+    this.host = this.extractHost(url)
+    this.port = this.extractPort(url)
     this.timeout = timeout;
 }
-Hub.prototype.searchForm7 = function(file, callback) {
-    var target = this.url + '/form7s?caseNumber='+file;
+Hub.prototype.extractHost = function(url) {
+    var value = url.substring(url.indexOf('://')+3)
+    if (value.indexOf(':') != -1) {
+        return value.substring(0, value.indexOf(':'))
+    }
+    if (value.indexOf('/') != -1) {
+        return value.substring(0, value.indexOf('/'))
+    }
+    return value
+}
+Hub.prototype.extractPort = function(url) {
+    var value = url.substring(url.indexOf('://')+3)
+    value = value.substring(value.indexOf(':')+1)
+    var port = parseInt(value)
+    return isNaN(port) ? 80 : port
+}
+Hub.prototype.submitForm = function(pdf, callback) {
+    var options = {
+        method: 'POST',
+        host: this.host,
+        port: this.port,
+        path: '/save',
+        timeout: this.timeout
+    }
     var timedout = false
-    var search = request(target, {timeout: this.timeout }, function(response) {
+    var save = request(options, function(response) {
+        if (timedout) { return }
+        if (response.statusCode === 503) {
+            callback({ error: {code:503} });
+        }
+        else {
+            if (response.statusCode === 200) {
+                var body = ''
+                response.on('data', (chunk) => {
+                    body += chunk
+                })
+                response.on('end', () => {
+                    var data = JSON.parse(body);
+                    callback(data)
+                })
+            }
+            else {
+                callback({ error: {code:response.statusCode} });
+            }
+        }
+    });
+    save.on('error', (err)=>{
+        callback({ error: {code:503} })
+    })
+    save.on('timeout', (err)=>{
+        timedout = true
+        callback({ error: {code:503} })
+    });
+    save.end(pdf);
+}
+Hub.prototype.searchForm7 = function(file, callback) {
+    var options = {
+        method: 'GET',
+        host: this.host,
+        port: this.port,
+        path: '/form7s?caseNumber='+file,
+        timeout: this.timeout
+    }
+    var timedout = false
+    var search = request(options, function(response) {
         if (timedout) { return }
 
         if (response.statusCode === 503) {
