@@ -11,6 +11,7 @@ let SaveCustomization = require('./save.customization');
 let CreateJourney = require('./create.journey');
 let UpdateJourney = require('./update.journey');
 let SubmitForm = require('./submit.form')
+let AccountUsers = require('./account.users')
 
 module.exports = {
     SearchFormSeven:SearchFormSeven,
@@ -25,5 +26,6 @@ module.exports = {
     SaveCustomization:SaveCustomization,
     CreateJourney:CreateJourney,
     UpdateJourney:UpdateJourney,
-    SubmitForm:SubmitForm
+    SubmitForm:SubmitForm,
+    AccountUsers:AccountUsers
 }

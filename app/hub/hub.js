@@ -29,6 +29,45 @@ Hub.prototype.extractPort = function(url) {
     var port = parseInt(value)
     return isNaN(port) ? 80 : port
 }
+Hub.prototype.accountUsers = function(userguid, callback) {
+    var info = {
+        method: 'GET',
+        host: this.host,
+        port: this.port,
+        path: '/accountUsers?userguid=' + userguid,
+        timeout: this.timeout
+    }
+    var timedout = false
+    var please = request(info, function(response) {
+        if (timedout) { return }
+        if (response.statusCode === 503) {
+            callback({ error: {code:503} });
+        }
+        else {
+            if (response.statusCode === 200) {
+                var body = ''
+                response.on('data', (chunk) => {
+                    body += chunk
+                })
+                response.on('end', () => {
+                    var data = JSON.parse(body);
+                    callback(data['soap:Envelope']['soap:Body']['ns2:getCsoClientProfilesResponse']['return'])
+                })
+            }
+            else {
+                callback({ error: {code:response.statusCode} });
+            }
+        }
+    });
+    please.on('error', (err)=>{
+        callback({ error: {code:503} })
+    })
+    please.on('timeout', (err)=>{
+        timedout = true
+        callback({ error: {code:503} })
+    });
+    please.end();
+}
 Hub.prototype.submitForm = function(pdf, callback) {
     var options = {
         method: 'POST',

@@ -1,10 +1,10 @@
 let { SearchFormSeven, MyCases, CreateFormTwo, SavePerson, UpdateFormTwo,
       ArchiveCases, PreviewForm2, PersonInfo, SaveCustomization, CreateJourney,
-     MyJourney, UpdateJourney, SubmitForm } = require('../features');
+     MyJourney, UpdateJourney, SubmitForm, AccountUsers } = require('../features');
 let { searchFormSevenResponse, myCasesResponse, createFormTwoResponse,
       updateFormTwoResponse, savePersonResponse, personInfoResponse,
       archiveCasesResponse, previewForm2Response, createJourneyResponse,
-      myJourneyResponse, submitForm2Response } = require('./responses');
+      myJourneyResponse, submitForm2Response, accountUsersResponse } = require('./responses');
 let ifNoError = require('./errors.handling');
 let pdf = require('html-pdf');
 let archiver = require('archiver');
@@ -14,6 +14,7 @@ let RestAdaptor = function() {};
 RestAdaptor.prototype.useHub = function(hub) {
     this.searchFormSeven = new SearchFormSeven(hub);
     this.submitForm = new SubmitForm(hub);
+    this.accountUsers = new AccountUsers(hub);
 };
 RestAdaptor.prototype.useDatabase = function(database) {
     this.myCases = new MyCases(database);
@@ -186,6 +187,12 @@ RestAdaptor.prototype.route = function(app) {
                     })
                 });
             }
+        });
+    });
+    app.get('/api/accountusers', (request, response)=> {
+        let userguid = request.headers['smgov_userguid'];
+        this.accountUsers.now(userguid, (data)=> {
+            accountUsersResponse(data, response);
         });
     });
     app.get('/*', function (req, res) { res.send( JSON.stringify({ message: 'pong' }) ); });
