@@ -12,6 +12,8 @@ let CreateJourney = require('./create.journey');
 let UpdateJourney = require('./update.journey');
 let SubmitForm = require('./submit.form')
 let AccountUsers = require('./account.users')
+let ConnectPerson = require('./connect.person')
+let SaveAuthorizations = require('./save.authorizations')
 
 module.exports = {
     SearchFormSeven:SearchFormSeven,
@@ -27,5 +29,7 @@ module.exports = {
     CreateJourney:CreateJourney,
     UpdateJourney:UpdateJourney,
     SubmitForm:SubmitForm,
-    AccountUsers:AccountUsers
+    AccountUsers:AccountUsers,
+    ConnectPerson:ConnectPerson,
+    SaveAuthorizations:SaveAuthorizations
 }

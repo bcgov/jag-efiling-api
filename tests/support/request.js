@@ -34,7 +34,7 @@ const localhost5000json = function(options) {
     }
     Object.keys(options).forEach((key)=>{
         query[key] = options[key];
-    })
+    })    
     return query
 }
 

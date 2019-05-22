@@ -1,6 +1,7 @@
 let { SearchFormSeven, MyCases, CreateFormTwo, SavePerson, UpdateFormTwo,
-      ArchiveCases, PreviewForm2, PersonInfo, SaveCustomization, CreateJourney,
-     MyJourney, UpdateJourney, SubmitForm, AccountUsers } = require('../features');
+    ArchiveCases, PreviewForm2, PersonInfo, SaveCustomization, CreateJourney,
+    MyJourney, UpdateJourney, SubmitForm, AccountUsers,
+    ConnectPerson, SaveAuthorizations} = require('../features');
 let { searchFormSevenResponse, myCasesResponse, createFormTwoResponse,
       updateFormTwoResponse, savePersonResponse, personInfoResponse,
       archiveCasesResponse, previewForm2Response, createJourneyResponse,
@@ -9,12 +10,16 @@ let ifNoError = require('./errors.handling');
 let pdf = require('html-pdf');
 let archiver = require('archiver');
 
-let RestAdaptor = function() {};
+let RestAdaptor = function() {
+    this.connectPerson = new ConnectPerson()
+    this.saveAuthorizations = new SaveAuthorizations()
+};
 
 RestAdaptor.prototype.useHub = function(hub) {
     this.searchFormSeven = new SearchFormSeven(hub);
     this.submitForm = new SubmitForm(hub);
     this.accountUsers = new AccountUsers(hub);
+    this.connectPerson.useHub(hub);
 };
 RestAdaptor.prototype.useDatabase = function(database) {
     this.myCases = new MyCases(database);
@@ -28,6 +33,8 @@ RestAdaptor.prototype.useDatabase = function(database) {
     this.saveCustomization = new SaveCustomization(database);
     this.createJourney = new CreateJourney(database);
     this.updateJourney = new UpdateJourney(database);
+    this.connectPerson.useDatabase(database);
+    this.saveAuthorizations.useDatabase(database);
 };
 RestAdaptor.prototype.route = function(app) {
     app.get('/api/forms', (request, response)=> {
@@ -44,8 +51,21 @@ RestAdaptor.prototype.route = function(app) {
             else {
                 let params = request.body;
                 params.person_id = id;
-                this.createFormTwo.now(params, (data)=> {
-                    createFormTwoResponse(data, response);
+                this.createFormTwo.now(params, (formId)=> {
+                    if (!formId.error) {
+                        let authorizations = JSON.parse(params.data).authorizations
+                        if (authorizations !== undefined) {
+                            this.saveAuthorizations.now(formId, authorizations, (id)=>{
+                                createFormTwoResponse(id, response);
+                            })
+                        }
+                        else {
+                            createFormTwoResponse(formId, response);
+                        }
+                    }
+                    else {
+                        createFormTwoResponse(formId, response);
+                    }
                 });
             }
         });
@@ -67,13 +87,6 @@ RestAdaptor.prototype.route = function(app) {
         let person = params.data;
         this.savePerson.now(person, (data)=> {
             savePersonResponse(data, response);
-        });
-    });
-    app.get('/api/persons/connected', (request, response, next)=> {
-        let login = request.headers['smgov_userguid'];
-        let name = request.headers['smgov_userdisplayname'];
-        this.getPersonInfo.now(login, (user)=>{
-            personInfoResponse({ login:login, name:name, customization:user.customization }, response);
         });
     });
     app.post('/api/persons/customization', (request, response)=> {
@@ -188,6 +201,25 @@ RestAdaptor.prototype.route = function(app) {
                 });
             }
         });
+    });
+    app.get('/api/persons/connected', (request, response, next)=> {
+        let login = request.headers['smgov_userguid'];
+        let name = request.headers['smgov_userdisplayname'];
+        this.connectPerson.now(login, (data)=>{
+            if (!data.error) {
+                this.getPersonInfo.now(login, (user)=>{
+                    personInfoResponse({
+                        error: user.error,
+                        login:login,
+                        name:name,
+                        customization:user.customization?user.customization:undefined
+                    }, response);
+                });
+            }
+            else {
+                personInfoResponse(data, response);
+            }
+        })
     });
     app.get('/api/accountusers', (request, response)=> {
         let userguid = request.headers['smgov_userguid'];

@@ -1,6 +1,7 @@
 let { Forms } = require('./forms');
 let { Persons } = require('./persons');
 let { Journey } = require('./journey');
+let { Authorizations } = require('./authorizations');
 
 let ifError = function(please) {
     return {
@@ -21,6 +22,7 @@ let Database = function() {
     this.forms = new Forms();
     this.persons = new Persons();
     this.journey = new Journey();
+    this.authorizations = new Authorizations()
 };
 
 Database.prototype.createJourney = function(journey, callback) {
@@ -56,7 +58,6 @@ Database.prototype.myJourney = function(login, callback) {
 };
 
 Database.prototype.createForm = function(form, callback) {
-
     this.forms.selectByFormTypeUseridAndCaseNumber(form.person_id, form.type, JSON.parse(form.data).formSevenNumber, (rows) => {
         if (!rows || rows.length < 1 ) {
             this.forms.create(form, ifError({notify:callback}).otherwise((rows)=> {
@@ -100,6 +101,7 @@ Database.prototype.myCases = function(login, callback) {
             modified = modified.substring(1, modified.lastIndexOf('.'))+'Z';
             return {
                 id: row.id,
+                personId: row.person_id,
                 type: row.type,
                 status: row.status,
                 modified: modified,
@@ -111,13 +113,18 @@ Database.prototype.myCases = function(login, callback) {
 Database.prototype.savePerson = function(person, callback) {
     this.persons.findByLogin(person.login, ifError({notify:callback}).otherwise((rows)=> {
         if (rows.length ==0) {
-            this.persons.create(person, ifError(callback).otherwise((rows)=>{
+            this.persons.create(person, ifError({notify:callback}).otherwise((rows)=>{
                 callback(rows[0].last_value);
             }));
         }
         else {
             callback(rows[0].id);
         }
+    }));
+};
+Database.prototype.savePersonConnectionInfo = function(login, info, callback) {
+    this.persons.saveConnectionInfo(login, info.accountId, info.clientId, ifError({notify:callback}).otherwise((rows)=> {
+        callback(login)
     }));
 };
 Database.prototype.saveCustomization = function(person, callback) {
@@ -153,5 +160,8 @@ Database.prototype.personInfo = function(login, callback) {
         }
     }));
 };
+Database.prototype.saveAuthorization = function(formId, authorization, callback) {
+    this.authorizations.create(formId, authorization, callback)
+}
 
 module.exports = Database;

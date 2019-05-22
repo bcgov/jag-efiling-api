@@ -68,6 +68,48 @@ Hub.prototype.accountUsers = function(userguid, callback) {
     });
     please.end();
 }
+Hub.prototype.isAuthorized = function(guid, callback) {
+    var options = {
+        method: 'GET',
+        host: this.host,
+        port: this.port,
+        path: '/isAuthorized?userguid=' + guid,
+        timeout: this.timeout
+    }
+    var timedout = false
+    var authorized = request(options, function(response) {
+        if (timedout) { return }
+        if (response.statusCode === 503) {
+            callback({ error: {code:503} });
+        }
+        else {
+            if (response.statusCode === 200) {
+                var body = ''
+                response.on('data', (chunk) => {
+                    body += chunk
+                })
+                response.on('end', () => {
+                    var data = JSON.parse(body);
+                    var info = data['soap:Envelope']['soap:Body']['ns2:isAuthorizedUserResponse']['return']
+                    info.clientId = parseInt(info.clientId)
+                    info.accountId = parseInt(info.accountId)
+                    callback(info)
+                })
+            }
+            else {
+                callback({ error: {code:response.statusCode} });
+            }
+        }
+    });
+    authorized.on('error', (err)=>{
+        callback({ error: {code:503} })
+    })
+    authorized.on('timeout', (err)=>{
+        timedout = true
+        callback({ error: {code:503} })
+    });
+    authorized.end();
+};
 Hub.prototype.submitForm = function(pdf, callback) {
     var options = {
         method: 'POST',

@@ -90,4 +90,18 @@ describe('When database is not responding', function() {
             path: '/api/journey'
         }), withSuccess)
     });
+
+    it('returns 503 when accessing person info', (withSuccess)=> {
+        server.useService({
+            isAuthorized: (login, callback)=>{
+                callback({
+                    clientId:1234,
+                    accountId:5678
+                })
+            }
+        })
+        check(localhost5000json({
+            path: '/api/persons/connected',
+        }), withSuccess)
+    });
 });

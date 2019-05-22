@@ -20,6 +20,14 @@ describe('Customization save', function() {
         server = new Server();
         database = new Database();
         server.useDatabase(database);
+        server.useService({
+            isAuthorized: (login, callback)=>{
+                callback({
+                    clientId:1234,
+                    accountId:5678
+                })
+            }
+        });
         var migrator = new Migrator();
         migrator.migrateNow(function() {
             var truncator = new Truncator();

@@ -74,4 +74,5 @@ describe('My cases endpoint', function() {
             });
         });
     });
+
 });

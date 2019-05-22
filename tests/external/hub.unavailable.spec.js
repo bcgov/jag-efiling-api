@@ -63,4 +63,16 @@ describe('Hub service', function() {
             done();
         });
     });
+
+    it('returns 503 when accessing account users', (done)=> {
+        server.useService(new Hub('http://not-running'));
+        var accountUsers = localhost5000json({
+            path: '/api/accountusers'
+        })
+        request(accountUsers, (err, response, body)=> {
+            expect(response.statusCode).to.equal(503);
+            expect(JSON.parse(body)).to.deep.deep.equal({message:'service unavailable'});
+            done();
+        });
+    });
 });

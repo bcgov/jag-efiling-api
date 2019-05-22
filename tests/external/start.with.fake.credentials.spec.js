@@ -10,7 +10,7 @@ describe('start script with fake credentials', function() {
         server = require('../../start.with.fake.credentials');
         setTimeout(function() {
             done();
-        }, 300);
+        }, 1500);
     });
     after(function(done) {
         server.stop(done);

@@ -8,7 +8,7 @@ describe('Migrator', function() {
     var versions;
 
     beforeEach(function() {
-        migrator = new Migrator();  
+        migrator = new Migrator();
         versions = new Versions();
     });
 
@@ -16,7 +16,7 @@ describe('Migrator', function() {
         migrator.migrateNow(function() {
             versions.selectAll(function(rows) {
                 expect(rows.length).to.equal(1);
-                expect(rows[0].id).to.equal(10);
+                expect(rows[0].id).to.equal(12);
                 success();
             });
         });

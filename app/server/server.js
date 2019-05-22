@@ -29,6 +29,7 @@ Server.prototype.start = function (port, ip, done) {
     });
     this.app.use((request, response, next)=>{
         if (request.method !== 'OPTIONS' && request.headers['smgov_userguid'] === undefined) {
+            console.log(request.headers);
             response.statusCode = 401;
             response.end(JSON.stringify({ message:'unauthorized' }));
         } else {

@@ -18,6 +18,14 @@ describe('Person info endpoint', function() {
         server = new Server();
         database = new Database();
         server.useDatabase(database);
+        server.useService({
+            isAuthorized: (login, callback)=>{
+                callback({
+                    clientId:1234,
+                    accountId:5678
+                })
+            }
+        });
         var migrator = new Migrator();
         migrator.migrateNow(function() {
             var truncator = new Truncator();
@@ -40,6 +48,19 @@ describe('Person info endpoint', function() {
             done();
         });
     });
+
+    it('creates missing person with cso information', (done)=>{
+        request(info, (err, response, body)=> {
+            expect(response.statusCode).to.equal(200);
+            execute('select login, account_id, client_id from person', (rows, error)=>{
+                if (error) { expect(error.message).to.equal(null) }
+                expect(rows.length).to.equal(1)
+                expect(rows[0]['account_id']).to.equal(5678)
+                expect(rows[0]['client_id']).to.equal(1234)
+                done()
+            })
+        });
+    })
 
     it('returns customization', (done)=> {
         var background = [
