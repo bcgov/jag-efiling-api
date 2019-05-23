@@ -36,8 +36,8 @@ describe('Account users endpoint', function() {
         server.stop(done);
     });
 
-    it('forwards the received answer', (done) => {
-        var data = {
+    it('optimizes the received answer', (done) => {
+        var sent = {
             "account": {
                 "accountId": "5",
                 "clientId": "9"
@@ -59,14 +59,39 @@ describe('Account users endpoint', function() {
                 "surname": "Newton"
             }]
         }
+        var expected = {
+            "account": {
+                "accountId": 5,
+                "clientId": 9
+            },
+            "authorizations": [{
+                "clientId": 9,
+                "givenName": "Leonardo",
+                "isAdmin": true,
+                "isActive": true,
+                "surname": "DaVinci"
+            }, {
+                "clientId": 7,
+                "givenName": "Francisco",
+                "isAdmin": false,
+                "isActive": false,
+                "surname": "Goya"
+            }, {
+                "clientId": 8,
+                "givenName": "Isaac",
+                "isAdmin": false,
+                "isActive": false,
+                "surname": "Newton"
+            }]
+        }
         server.useService({
             accountUsers: (login, callback) => {
-                callback(data)
+                callback(sent)
             }
         })
         request(info, (err, response, body) => {
             expect(response.statusCode).to.equal(200);
-            expect(JSON.parse(body)).to.deep.equal({ info:data })
+            expect(JSON.parse(body)).to.deep.equal({ info:expected })
             done()
         });
     })
