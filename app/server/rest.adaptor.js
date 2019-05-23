@@ -227,7 +227,9 @@ RestAdaptor.prototype.route = function(app) {
                         error: user.error,
                         login:login,
                         name:name,
-                        customization:user.customization?user.customization:undefined
+                        customization:user.customization?user.customization:undefined,
+                        clientId: user.clientId,
+                        accountId: user.accountId
                     }, response);
                 });
             }

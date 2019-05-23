@@ -161,7 +161,13 @@ Database.prototype.personInfo = function(login, callback) {
         }
         else {
             let person = rows[0];
-            callback({ login:person.login, name:person.name, customization:JSON.parse(person.customization) });
+            callback({
+                login:person.login,
+                name:person.name,
+                customization:JSON.parse(person.customization),
+                clientId:person.client_id,
+                accountId:person.account_id
+            });
         }
     }));
 };

@@ -39,12 +39,15 @@ describe('Person info endpoint', function() {
         server.stop(done);
     });
 
-    it('returns name', (done)=> {
+    it('returns full info', (done)=> {
         request(info, (err, response, body)=> {
             expect(response.statusCode).to.equal(200);
             let person = JSON.parse(body);
+            console.log(person);
             expect(person.login).to.equal('max');
             expect(person.name).to.equal('Free Max');
+            expect(person.clientId).to.equal(1234);
+            expect(person.accountId).to.equal(5678)
             done();
         });
     });
