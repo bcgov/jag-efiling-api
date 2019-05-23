@@ -1,5 +1,4 @@
-let ConnectPerson = function(database) {
-    this.database = database;
+let ConnectPerson = function() {
 };
 ConnectPerson.prototype.useHub = function(hub) {
     this.hub = hub;

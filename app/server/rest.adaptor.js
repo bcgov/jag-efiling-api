@@ -11,13 +11,14 @@ let pdf = require('html-pdf');
 let archiver = require('archiver');
 
 let RestAdaptor = function() {
+    this.submitForm = new SubmitForm()
     this.connectPerson = new ConnectPerson()
     this.saveAuthorizations = new SaveAuthorizations()
 };
 
 RestAdaptor.prototype.useHub = function(hub) {
     this.searchFormSeven = new SearchFormSeven(hub);
-    this.submitForm = new SubmitForm(hub);
+    this.submitForm.useHub(hub);
     this.accountUsers = new AccountUsers(hub);
     this.connectPerson.useHub(hub);
 };
@@ -35,6 +36,7 @@ RestAdaptor.prototype.useDatabase = function(database) {
     this.updateJourney = new UpdateJourney(database);
     this.connectPerson.useDatabase(database);
     this.saveAuthorizations.useDatabase(database);
+    this.submitForm.useDatabase(database);
 };
 RestAdaptor.prototype.route = function(app) {
     app.get('/api/forms', (request, response)=> {
@@ -208,7 +210,7 @@ RestAdaptor.prototype.route = function(app) {
                 pdf.create(html).toBuffer((err, pdf)=> {
                     console.log('pdf creation error', err);
                     console.log('pdf length=', pdf.length);
-                    this.submitForm.now(pdf, (data)=>{
+                    this.submitForm.now(id, pdf, (data)=>{
                         submitForm2Response(data, response);
                     })
                 });

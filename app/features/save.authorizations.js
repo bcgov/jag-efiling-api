@@ -1,5 +1,4 @@
-let SaveAuthorizations = function(database) {
-    this.database = database;
+let SaveAuthorizations = function() {
 };
 SaveAuthorizations.prototype.useDatabase = function(database) {
     this.database = database;

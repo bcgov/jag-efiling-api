@@ -92,6 +92,11 @@ Database.prototype.updateForm = function(form, callback) {
         })
     );
 };
+Database.prototype.submitForm = function(id, callback) {
+    this.forms.updateStatus(id, 'Submitted', ifError({notify:callback}).otherwise((rows)=>{
+        callback(rows);
+    }))
+}
 
 Database.prototype.myCases = function(login, callback) {
     this.forms.selectByLogin(login, ifError({notify:callback}).otherwise((rows)=> {

@@ -32,6 +32,8 @@ Forms.prototype.selectByLogin = function(login, callback) {
         AND     person.client_id = authorizations.client_id
         AND     person.login = $1
         AND     forms.status <> 'archived'
+
+        ORDER BY modified DESC
     `;
     execute(select, [login], callback);
 };
@@ -67,6 +69,9 @@ Forms.prototype.archive = function(ids, callback) {
         statements.push({ sql:`update forms set status='archived' where id = $1`, params:[ids[i]] });
     }
     execute(statements, [], callback);
+};
+Forms.prototype.updateStatus = function(id, status, callback) {
+    execute('update forms set status = $2, modified = current_timestamp where id = $1', [id, status], callback);
 };
 
 module.exports = {
