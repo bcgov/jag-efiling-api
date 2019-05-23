@@ -69,18 +69,21 @@ describe('Account users endpoint', function() {
                 "givenName": "Leonardo",
                 "isAdmin": true,
                 "isActive": true,
+                "isEditable": false,
                 "surname": "DaVinci"
             }, {
                 "clientId": 7,
                 "givenName": "Francisco",
                 "isAdmin": false,
                 "isActive": false,
+                "isEditable": true,
                 "surname": "Goya"
             }, {
                 "clientId": 8,
                 "givenName": "Isaac",
                 "isAdmin": false,
                 "isActive": false,
+                "isEditable": true,
                 "surname": "Newton"
             }]
         }
