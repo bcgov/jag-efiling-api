@@ -8,7 +8,7 @@ let ifError = function(please) {
         otherwise:function(then) {
             return (rows, error)=> {
                 if (error) {
-                    please.notify({ error: {code:503} });
+                    please.notify({ error: {code:503, message:error.message} });
                 }
                 else {
                     then(rows);
@@ -162,6 +162,9 @@ Database.prototype.personInfo = function(login, callback) {
 };
 Database.prototype.saveAuthorization = function(formId, authorization, callback) {
     this.authorizations.create(formId, authorization, callback)
-}
+};
+Database.prototype.deleteAuthorizations = function(formId, callback) {
+    this.authorizations.delete(formId, callback)
+};
 
 module.exports = Database;

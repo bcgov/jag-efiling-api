@@ -27,7 +27,8 @@ Forms.prototype.selectByLogin = function(login, callback) {
                 forms.data,
                 forms.person_id
         FROM    authorizations, forms, person
-        WHERE   forms.id = authorizations.form_id
+        WHERE   authorizations.is_active = true
+        AND     forms.id = authorizations.form_id
         AND     person.client_id = authorizations.client_id
         AND     person.login = $1
         AND     forms.status <> 'archived'

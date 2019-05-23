@@ -73,7 +73,20 @@ RestAdaptor.prototype.route = function(app) {
     app.put('/api/forms/:id', (request, response)=> {
         let data = request.body.data;
         this.updateFormTwo.now(request.params.id, data, (data)=> {
-            updateFormTwoResponse(data, response);
+            if (!data.error) {
+                let authorizations = request.body.data.authorizations
+                if (authorizations !== undefined) {
+                    this.saveAuthorizations.now(request.params.id, authorizations, (id)=>{
+                        updateFormTwoResponse(id, response);
+                    })
+                }
+                else {
+                    updateFormTwoResponse(data, response);
+                }
+            }
+            else {
+                updateFormTwoResponse(data, response);
+            }
         });
     });
     app.get('/api/cases', (request, response)=> {

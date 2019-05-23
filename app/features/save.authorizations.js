@@ -8,7 +8,7 @@ SaveAuthorizations.prototype.useDatabase = function(database) {
 SaveAuthorizations.prototype.now = async function(formId, authorizations, callback) {
     let error;
     var self = this
-    var doItForEach = (formId, authorization) => {
+    var saveOneAuthorization = (formId, authorization) => {
         var p = new Promise((resolve, reject)=>{
             this.database.saveAuthorization(formId, authorization, (rows, err)=>{
                 if (err) {
@@ -21,9 +21,19 @@ SaveAuthorizations.prototype.now = async function(formId, authorizations, callba
         return p
     };
     try {
+        var deleteAuthorizations = new Promise((resolve, reject)=>{
+            this.database.deleteAuthorizations(formId, (rows, err)=>{
+                if (err) {
+                    error = err
+                    reject(error)
+                }
+                else { resolve() }
+            })
+        })
+        await deleteAuthorizations
         for (var index=0; index<authorizations.length; index++) {
             var authorization = authorizations[index];
-            await doItForEach(formId, authorization);
+            await saveOneAuthorization(formId, authorization);
         }
     }
     catch (ignored) { }
