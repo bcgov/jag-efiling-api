@@ -23,7 +23,7 @@ Migrator.prototype.migrateNow = function(done) {
         'truncate table versions',
         { sql:'insert into versions(id) values($1)', params:[13] }
     ];
-    execute(calls, function(rows, error) {
+    execute(calls, function(error, rows) {
         done(error);
     });
 };

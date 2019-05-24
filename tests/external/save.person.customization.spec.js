@@ -46,11 +46,11 @@ describe('Customization save', function() {
             'alter sequence person_id_seq restart',
             { sql:'insert into person(login, customization) values ($1, $2)', params:['max', JSON.stringify({ thisApp:false })] }
         ];
-        execute(background, function(rows, error) {
+        execute(background, function(error, rows) {
             request(customization, function(err, response, body) {
                 expect(response.statusCode).to.equal(200);
 
-                execute('SELECT id, login, customization FROM person where id=$1', [1], function(rows) {
+                execute('SELECT id, login, customization FROM person where id=$1', [1], function(err, rows) {
                     expect(rows.length).to.equal(1);
 
                     var { customization } = rows[0];
@@ -75,11 +75,11 @@ describe('Customization save', function() {
         var background = [
             'alter sequence person_id_seq restart'
         ];
-        execute(background, function(rows, error) {
+        execute(background, function(error, rows) {
             request(customization, function(err, response, body) {
                 expect(response.statusCode).to.equal(200);
 
-                execute('SELECT id, login, customization FROM person where id=$1', [1], function(rows) {
+                execute('SELECT id, login, customization FROM person where id=$1', [1], function(err, rows) {
                     expect(rows.length).to.equal(1);
 
                     var { customization } = rows[0];

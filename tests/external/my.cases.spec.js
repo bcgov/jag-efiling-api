@@ -40,7 +40,7 @@ describe('My cases endpoint', function() {
             { sql: 'insert into forms(person_id, type, status, data) values($1, $2, $3, $4);', params:[2, 'crazy-max', 'new', JSON.stringify({value:'max'})] },
             'select last_value from forms_id_seq'
         ];
-        execute(background, function(rows) {
+        execute(background, function(err, rows) {
             var newId = parseInt(rows[0].last_value);
             request(mycases, (err, response, body)=> {
                 expect(response.statusCode).to.equal(200);
@@ -63,7 +63,7 @@ describe('My cases endpoint', function() {
             { sql: 'insert into forms(person_id, type, status, data) values($1, $2, $3, $4);', params:[1, 'crazy-max', 'archived', JSON.stringify({value:'max'})] },
             'select last_value from forms_id_seq'
         ];
-        execute(background, function(rows) {
+        execute(background, function(err, rows) {
             var newId = parseInt(rows[0].last_value);
             request(mycases, (err, response, body)=> {
                 expect(response.statusCode).to.equal(200);

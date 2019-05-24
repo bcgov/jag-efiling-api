@@ -53,7 +53,7 @@ describe('Journey update', function() {
                     WHERE journey.id=1
                     AND journey.userid=person.id
                 `;
-                execute(sql, function(rows) {
+                execute(sql, function(err, rows) {
                     expect(rows.length).to.equal(1);
                     const { steps } = rows[0];
                     expect(steps).to.equal(JSON.stringify([{type: 'best', state: 'two'}]))

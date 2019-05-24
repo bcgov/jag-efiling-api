@@ -35,7 +35,7 @@ describe('Form submit', function() {
                     { sql: 'insert into person(login) values ($1)', params:['max'] },
                     { sql: 'insert into forms(person_id, type, status, data) values($1, $2, $3, $4);', params:[1, 'crazy-max', 'new', data] },
                 ];
-                execute(background, (rows, error)=> {
+                execute(background, (error, rows)=> {
                     server.start(5000, 'localhost', done);
                 });
             });

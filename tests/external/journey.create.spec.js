@@ -44,7 +44,7 @@ describe('Journey create', function() {
             'alter sequence journey_id_seq restart',
             { sql: 'insert into person(login) values ($1)', params:['max'] }
         ];
-        execute(background, (rows, error)=> {
+        execute(background, (error, rows)=> {
             request(creation, (err, response, body)=> {
                 expect(response.statusCode).to.equal(201);
                 expect(body).to.deep.equal(JSON.stringify({id:1}));
@@ -63,7 +63,7 @@ describe('Journey create', function() {
                     WHERE journey.id=$1
                     AND journey.userid=person.id
                 `;
-                execute(sql, [id], function(rows) {
+                execute(sql, [id], function(err, rows) {
                     expect(rows.length).to.equal(1);
                     const {type, state, ca_number, steps, login } = rows[0];
                     expect(type).to.equal('maxjourney');

@@ -40,7 +40,7 @@ describe('Form 2 preview', function() {
             { sql: 'insert into person(login) values ($1)', params:['max'] },
             { sql: 'insert into forms(person_id, type, status, data) values($1, $2, $3, $4);', params:[1, 'crazy-max', 'new', data] },
         ];
-        execute(background, (rows, error)=> {
+        execute(background, (error, rows)=> {
             request(preview, (err, response, body)=> {
                 expect(err).to.equal(null);
                 expect(response.statusCode).to.equal(200);
@@ -58,7 +58,7 @@ describe('Form 2 preview', function() {
             { sql: 'insert into person(login) values ($1)', params:['max'] },
             { sql: 'insert into forms(person_id, type, status, data) values($1, $2, $3, $4);', params:[1, 'crazy-max', 'new', data] },
         ];
-        execute(background, (rows, error)=> {
+        execute(background, (error, rows)=> {
             var preview = localhost5000json({
                 path: '/api/forms/2/preview',
             });
@@ -79,7 +79,7 @@ describe('Form 2 preview', function() {
             { sql: 'insert into person(login) values ($1)', params:['max'] },
             { sql: 'insert into forms(person_id, type, status, data) values($1, $2, $3, $4);', params:[1, 'crazy-max', 'new', data] },
         ];
-        execute(background, (rows, error)=> {
+        execute(background, (error, rows)=> {
             var preview = localhost5000json({
                 path: '/api/forms/1/preview',
             });

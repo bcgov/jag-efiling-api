@@ -10,8 +10,8 @@ Truncator.prototype.truncateTablesNow = function(success) {
         'TRUNCATE TABLE person cascade;',
         'TRUNCATE TABLE forms;',
     ];
-    execute(calls, function(rows, error) {
-        expect(error).to.equal(undefined)
+    execute(calls, function(error, rows) {
+        expect(error).to.equal(null)
         success(error);
     });
 };

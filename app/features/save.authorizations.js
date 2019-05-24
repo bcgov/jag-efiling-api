@@ -9,7 +9,7 @@ SaveAuthorizations.prototype.now = async function(formId, authorizations, callba
     var self = this
     var saveOneAuthorization = (formId, authorization) => {
         var p = new Promise((resolve, reject)=>{
-            this.database.saveAuthorization(formId, authorization, (rows, err)=>{
+            this.database.saveAuthorization(formId, authorization, (err, rows)=>{
                 if (err) {
                     error = err
                     reject(error)
@@ -21,7 +21,7 @@ SaveAuthorizations.prototype.now = async function(formId, authorizations, callba
     };
     try {
         var deleteAuthorizations = new Promise((resolve, reject)=>{
-            this.database.deleteAuthorizations(formId, (rows, err)=>{
+            this.database.deleteAuthorizations(formId, (err, rows)=>{
                 if (err) {
                     error = err
                     reject(error)

@@ -55,7 +55,7 @@ describe('Person info endpoint', function() {
     it('creates missing person with cso information', (done)=>{
         request(info, (err, response, body)=> {
             expect(response.statusCode).to.equal(200);
-            execute('select login, account_id, client_id from person', (rows, error)=>{
+            execute('select login, account_id, client_id from person', (error, rows)=>{
                 if (error) { expect(error.message).to.equal(null) }
                 expect(rows.length).to.equal(1)
                 expect(rows[0]['account_id']).to.equal(5678)
@@ -70,8 +70,8 @@ describe('Person info endpoint', function() {
             'alter sequence person_id_seq restart',
             { sql:'insert into person(login, customization) values ($1, $2)', params:['max', JSON.stringify({ thisApp:true })] }
         ];
-        execute(background, function(rows, error) {
-            expect(error).to.equal(undefined);
+        execute(background, function(error, rows) {
+            expect(error).to.equal(null);
             request(info, (err, response, body)=> {
                 expect(response.statusCode).to.equal(200);
                 let person = JSON.parse(body);

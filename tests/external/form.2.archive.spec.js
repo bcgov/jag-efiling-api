@@ -42,7 +42,7 @@ describe('Form 2 archive', function() {
             { sql: 'insert into forms(person_id, type, status, data) values($1, $2, $3, $4);', params:[1, 'crazy-max', 'any-status', 'any-data'] },
             { sql: 'insert into forms(person_id, type, status, data) values($1, $2, $3, $4);', params:[1, 'crazy-max', 'any-status', 'any-data'] },
         ];
-        execute(background, (rows, error)=> {
+        execute(background, (error, rows)=> {
             request(archiving, (err, response, body)=> {
                 expect(response.statusCode).to.equal(200);
                 expect(body).to.deep.equal(JSON.stringify({}));
@@ -52,7 +52,7 @@ describe('Form 2 archive', function() {
                    FROM forms
                    order by id
                 `;
-                execute(sql, [], function(rows) {
+                execute(sql, [], function(err, rows) {
                     expect(rows.length).to.equal(3);
 
                     expect(rows[0].status).to.equal('any-status');
