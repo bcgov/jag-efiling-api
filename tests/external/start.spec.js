@@ -104,7 +104,7 @@ describe('start script', function() {
             setTimeout(function() {
                 expect(server.restAdaptor.searchFormSeven.hub.timeout).to.equal(2000);
                 done();
-            }, 300);
+            }, 500);
         });
     });
 });

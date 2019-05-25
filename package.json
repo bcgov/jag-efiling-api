@@ -29,7 +29,7 @@
         "test": "npm run external-tests",
         "start": "node start.js",
         "external-tests": "mocha tests/external --recursive --exit --timeout 0",
-        "internal-tests": "mocha tests/internal/*.spec.js tests/support/*.spec.js tests/internal/hub/*.spec.js --recursive --exit --timeout 0",
+        "internal-tests": "mocha tests/internal/*.spec.js tests/support/*.spec.js tests/internal/**/*.spec.js --recursive --exit --timeout 0",
         "test:coverage": "nyc --cwd app --report-dir=../coverage --reporter=lcov node_modules/mocha/bin/_mocha -- --recursive tests --timeout 0",
         "coverage:report": "nyc report --cwd app"
     }
