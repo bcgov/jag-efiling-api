@@ -41,7 +41,7 @@ describe('Update existing form', function() {
             };
 
             database.updateForm(updatingData, function(updatedId) {
-                forms.selectOne(testform2.id, function(rows) {
+                forms.selectOne(testform2.id, function(error, rows) {
                     expect(rows.length).to.equal(1);
                     const { type, status, data } = rows[0];
                     expect(updatedId).to.equal(testform2.id);

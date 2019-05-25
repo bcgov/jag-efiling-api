@@ -53,7 +53,7 @@ describe('Update journey', function() {
 
                 updateJourney.now( journey_id, updatedJourney, function(updated_journey_id) {
                     expect(updated_journey_id).not.to.equal(undefined);
-                    journey.selectOne(journey_id, function(rows) {
+                    journey.selectOne(journey_id, function(error, rows) {
                         expect(rows[0].id).to.equal(Number(journey_id));
                         expect(rows[0].type).to.equal('respondtoaappeal');
                         expect(rows[0].userid).to.equal(Number(newUserId));
