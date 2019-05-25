@@ -48,7 +48,7 @@ describe('Hub service', function() {
         });
     });
 
-    it('propagates timeout as 503', function(done) {
+    it('propagates timeout as 503 for search', function(done) {
         let timeout = 50;
         answer = (req, res)=>{
             setTimeout(()=>{

@@ -117,4 +117,23 @@ describe('Hub submit-form', ()=> {
             exit();
         });
     });
+
+    it('resists timeout', function(done) {
+        server.close(()=>{
+            let timeout = 50;
+            answer = (req, res)=>{
+                setTimeout(()=>{
+                    res.statusCode = 200;
+                    res.end();
+                }, timeout * 10);
+            };
+            hub = new Hub(far, timeout);
+            server = http.createServer(answer).listen(port, ()=>{
+                hub.submitForm('', (data)=>{
+                    expect(data).to.deep.deep.equal({ error: { code:503 } });
+                    done();
+                });
+            });
+        })
+    });
 });

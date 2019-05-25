@@ -6,7 +6,6 @@ SaveAuthorizations.prototype.useDatabase = function(database) {
 
 SaveAuthorizations.prototype.now = async function(formId, authorizations, callback) {
     let error;
-    var self = this
     var saveOneAuthorization = (formId, authorization) => {
         var p = new Promise((resolve, reject)=>{
             this.database.saveAuthorization(formId, authorization, (err, rows)=>{

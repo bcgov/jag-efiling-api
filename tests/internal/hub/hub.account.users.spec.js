@@ -4,7 +4,7 @@ var http = require('http');
 var path = require('path');
 var Hub = require('../../../app/hub/hub');
 
-describe('Hub is-authorized', () => {
+describe('Hub account users', () => {
 
     var hub;
     var server;
@@ -17,11 +17,10 @@ describe('Hub is-authorized', () => {
         "soap:Envelope": {
             "@xmlns:soap": "http://schemas.xmlsoap.org/soap/envelope/",
             "soap:Body": {
-                "ns2:isAuthorizedUserResponse": {
+                "ns2:getCsoClientProfilesResponse": {
                     "@xmlns:ns2": "http://csoextws.jag.gov.bc.ca/",
                     "return": {
-                        "accountId": "1304",
-                        "clientId": "1801"
+                        "any": "thing"
                     }
                 }
             }
@@ -54,9 +53,9 @@ describe('Hub is-authorized', () => {
         }
     });
 
-    it('sends the is-authorized request', (exit) => {
-        hub.isAuthorized('42', () => {
-            expect(receivedUrl).to.equal('/isAuthorized?userguid=42');
+    it('sends the account-users request', (exit) => {
+        hub.accountUsers('42', () => {
+            expect(receivedUrl).to.equal('/accountUsers?userguid=42');
             expect(receivedMethod).to.equal('GET')
             exit();
         });
@@ -64,7 +63,7 @@ describe('Hub is-authorized', () => {
 
     it('resists hub offline', (done) => {
         server.close(() => {
-            hub.isAuthorized('42', (data) => {
+            hub.accountUsers('42', (data) => {
                 expect(data).to.deep.equal({
                     error: {
                         code: 503
@@ -77,7 +76,7 @@ describe('Hub is-authorized', () => {
 
     it('resists hub errors', (done) => {
         willRespondWithStatus = 500
-        hub.isAuthorized('42', (data) => {
+        hub.accountUsers('42', (data) => {
             expect(data).to.deep.equal({
                 error: {
                     code: 500
@@ -89,10 +88,9 @@ describe('Hub is-authorized', () => {
 
     it('forwards the clean response', (exit) => {
         willRespondWithStatus = 200
-        hub.isAuthorized('42', (data) => {
+        hub.accountUsers('42', (data) => {
             expect(data).to.deep.equal({
-                accountId: 1304,
-                clientId: 1801
+                any: 'thing'
             })
             exit();
         });
@@ -101,7 +99,7 @@ describe('Hub is-authorized', () => {
     it('resists not found', (exit) => {
         willAnswerWith = 'NOT FOUND'
         willRespondWithStatus = 404
-        hub.isAuthorized('42', (data) => {
+        hub.accountUsers('42', (data) => {
             expect(data).to.deep.equal({
                 error: {
                     code: 404
@@ -122,7 +120,7 @@ describe('Hub is-authorized', () => {
             };
             hub = new Hub(far, timeout);
             server = http.createServer(answer).listen(port, ()=>{
-                hub.isAuthorized('', (data)=>{
+                hub.accountUsers('', (data)=>{
                     expect(data).to.deep.deep.equal({ error: { code:503 } });
                     done();
                 });

@@ -16,7 +16,7 @@ AccountUsers.prototype.now = function(userguid, callback) {
                     let user = users[i]
                     user.clientId = parseInt(user.clientId)
                     user.isAdmin = (user.isAdmin === "true")
-                    user.isActive = user.isAdmin,
+                    user.isActive = user.isAdmin
                     user.isEditable = !user.isAdmin
                 }
                 data.client = undefined
