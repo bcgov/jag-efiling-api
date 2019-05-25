@@ -44,7 +44,7 @@ describe('Extended my cases end point', function() {
             { sql: 'insert into person(login, client_id) values ($1, $2)', params:['bob', 111] },
             { sql: 'insert into person(login, client_id) values ($1, $2)', params:['max', 222] }
         ];
-        execute(background, (rows, error)=> {
+        execute(background, (error, rows)=> {
             request(creationByBob, (err, response, body)=> {
                 expect(response.statusCode).to.equal(201);
 
@@ -71,7 +71,7 @@ describe('Extended my cases end point', function() {
             { sql: 'insert into person(login, client_id) values ($1, $2)', params:['bob', 111] },
             { sql: 'insert into person(login, client_id) values ($1, $2)', params:['max', 222] }
         ];
-        execute(background, (rows, error)=> {
+        execute(background, (error, rows)=> {
             var creationByBob = localhost5000json({
                 method: 'POST',
                 path: '/api/forms',
@@ -114,7 +114,7 @@ describe('Extended my cases end point', function() {
             { sql: 'insert into person(login, client_id) values ($1, $2)', params:['bob', 111] },
             { sql: 'insert into person(login, client_id) values ($1, $2)', params:['max', 222] }
         ];
-        execute(background, (rows, error)=> {
+        execute(background, (error, rows)=> {
             var creationByBob = localhost5000json({
                 method: 'POST',
                 path: '/api/forms',

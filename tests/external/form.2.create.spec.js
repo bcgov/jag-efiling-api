@@ -39,7 +39,7 @@ describe('Form 2 create', function() {
             'alter sequence forms_id_seq restart',
             { sql: 'insert into person(login) values ($1)', params:['max'] }
         ];
-        execute(background, (rows, error)=> {
+        execute(background, (error, rows)=> {
             request(creation, (err, response, body)=> {
                 expect(response.statusCode).to.equal(201);
                 expect(body).to.deep.equal(JSON.stringify({id:1}));
@@ -57,7 +57,7 @@ describe('Form 2 create', function() {
                     WHERE forms.id=$1
                     AND forms.person_id=person.id
                 `;
-                execute(sql, [id], function(rows) {
+                execute(sql, [id], function(err, rows) {
                     expect(rows.length).to.equal(1);
 
                     var { type, status, data, login } = rows[0];

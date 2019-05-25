@@ -14,7 +14,7 @@ describe('Migrator', function() {
 
     it('creates the record to the expected level', function(success) {
         migrator.migrateNow(function() {
-            versions.selectAll(function(rows) {
+            versions.selectAll(function(error, rows) {
                 expect(rows.length).to.equal(1);
                 expect(rows[0].id).to.equal(13);
                 success();

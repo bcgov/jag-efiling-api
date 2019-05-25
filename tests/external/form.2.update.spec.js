@@ -40,7 +40,7 @@ describe('Form 2 update', function() {
             { sql: 'insert into person(login) values ($1)', params:['max'] },
             { sql: 'insert into forms(person_id, type, status, data) values($1, $2, $3, $4);', params:[1, 'crazy-max', 'new', JSON.stringify({field:'old value'})] },
         ];
-        execute(background, (rows, error)=> {
+        execute(background, (error, rows)=> {
             request(update, (err, response, body)=> {
                 expect(response.statusCode).to.equal(200);
                 expect(body).to.deep.equal(JSON.stringify({}));
@@ -51,7 +51,7 @@ describe('Form 2 update', function() {
                    FROM forms
                    WHERE forms.id=$1
                 `;
-                execute(sql, [1], function(rows) {
+                execute(sql, [1], function(err, rows) {
                     expect(rows.length).to.equal(1);
 
                     let { data } = rows[0];
@@ -74,7 +74,7 @@ describe('Form 2 update', function() {
                 params: [1, 'crazy-max', 'new', JSON.stringify({field: 'old value'}), yesterday]
             },
         ];
-        execute(background, (rows, error) => {
+        execute(background, (error, rows) => {
             request(update, (err, response, body)=> {
                 expect(response.statusCode).to.equal(200);
 
@@ -83,7 +83,7 @@ describe('Form 2 update', function() {
                     FROM forms
                     WHERE forms.id=$1
                 `;
-                execute(sql, [1], function (rows) {
+                execute(sql, [1], function (err, rows) {
                     expect(rows.length).to.equal(1);
                     let {data, modified} = rows[0];
                     let timeUpdated = new Date(modified);

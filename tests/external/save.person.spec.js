@@ -42,7 +42,7 @@ describe('Person save', function() {
             expect(location).to.contain('/persons/');
             var id = parseInt(location.substring(location.lastIndexOf('/')+1));
 
-            execute('SELECT id, login FROM person where id=$1', [id], function(rows) {
+            execute('SELECT id, login FROM person where id=$1', [id], function(err, rows) {
                 expect(rows.length).to.equal(1);
 
                 var { login } = rows[0];
@@ -66,7 +66,7 @@ describe('Person save', function() {
                 var location = response.headers.location;
                 expect(location).to.equal('/persons/' + id);
 
-                execute('SELECT id, login FROM person where login=$1', ['joe'], function(rows) {
+                execute('SELECT id, login FROM person where login=$1', ['joe'], function(err, rows) {
                     expect(rows.length).to.equal(1);
                     done();
                 });

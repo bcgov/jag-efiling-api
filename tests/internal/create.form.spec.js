@@ -11,7 +11,7 @@ describe('Create form', function() {
     var forms;
     var createFormTwo;
 
-    beforeEach(function(success) {        
+    beforeEach(function(success) {
         database = new Database();
         createFormTwo = new CreateFormTwo(database);
         forms = new Forms();
@@ -31,7 +31,7 @@ describe('Create form', function() {
         };
         createFormTwo.now(form, function(newId) {
             expect(newId).not.to.equal(undefined);
-            forms.selectOne(newId, function(rows) {
+            forms.selectOne(newId, function(error, rows) {
                 expect(rows.length).to.equal(1);
                 var { type, status, data } = rows[0];
                 expect(type).to.equal('form-2');
@@ -56,7 +56,7 @@ describe('Create form', function() {
         };
         createFormTwo.now(first_form, function(formId) {
             expect(formId).not.to.equal(undefined);
-            forms.selectByFormTypeUseridAndCaseNumber(1, 'form-2', 'crazy-max', function(rows) {
+            forms.selectByFormTypeUseridAndCaseNumber(1, 'form-2', 'crazy-max', function(error, rows) {
                 expect(rows.length).to.equal(1);
                 let { id, type, status, data } = rows[0];
                 expect(id).to.equal(Number(formId));
@@ -66,7 +66,7 @@ describe('Create form', function() {
                 createFormTwo.now(second_form, function(id) {
                     expect(id).not.to.equal(undefined);
                     expect(id).to.equal(formId);
-                    forms.selectByFormTypeUseridAndCaseNumber(1, 'form-2', 'crazy-max', function (rows) {
+                    forms.selectByFormTypeUseridAndCaseNumber(1, 'form-2', 'crazy-max', function (error, rows) {
                         expect(rows.length).to.equal(1);
                         let {id, type, status, data} = rows[0];
                         expect(status).to.equal('Accepted');

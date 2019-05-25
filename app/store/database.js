@@ -6,7 +6,7 @@ let { Authorizations } = require('./authorizations');
 let ifError = function(please) {
     return {
         otherwise:function(then) {
-            return (rows, error)=> {
+            return (error, rows)=> {
                 if (error) {
                     please.notify({ error: {code:503, message:error.message} });
                 }
@@ -58,7 +58,7 @@ Database.prototype.myJourney = function(login, callback) {
 };
 
 Database.prototype.createForm = function(form, callback) {
-    this.forms.selectByFormTypeUseridAndCaseNumber(form.person_id, form.type, JSON.parse(form.data).formSevenNumber, (rows) => {
+    this.forms.selectByFormTypeUseridAndCaseNumber(form.person_id, form.type, JSON.parse(form.data).formSevenNumber, (err, rows) => {
         if (!rows || rows.length < 1 ) {
             this.forms.create(form, ifError({notify:callback}).otherwise((rows)=> {
                 callback(rows[0].last_value);

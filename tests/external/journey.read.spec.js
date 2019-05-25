@@ -38,7 +38,7 @@ describe('Journey read', function() {
             { sql: 'insert into person(login) values ($1)', params:['max'] },
             { sql: 'insert into journey(userid) values ($1)', params:[1] }
         ];
-        execute(background, (rows, error)=> {
+        execute(background, (error, rows)=> {
             request(myjourney, (err, response, body)=> {
                 expect(response.statusCode).to.equal(200);
                 var journey = JSON.parse(body).journey
@@ -55,7 +55,7 @@ describe('Journey read', function() {
             'alter sequence journey_id_seq restart',
             { sql: 'insert into person(login) values ($1)', params:['max'] }
         ];
-        execute(background, (rows, error)=> {
+        execute(background, (error, rows)=> {
             request(myjourney, (err, response, body)=> {
                 expect(response.statusCode).to.equal(404);
                 done();

@@ -13,7 +13,7 @@ describe('Create journey', function() {
     let createJourney;
     let savePerson;
 
-    beforeEach(function(success) {        
+    beforeEach(function(success) {
         database = new Database();
         createJourney = new CreateJourney(database);
         savePerson = new SavePerson(database);
@@ -28,7 +28,7 @@ describe('Create journey', function() {
     });
 
     it('creates a journey', function(done) {
-        
+
         savePerson.now('jane', function(newUserId) {
             let testJourney = {
                 type: 'respondtoleavetoappeal',
@@ -39,7 +39,7 @@ describe('Create journey', function() {
             };
             createJourney.now(testJourney, function(journey_id) {
                 expect(journey_id).not.to.equal(undefined);
-                journey.selectOne(journey_id, function(rows) {
+                journey.selectOne(journey_id, function(error, rows) {
                     expect(rows[0].id).to.equal(Number(journey_id));
                     expect(rows[0].type).to.equal('respondtoleavetoappeal');
                     expect(rows[0].userid).to.equal(Number(newUserId));
@@ -71,13 +71,13 @@ describe('Create journey', function() {
             }
             createJourney.now(first_journey, function(journey_id) {
                 expect(journey_id).not.to.equal(undefined);
-                journey.selectAll(function(rows) {
+                journey.selectAll(function(error, rows) {
                     expect(rows.length).to.equal(1);
                     expect(rows[0].id).to.equal(Number(journey_id));
                     createJourney.now(second_journey, function(next_journey_id) {
                         expect(next_journey_id).not.to.equal(undefined);
                         expect(next_journey_id).to.equal(journey_id);
-                        journey.selectAll(function(rows) {
+                        journey.selectAll(function(error, rows) {
                             expect(rows.length).to.equal(1);
                             expect(rows[0].id).to.equal(Number(journey_id));
                             expect(rows[0].type).to.equal('appellantrighttoappeal');

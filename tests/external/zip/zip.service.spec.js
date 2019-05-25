@@ -35,8 +35,8 @@ describe('ZIP service', function() {
                         { sql: 'insert into forms(person_id, type, status, data) values($1, $2, $3, $4);', params:[1, 'crazy-max', 'any-status', json1] },
                         { sql: 'insert into forms(person_id, type, status, data) values($1, $2, $3, $4);', params:[1, 'crazy-max', 'any-status', json2] }
                     ];
-                    execute(background, (rows, error)=> {
-                        expect(error).to.equal(undefined);
+                    execute(background, (error, rows)=> {
+                        expect(error).to.equal(null);
                         done();
                     });
                 });
@@ -78,8 +78,8 @@ describe('ZIP service', function() {
     });
 
     it('resists long id', function(done) {
-        execute('update forms set id=11111 where id=1', (rows, error)=> {
-            expect(error).to.equal(undefined);
+        execute('update forms set id=11111 where id=1', (error, rows)=> {
+            expect(error).to.equal(null);
             request(localhost5000json({path: '/api/zip?id=11111'}), (err, response, body)=>{
                 expect(response.statusCode).to.equal(200);
                 done();
