@@ -1,36 +1,40 @@
 {
-    "name": "e-filing-api",
-    "version": "1.0.0",
-    "private": false,
-    "dependencies": {
-        "archiver": "^2.1.1",
-        "body-parser": "^1.18.2",
-        "express": "^4.16.3",
-        "html-pdf": "^2.2.0",
-        "morgan": "^1.9.0",
-        "yop-postgresql": "^1.3.0"
-    },
-    "devDependencies": {
-        "chai": "latest",
-        "deep-equal": "^1.0.1",
-        "jsdom": "latest",
-        "log4js": "latest",
-        "mocha": "latest",
-        "nyc": "^13.3.0",
-        "pdf2json": "^1.1.7",
-        "unzip-stream": "^0.3.0"
-    },
-    "engines": {
-        "node": ">=6.14.0",
-        "npm": ">=3.10.10"
-    },
-    "scripts": {
-        "pretest": "dropdb --if-exists $PGDATABASE -U postgres; createdb $PGDATABASE -U postgres",
-        "test": "npm run external-tests",
-        "start": "node start.js",
-        "external-tests": "mocha tests/external --recursive --exit --timeout 0",
-        "internal-tests": "mocha tests/internal/*.spec.js tests/support/*.spec.js tests/internal/**/*.spec.js --recursive --exit --timeout 0",
-        "test:coverage": "nyc --cwd app --report-dir=../coverage --reporter=lcov node_modules/mocha/bin/_mocha -- --recursive tests --timeout 0",
-        "coverage:report": "nyc report --cwd app"
-    }
+  "name": "e-filing-api",
+  "version": "1.0.0",
+  "private": false,
+  "dependencies": {
+    "archiver": "^2.1.1",
+    "body-parser": "^1.18.2",
+    "express": "^4.16.3",
+    "html-pdf": "^2.2.0",
+    "morgan": "^1.9.0",
+    "yop-postgresql": "^1.3.0",
+    "snyk": "^1.189.0"
+  },
+  "devDependencies": {
+    "chai": "latest",
+    "deep-equal": "^1.0.1",
+    "jsdom": "latest",
+    "log4js": "latest",
+    "mocha": "latest",
+    "nyc": "^13.3.0",
+    "pdf2json": "^1.1.7",
+    "unzip-stream": "^0.3.0"
+  },
+  "engines": {
+    "node": ">=6.14.0",
+    "npm": ">=3.10.10"
+  },
+  "scripts": {
+    "pretest": "dropdb --if-exists $PGDATABASE -U postgres; createdb $PGDATABASE -U postgres",
+    "test": "npm run external-tests",
+    "start": "node start.js",
+    "external-tests": "mocha tests/external --recursive --exit --timeout 0",
+    "internal-tests": "mocha tests/internal/*.spec.js tests/support/*.spec.js tests/internal/**/*.spec.js --recursive --exit --timeout 0",
+    "test:coverage": "nyc --cwd app --report-dir=../coverage --reporter=lcov node_modules/mocha/bin/_mocha -- --recursive tests --timeout 0",
+    "coverage:report": "nyc report --cwd app",
+    "snyk-protect": "snyk protect",
+    "prepublish": "npm run snyk-protect"
+  },
+  "snyk": true
 }
