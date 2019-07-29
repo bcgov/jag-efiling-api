@@ -14,6 +14,7 @@ describe('Form submit', function() {
         method: 'POST',
         path: '/api/forms/1/submit'
     })
+    var sentPdf;
 
     beforeEach(function(done) {
         server = new Server();
@@ -21,6 +22,7 @@ describe('Form submit', function() {
         server.useDatabase(database);
         server.useService({
             submitForm: function(pdf, callback) {
+                sentPdf = pdf;
                 callback({ field:'value' });
             }
         });
@@ -64,6 +66,15 @@ describe('Form submit', function() {
         request(submit, (err, response, body)=> {
             expect(response.statusCode).to.equal(404);
             expect(JSON.parse(body)).to.deep.equal({message:'not found'});
+            done();
+        });
+    });
+
+    it('sends the expected pdf', function(done) {
+        submit.path = '/api/forms/1/submit'
+        request(submit, (err, response, body)=> {
+            expect(Buffer.isBuffer(sentPdf)).to.equal(true);
+            expect(sentPdf.length).to.equal(21232)
             done();
         });
     });
