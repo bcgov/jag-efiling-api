@@ -11,7 +11,7 @@ describe('Hub submit-form', ()=> {
     var port = 8111;
     var ip = 'localhost';
     var far = 'http://' + ip + ':' + port;
-    var receivedUrl, receivedMethod, receivedBody
+    var receivedUrl, receivedMethod, receivedBody, receivedHeaders;
     var willRespondWithStatus = 200;
     var willAnswerWith = { alive:true }
 
@@ -19,6 +19,7 @@ describe('Hub submit-form', ()=> {
         hub = new Hub(far);
         server = http.createServer((request, response)=>{
             receivedMethod = request.method
+            receivedHeaders = request.headers
             receivedUrl = request.url;
             receivedBody = ''
             request.on('data', (chunk) => {
@@ -84,17 +85,18 @@ describe('Hub submit-form', ()=> {
     })
 
     it('sends the submit request', (exit)=>{
-        hub.submitForm('this-pdf', ()=> {
+        hub.submitForm('max', 'this-pdf', ()=> {
             expect(receivedUrl).to.equal('/save');
             expect(receivedMethod).to.equal('POST');
             expect(receivedBody).to.equal('this-pdf')
+            expect(receivedHeaders['smgov_userguid']).to.equal('max')
             exit();
         });
     });
 
     it('resists hub offline', (done)=>{
         server.close(()=>{
-            hub.submitForm('this-pdf', (data)=> {
+            hub.submitForm('max', 'this-pdf', (data)=> {
                 expect(data).to.deep.equal({ error:{code:503} });
                 done();
             });
@@ -103,7 +105,7 @@ describe('Hub submit-form', ()=> {
 
     it('resists hub errors', (done)=>{
         willRespondWithStatus = 500
-        hub.submitForm('this-pdf', (data)=> {
+        hub.submitForm('max', 'this-pdf', (data)=> {
             expect(data).to.deep.equal({ error:{code:500} });
             done();
         });
@@ -112,7 +114,7 @@ describe('Hub submit-form', ()=> {
     it('forwards the response', (exit)=>{
         willRespondWithStatus = 200
         willAnswerWith = { all:'good' }
-        hub.submitForm('this-pdf', (data)=> {
+        hub.submitForm('max', 'this-pdf', (data)=> {
             expect(data).to.deep.equal({ all:'good' })
             exit();
         });
@@ -129,7 +131,7 @@ describe('Hub submit-form', ()=> {
             };
             hub = new Hub(far, timeout);
             server = http.createServer(answer).listen(port, ()=>{
-                hub.submitForm('', (data)=>{
+                hub.submitForm('max', '', (data)=>{
                     expect(data).to.deep.deep.equal({ error: { code:503 } });
                     done();
                 });

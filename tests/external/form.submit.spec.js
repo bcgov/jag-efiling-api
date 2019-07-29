@@ -14,14 +14,15 @@ describe('Form submit', function() {
         method: 'POST',
         path: '/api/forms/1/submit'
     })
-    var sentPdf;
+    var sentPdf, sentUserId;
 
     beforeEach(function(done) {
         server = new Server();
         database = new Database();
         server.useDatabase(database);
         server.useService({
-            submitForm: function(pdf, callback) {
+            submitForm: function(userguid, pdf, callback) {
+                sentUserId = userguid;
                 sentPdf = pdf;
                 callback({ field:'value' });
             }
@@ -75,6 +76,14 @@ describe('Form submit', function() {
         request(submit, (err, response, body)=> {
             expect(Buffer.isBuffer(sentPdf)).to.equal(true);
             expect(sentPdf.length).to.equal(21232)
+            done();
+        });
+    });
+
+    it('sends the login info', function(done) {
+        submit.path = '/api/forms/1/submit'
+        request(submit, (err, response, body)=> {
+            expect(sentUserId).to.equal('max')
             done();
         });
     });

@@ -93,13 +93,16 @@ Hub.prototype.isAuthorized = function(guid, callback) {
     });
     authorized.end();
 };
-Hub.prototype.submitForm = function(pdf, callback) {
+Hub.prototype.submitForm = function(login, pdf, callback) {
     var options = {
         method: 'POST',
         host: this.host,
         port: this.port,
         path: '/save',
-        timeout: this.timeout
+        timeout: this.timeout,
+        headers: {
+            'smgov_userguid': login
+        }
     }
     var timedout = false
     var save = request(options, function(response) {

@@ -200,6 +200,7 @@ RestAdaptor.prototype.route = function(app) {
         });
     });
     app.post('/api/forms/:id/submit', (request, response) => {
+        let login = request.headers['smgov_userguid'];
         let id = request.params.id;
         this.previewForm2.now(id, (html)=> {
             console.log('preview error', html.error);
@@ -210,7 +211,7 @@ RestAdaptor.prototype.route = function(app) {
                 pdf.create(html).toBuffer((err, pdf)=> {
                     console.log('pdf creation error', err);
                     console.log('pdf length=', pdf.length);
-                    this.submitForm.now(id, pdf, (data)=>{
+                    this.submitForm.now(login, id, pdf, (data)=>{
                         submitForm2Response(data, response);
                     })
                 });
