@@ -12,6 +12,11 @@ let send500 = function(message, response) {
     response.write(message);
     response.end();
 };
+let send403 = function(message, response) {
+    response.statusCode = 403;
+    response.write(JSON.stringify({message:message}));
+    response.end();
+};
 module.exports = function(data, response) {
     let withoutError = { then: (doThat)=> { doThat(); }};
     let errorFound = { then: (stop)=> {}};
@@ -19,8 +24,11 @@ module.exports = function(data, response) {
         console.log('ERROR:', data.error);
         if (data.error.code === 503) { send503(response); }
         if (data.error.code === 404) { send404(response); }
+        if (data.error.code === 403) { send403(data.error.message, response); }
         if (data.error.code === 500) { send500(data.error.message, response); }
         return errorFound;
     }
-    return withoutError;
+    else {
+        return withoutError;
+    }
 };

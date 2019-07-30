@@ -138,4 +138,13 @@ describe('Hub submit-form', ()=> {
             });
         })
     });
+
+    it('resists payment failure', (done)=>{
+        willRespondWithStatus = 403
+        willAnswerWith = { message:'Failed - account id blank' }
+        hub.submitForm('max', 'this-pdf', (data)=> {
+            expect(data).to.deep.equal({ error:{code:403, message:'Failed - account id blank'} });
+            done();
+        });
+    });
 });

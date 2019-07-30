@@ -107,15 +107,19 @@ Hub.prototype.submitForm = function(login, pdf, callback) {
     var timedout = false
     var save = request(options, function(response) {
         if (timedout) { return }
-        if (response.statusCode === 200) {
-            extractBody(response, (body)=>{
-                var data = JSON.parse(body);
-                callback(data)
-            })
-        }
-        else {
-            callback({ error: {code:response.statusCode} });
-        }
+        extractBody(response, (body)=>{
+            var data = JSON.parse(body);
+            if (response.statusCode === 200) {
+                    callback(data)
+            }
+            else {
+                var answer = { error: {code:response.statusCode} }
+                if (data.message) {
+                    answer.error.message = data.message
+                }
+                callback(answer);
+            }
+        })
     });
     save.on('error', (err)=>{
         callback({ error: {code:503} })

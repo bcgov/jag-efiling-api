@@ -59,7 +59,7 @@ describe('Form submit', function() {
 
     it('resists unknown form', function(done) {
         server.useService({
-            submitForm: function(pdf, callback) {
+            submitForm: function(userguid, pdf, callback) {
                 callback({ error: {code:404} });
             }
         });
@@ -84,6 +84,20 @@ describe('Form submit', function() {
         submit.path = '/api/forms/1/submit'
         request(submit, (err, response, body)=> {
             expect(sentUserId).to.equal('max')
+            done();
+        });
+    });
+
+    it('resists payment failure', function(done) {
+        server.useService({
+            submitForm: function(userguid, pdf, callback) {
+                callback({ error: {code:403, message:'payment failed'} });
+            }
+        });
+        submit.path = '/api/forms/1/submit'
+        request(submit, (err, response, body)=> {
+            expect(response.statusCode).to.equal(403);
+            expect(JSON.parse(body)).to.deep.equal({message:'payment failed'});
             done();
         });
     });
