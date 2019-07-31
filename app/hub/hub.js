@@ -93,7 +93,7 @@ Hub.prototype.isAuthorized = function(guid, callback) {
     });
     authorized.end();
 };
-Hub.prototype.submitForm = function(login, pdf, callback) {
+Hub.prototype.submitForm = function(login, formData, pdf, callback) {
     var options = {
         method: 'POST',
         host: this.host,
@@ -101,7 +101,8 @@ Hub.prototype.submitForm = function(login, pdf, callback) {
         path: '/save',
         timeout: this.timeout,
         headers: {
-            'smgov_userguid': login
+            'smgov_userguid': login,
+            'data': JSON.stringify(formData)
         }
     }
     var timedout = false

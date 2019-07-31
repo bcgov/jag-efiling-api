@@ -85,18 +85,19 @@ describe('Hub submit-form', ()=> {
     })
 
     it('sends the submit request', (exit)=>{
-        hub.submitForm('max', 'this-pdf', ()=> {
+        hub.submitForm('max', { any:'data' }, 'this-pdf', ()=> {
             expect(receivedUrl).to.equal('/save');
             expect(receivedMethod).to.equal('POST');
             expect(receivedBody).to.equal('this-pdf')
             expect(receivedHeaders['smgov_userguid']).to.equal('max')
+            expect(receivedHeaders['data']).to.equal(JSON.stringify({ any:'data' }))
             exit();
         });
     });
 
     it('resists hub offline', (done)=>{
         server.close(()=>{
-            hub.submitForm('max', 'this-pdf', (data)=> {
+            hub.submitForm('max', { any:'data' }, 'this-pdf', (data)=> {
                 expect(data).to.deep.equal({ error:{code:503} });
                 done();
             });
@@ -105,7 +106,7 @@ describe('Hub submit-form', ()=> {
 
     it('resists hub errors', (done)=>{
         willRespondWithStatus = 500
-        hub.submitForm('max', 'this-pdf', (data)=> {
+        hub.submitForm('max', { any:'data' }, 'this-pdf', (data)=> {
             expect(data).to.deep.equal({ error:{code:500} });
             done();
         });
@@ -114,7 +115,7 @@ describe('Hub submit-form', ()=> {
     it('forwards the response', (exit)=>{
         willRespondWithStatus = 200
         willAnswerWith = { all:'good' }
-        hub.submitForm('max', 'this-pdf', (data)=> {
+        hub.submitForm('max', { any:'data' }, 'this-pdf', (data)=> {
             expect(data).to.deep.equal({ all:'good' })
             exit();
         });
@@ -131,7 +132,7 @@ describe('Hub submit-form', ()=> {
             };
             hub = new Hub(far, timeout);
             server = http.createServer(answer).listen(port, ()=>{
-                hub.submitForm('max', '', (data)=>{
+                hub.submitForm('max', { any:'data' }, '', (data)=>{
                     expect(data).to.deep.deep.equal({ error: { code:503 } });
                     done();
                 });
@@ -142,7 +143,7 @@ describe('Hub submit-form', ()=> {
     it('resists payment failure', (done)=>{
         willRespondWithStatus = 403
         willAnswerWith = { message:'Failed - account id blank' }
-        hub.submitForm('max', 'this-pdf', (data)=> {
+        hub.submitForm('max', { any:'data' }, 'this-pdf', (data)=> {
             expect(data).to.deep.equal({ error:{code:403, message:'Failed - account id blank'} });
             done();
         });

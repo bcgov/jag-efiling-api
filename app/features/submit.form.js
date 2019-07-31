@@ -8,14 +8,19 @@ SubmitForm.prototype.useDatabase = function(database) {
 }
 
 SubmitForm.prototype.now = function(login, id, pdf, callback) {
-    this.hub.submitForm(login, pdf, (data)=>{
+    this.database.formData(id, (data)=> {
         if (data.error) { callback(data) }
         else {
-            this.database.submitForm(id, ()=>{
-                callback(data)
-            })
+            this.hub.submitForm(login, data, pdf, (data)=>{
+                if (data.error) { callback(data) }
+                else {
+                    this.database.submitForm(id, ()=>{
+                        callback(data)
+                    })
+                }
+            });
         }
-    });
+    })
 };
 
 module.exports = SubmitForm;

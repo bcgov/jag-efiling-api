@@ -14,15 +14,16 @@ describe('Form submit', function() {
         method: 'POST',
         path: '/api/forms/1/submit'
     })
-    var sentPdf, sentUserId;
+    var sentPdf, sentUserId, sentFormData;
 
     beforeEach(function(done) {
         server = new Server();
         database = new Database();
         server.useDatabase(database);
         server.useService({
-            submitForm: function(userguid, pdf, callback) {
+            submitForm: function(userguid, formData, pdf, callback) {
                 sentUserId = userguid;
+                sentFormData = formData;
                 sentPdf = pdf;
                 callback({ field:'value' });
             }
@@ -90,7 +91,7 @@ describe('Form submit', function() {
 
     it('resists payment failure', function(done) {
         server.useService({
-            submitForm: function(userguid, pdf, callback) {
+            submitForm: function(userguid, formData, pdf, callback) {
                 callback({ error: {code:403, message:'payment failed'} });
             }
         });
@@ -98,6 +99,16 @@ describe('Form submit', function() {
         request(submit, (err, response, body)=> {
             expect(response.statusCode).to.equal(403);
             expect(JSON.parse(body)).to.deep.equal({message:'payment failed'});
+            done();
+        });
+    });
+
+    it('sends the form data', function(done) {
+        submit.path = '/api/forms/1/submit'
+        request(submit, (err, response, body)=> {
+            var data = fs.readFileSync('./tests/external/preview/form2.json').toString();
+            var expected = JSON.parse(data);
+            expect(sentFormData).to.deep.equal(expected)
             done();
         });
     });
