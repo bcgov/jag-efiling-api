@@ -112,4 +112,15 @@ describe('Form submit', function() {
             done();
         });
     });
+
+    it('marks the form as Submitted', function(done) {
+        submit.path = '/api/forms/1/submit'
+        request(submit, (err, response, body)=> {
+            var select = `select status from forms where id=1`;
+            execute(select, (error, rows)=> {
+                expect(rows[0].status).to.equal('Submitted')
+                done()
+            });
+        });
+    })
 });
